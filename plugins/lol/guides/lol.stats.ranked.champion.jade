@@ -10,7 +10,7 @@ p.
 	If the champion is not specified, and the user is not in-game, the command will fail.
 h3 Examples:
 br
-.note.note-default {{championName}}: {{round2/kdaRatio}} KDA ({{totalChampionKills}}/{{totalDeathsPerSession}}/{{totalAssists}}).
+.note.note-default {{championName}}: {{ round((totalChampionKills + totalAssists) / totalDeathsPerSession, 2) }} KDA ({{totalChampionKills}}/{{totalDeathsPerSession}}/{{totalAssists}}).
 br
 pre
 	b User:
