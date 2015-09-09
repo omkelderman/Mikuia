@@ -3,7 +3,7 @@ p.
 	You can also do some cool stuff using various formats.
 h3 Examples:
 br
-.well Hello, <%displayName%>!
+.well Hello, {{ displayName }}!
 pre
 	b User:
 	|  !hello
@@ -11,7 +11,7 @@ pre
 	b #{Mikuia.settings.bot.name}:
 	|  Hello, User!
 br
-.well <%upper/args%>
+.well {{ upper(args) }}
 pre
 	b User:
 	|  !scream hello!
@@ -19,7 +19,7 @@ pre
 	b #{Mikuia.settings.bot.name}:
 	|  HELLO!
 br
-.well <%round/args%>
+.well {{ round(args) }}
 pre
 	b User:
 	|  !round 3.14159

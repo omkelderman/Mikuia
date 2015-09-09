@@ -69,7 +69,7 @@
 				"name": "Custom Dummy Message Format",
 				"category": "Dummy Messages",
 				"description": "Custom message format used on every dummy message.",
-				"default": "<%displayName%> > <%dummyMessage%>",
+				"default": "{{displayName}} > {{dummyMessage}}",
 				"type": "format",
 				"variables": {
 					"args": "Command arguments",

@@ -20,7 +20,10 @@ helperFunctions =
 		parts[0] = parts[0].replace /\B(?=(\d{3})+(?!\d))/g, ','
 		parts.join '.'
 	floor: (variable) -> Math.floor variable
-	round: (variable) -> Math.round variable
+	round: (variable, decimals) -> 
+		if decimals?
+			Math.round(variable * Math.pow(10, decimals)) / Math.pow(10, decimals)
+		else Math.round variable
 	round1: (variable) -> Math.round(variable * 10) / 10
 	round2: (variable) -> Math.round(variable * 100) / 100
 	round3: (variable) -> Math.round(variable * 1000) / 1000

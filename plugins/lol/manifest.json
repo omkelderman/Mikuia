@@ -10,7 +10,7 @@
 				"format": {
 					"name": "Message Format",
 					"description": "Message format.",
-					"default": "<%tier%> <%division%> - <%leaguePoints%> LP (<%wins%> won, <%losses%> lost)",
+					"default": "{{tier}} {{division}} - {{leaguePoints}} LP ({{wins}} won, {{losses}} lost)",
 					"type": "format",
 					"variables": {
 						"tier": "Solo Queue tier",
@@ -29,7 +29,7 @@
 				"format": {
 					"name": "Message Format",
 					"description": "Message format.",
-					"default": "<%pageName%>: <%offensePoints%>/<%defensePoints%>/<%utilityPoints%>",
+					"default": "{{pageName}}: {{offensePoints}}/{{defensePoints}}/{{utilityPoints}}",
 					"type": "format",
 					"variables": {
 						"pageName": "Mastery page name",
@@ -49,7 +49,7 @@
 				"format": {
 					"name": "Message Format",
 					"description": "Message format.",
-					"default": "<%championName%>: <%round2/kdaRatio%> KDA (<%totalChampionKills%>/<%totalDeathsPerSession%>/<%totalAssists%>).",
+					"default": "{{championName}}: {{ round((totalChampionKills + totalAssists) / totalDeathsPerSession, 2) }} KDA ({{totalChampionKills}}/{{totalDeathsPerSession}}/{{totalAssists}}).",
 					"type": "format",
 					"variables": {
 						"championName": "Champion Name",

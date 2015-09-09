@@ -51,6 +51,9 @@ describe 'Format', ->
 		it 'should round with a 4 decimal place precision', ->
 			format('{{ round4(3.14159) }}').should.equal '3.1416'
 
+		it 'should round with custom amount of decimal places', ->
+			format('{{ round(12.3456789, 3) }}').should.equal '12.346'
+
 		it 'should convert strings to lowercase', ->
 			format('{{ lower("Hello") }}').should.equal 'hello'
 			

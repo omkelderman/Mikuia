@@ -35,7 +35,7 @@
 				"format": {
 					"name": "Output Format",
 					"description": "Format of the command output.",
-					"default": "Stats for <%username%>: <%pp%>pp, rank: #<%commas/rank%>",
+					"default": "Stats for {{username}}: {{pp}}pp, rank: #{{commas(rank)}}",
 					"type": "format",
 					"variables": {
 						"username": "Username",
@@ -131,7 +131,7 @@
 				"name": "In-game request text",
 				"category": "Requests",
 				"description": "Format of the request text in-game.",
-				"default": "<%requester%> > [http://osu.ppy.sh/b/<%beatmap_id%> <%artist%> - <%title%> [<%version%>]]<%modString%> (<%round/bpm%> BPM, ★<%round2/difficultyrating%>) (<%ppString%>)",
+				"default": "{{requester}} > [http://osu.ppy.sh/b/{{beatmap_id}} {{artist}} - {{title}} [{{version}}]]{{modString}} ({{round(bpm)}} BPM, ★{{round2(difficultyrating)}}) ({{ppString}})",
 				"type": "format",
 				"variables": {
 					"requester": "Username of the requester",
@@ -164,7 +164,7 @@
 				"name": "Chat request text",
 				"category": "Requests",
 				"description": "Format of the request map info on chat.",
-				"default": "[<%approvedText%>] <%artist%> - <%title%> [<%version%>]<%modString%> (by <%creator%>), <%round/bpm%> BPM, <%round2/difficultyrating%> stars (<%ppString%>)",
+				"default": "[{{approvedText}}] {{artist}} - {{title}} [{{version}}]{{modString}} (by {{creator}}), {{round(bpm)}} BPM, {{round2(difficultyrating)}} stars ({{ppString}})",
 				"type": "format",
 				"variables": {
 					"requester": "Username of the requester",
@@ -211,7 +211,7 @@
 				"name": "PP change format",
 				"category": "Statistic Updates",
 				"description": "Format of the pp change messages on chat.",
-				"default": "<%pp_sign%><%round2/pp_change%>pp!\\n",
+				"default": "{{pp_sign}}{{round2(pp_change)}}pp!\\n",
 				"type": "format",
 				"variables": {
 					"pp_new": "New PP value",
@@ -225,7 +225,7 @@
 				"name": "Rank change format",
 				"category": "Statistic Updates",
 				"description": "Format of the rank change messages on chat.",
-				"default": "Rank: #<%rank_new%> (<%rank_change%> <%rank_updown%>)",
+				"default": "Rank: #{{rank_new}} ({{rank_change}} {{rank_updown}})",
 				"type": "format",
 				"variables": {
 					"rank_new": "New rank",
@@ -258,7 +258,7 @@
 				"name": "Event Rank Format",
 				"category": "Events",
 				"description": "Format of rank event messages on chat.",
-				"default": "<%username%> achieved rank #<%rank%> on <%map%> [<%version%>] (<%mode%>)",
+				"default": "{{username}} achieved rank #{{rank}} on {{map}} [{{version}}] ({{mode}})",
 				"type": "format",
 				"variables": {
 					"user_id": "User ID",
