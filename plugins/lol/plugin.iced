@@ -64,7 +64,6 @@ Mikuia.Events.on 'lol.league.summary', (data) =>
 								losses: player.losses
 								tier: leagueNames[league.tier]
 								wins: player.wins
-								winRatio: (player.wins / (player.wins + player.losses)) * 100 
 
 Mikuia.Events.on 'lol.masteries.active.summary', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
@@ -186,9 +185,6 @@ Mikuia.Events.on 'lol.stats.ranked.champion', (data) =>
 							formatData[statName] = statValue
 
 						formatData.championName = championName
-						formatData.kdRatio = formatData.totalChampionKills / formatData.totalDeathsPerSession
-						formatData.kdaRatio = (formatData.totalChampionKills + formatData.totalAssists) / formatData.totalDeathsPerSession
-						formatData.winRatio = (formatData.totalSessionsWon / formatData.totalSessionsPlayed) * 100
 
 						Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse(data.settings.format, formatData)
 
