@@ -21,3 +21,38 @@ describe 'Format', ->
 
 		it 'should find defined functions', ->
 			format('{{ inc(a) }}', a: 5, inc: (x) -> x + 1).should.equal '6'
+
+		it 'should forget previously declared variables and functions', (done) ->
+			try	format('{{ inc(a + b) }}') catch e then done()
+
+	describe 'stock functions', ->
+		it 'should ceil', ->
+			format('{{ ceil(13.37) }}').should.equal '14'
+
+		it 'should add commas', ->
+			format('{{ commas(1234567) }}').should.equal '1,234,567'
+
+		it 'should floor', ->
+			format('{{ floor(6.9) }}').should.equal '6'
+
+		it 'should round', ->
+			format('{{ round(3.14) }}').should.equal '3'
+			format('{{ round(6.9) }}').should.equal '7'
+
+		it 'should round with a 1 decimal place precision', ->
+			format('{{ round1(3.14159) }}').should.equal '3.1'
+
+		it 'should round with a 2 decimal place precision', ->
+			format('{{ round2(3.14159) }}').should.equal '3.14'
+
+		it 'should round with a 3 decimal place precision', ->
+			format('{{ round3(3.14159) }}').should.equal '3.142'
+
+		it 'should round with a 4 decimal place precision', ->
+			format('{{ round4(3.14159) }}').should.equal '3.1416'
+
+		it 'should convert strings to lowercase', ->
+			format('{{ lower("Hello") }}').should.equal 'hello'
+			
+		it 'should convert strings to uppercase', ->
+			format('{{ upper("hello") }}').should.equal 'HELLO'

@@ -1,6 +1,7 @@
 countdown = require 'countdown'
 moment = require 'moment'
 mathjs = require 'mathjs'
+_ = require 'underscore'
 
 countdown.setLabels	'ms|s|m|h|d|w|mo|y|dc|ct|ml',
 	'ms|s|m|h|d|w|mo|y|dc|ct|ml',
@@ -8,6 +9,30 @@ countdown.setLabels	'ms|s|m|h|d|w|mo|y|dc|ct|ml',
 	' ',
 	'',
 	(n) -> n.toString()
+
+helperFunctions =
+
+	# Math
+	ceil: (variable) -> Math.ceil variable
+	commas: (variable) ->
+		# http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
+		parts = variable.toString().split '.'
+		parts[0] = parts[0].replace /\B(?=(\d{3})+(?!\d))/g, ','
+		parts.join '.'
+	floor: (variable) -> Math.floor variable
+	round: (variable) -> Math.round variable
+	round1: (variable) -> Math.round(variable * 10) / 10
+	round2: (variable) -> Math.round(variable * 100) / 100
+	round3: (variable) -> Math.round(variable * 1000) / 1000
+	round4: (variable) -> Math.round(variable * 10000) / 10000
+
+	# Strings
+	lower: (string) -> string.toString().toLowerCase()
+	upper: (string) -> string.toString().toUpperCase()
+
+	# Dates and stuff
+	countdown: (string) -> countdown(new Date(string)).toString()
+	timeago: (string) -> moment(string).fromNow()
 
 class exports.Format
 	parse: (format, data) ->
@@ -26,40 +51,8 @@ class exports.Format
 					variable = data[tokens[tokens.length - 1]]
 					tokens.splice tokens.length - 1, 1
 					for token in tokens
-						switch token
-
-							# Math!
-							when "ceil"
-								variable = Math.ceil variable
-							when "commas"
-								# http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
-								parts = variable.toString().split '.'
-								parts[0] = parts[0].replace /\B(?=(\d{3})+(?!\d))/g, ','
-								variable = parts.join '.'
-							when "floor"
-								variable = Math.floor variable
-							when "round"
-								variable = Math.round variable
-							when "round1"
-								variable = Math.round(variable * 10) / 10
-							when "round2"
-								variable = Math.round(variable * 100) / 100
-							when "round3"
-								variable = Math.round(variable * 1000) / 1000
-							when "round4"
-								variable = Math.round(variable * 10000) / 10000
-
-							# Strings!
-							when "lower"
-								variable = variable.toString().toLowerCase()
-							when "upper"
-								variable = variable.toString().toUpperCase()
-
-							# Dates!
-							when "countdown"
-								variable = countdown(new Date(variable)).toString()
-							when "timeago"
-								variable = moment(variable).fromNow()
+						if token in helperFunctions
+							variable = helperFunctions[token] variable
 
 					format = format.replace match[0], variable
 				else
@@ -71,6 +64,6 @@ class exports.Format
 
 	parseNew: (format, data) ->
 		math = mathjs.create()
-		math.import data ? {}
+		math.import (_.extend data, helperFunctions), { override: true }
 		format.replace /{{([^}}]+)}}/g, (match, p) ->
 			math.eval p
