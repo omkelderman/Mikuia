@@ -17,8 +17,7 @@
 						"division": "Solo Queue division",
 						"leaguePoints": "Solo Queue League Points",						
 						"wins": "Wins",
-						"losses": "Losses",
-						"winRatio": "Win Ratio"
+						"losses": "Losses"
 					}
 				}
 			}
@@ -53,9 +52,6 @@
 					"type": "format",
 					"variables": {
 						"championName": "Champion Name",
-						"kdRatio": "K/D Ratio",
-						"kdaRatio": "(K+A)/D Ratio",
-						"winRatio": "Win Ratio",
 						"totalSessionsPlayed": "Matches played",
 						"totalSessionsLost": "Matches lost",
 						"totalSessionsWon": "Matches won",
