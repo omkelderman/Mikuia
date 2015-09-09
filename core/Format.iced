@@ -13,21 +13,21 @@ countdown.setLabels	'ms|s|m|h|d|w|mo|y|dc|ct|ml',
 helperFunctions =
 
 	# Math
-	ceil: (variable) -> Math.ceil variable
+	ceil: (variable) -> Math.ceil parseFloat(variable)
 	commas: (variable) ->
 		# http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
 		parts = variable.toString().split '.'
 		parts[0] = parts[0].replace /\B(?=(\d{3})+(?!\d))/g, ','
 		parts.join '.'
-	floor: (variable) -> Math.floor variable
+	floor: (variable) -> Math.floor parseFloat(variable)
 	round: (variable, decimals) -> 
 		if decimals?
-			Math.round(variable * Math.pow(10, decimals)) / Math.pow(10, decimals)
-		else Math.round variable
-	round1: (variable) -> Math.round(variable * 10) / 10
-	round2: (variable) -> Math.round(variable * 100) / 100
-	round3: (variable) -> Math.round(variable * 1000) / 1000
-	round4: (variable) -> Math.round(variable * 10000) / 10000
+			Math.round(parseFloat(variable) * Math.pow(10, decimals)) / Math.pow(10, decimals)
+		else Math.round parseFloat(variable)
+	round1: (variable) -> Math.round(parseFloat(variable) * 10) / 10
+	round2: (variable) -> Math.round(parseFloat(variable) * 100) / 100
+	round3: (variable) -> Math.round(parseFloat(variable) * 1000) / 1000
+	round4: (variable) -> Math.round(parseFloat(variable) * 10000) / 10000
 
 	# Strings
 	lower: (string) -> string.toString().toLowerCase()
