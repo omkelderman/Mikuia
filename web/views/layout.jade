@@ -30,25 +30,25 @@ html
 							span(rel='tooltip', title='Viewers')
 								span(style='color: red;')
 									i.fa.fa-user
-								span=Mikuia.Format.parse(' <%commas/value%>', { value: tracker.viewers })
+								span=Mikuia.Format.parse(' {{ commas(value) }}', { value: tracker.viewers })
 							span.separator 
 						if tracker.views > 0
 							span(rel='tooltip', data-placement='bottom', title='Views')
 								i.fa.fa-eye
-								span=Mikuia.Format.parse(' <%commas/value%>', { value: tracker.views })
+								span=Mikuia.Format.parse(' {{ commas(value) }}', { value: tracker.views })
 							span.separator 
 						if tracker.followers > 0
 							span(rel='tooltip', data-placement='bottom', title='Followers')
 								i.fa.fa-user
-								span=Mikuia.Format.parse(' <%commas/value%>', { value: tracker.followers })
+								span=Mikuia.Format.parse(' {{ commas(value) }}', { value: tracker.followers })
 							span.separator 
 						span(rel='tooltip', data-placement='bottom', title='Commands Handled')
 							i.fa.fa-wrench
-							span=Mikuia.Format.parse(' <%commas/value%>', { value: tracker.commands })
+							span=Mikuia.Format.parse(' {{ commas(value) }}', { value: tracker.commands })
 						span.separator 
 						span(rel='tooltip', data-placement='bottom', title='Messages')
 							i.fa.fa-comment-o
-							span=Mikuia.Format.parse(' <%commas/value%>', { value: tracker.messages })
+							span=Mikuia.Format.parse(' {{ commas(value) }}', { value: tracker.messages })
 
 				.page-top
 					.top-menu

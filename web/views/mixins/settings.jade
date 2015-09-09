@@ -75,12 +75,14 @@ mixin setting(setting, settingName, userSettings)
 
 								.col-sm-12
 									h3 How to use Format?
-									p Insert variables using <% and %> like this:
-									pre <%variable%>
-									p Use functions by prepending variable name with function name and a slash ("/")
-									pre <%function/variable%>
-									p You can even use multiple functions for some reason.
-									pre <%function1/function2/function3/variable%>
+									p Insert variables using {{ and }} like this:
+									pre {{ variable }}
+									p Use functions by prepending the variable name with a function name and putting brackets around the variable.
+									pre {{ function(variable) }}
+									p You can even use multiple functions.
+									pre {{ function1(function2(variable)) }}
+									p You can even use math!
+									pre {{ round2((kills + assists) / deaths) }}
 							.row
 								small.col-md-12
 									h3 Variables
@@ -88,7 +90,7 @@ mixin setting(setting, settingName, userSettings)
 										each variable, name in setting.variables
 											tr
 												td=variable
-												td <%#{name}%>
+												td {{#{name}}}
 								small.col-md-12
 									h3 Functions
 									table.table.table-condensed.text-muted
