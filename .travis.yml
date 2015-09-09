@@ -5,3 +5,5 @@ node_js:
 
 notifications:
   slack: mikuia:DcBaIeIDPGLSleCOo4ctF3iQ
+
+sudo: false
