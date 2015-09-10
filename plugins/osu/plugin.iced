@@ -4,6 +4,7 @@ irc = require 'slate-irc'
 net = require 'net'
 request = require 'request'
 RateLimiter = require('limiter').RateLimiter
+_ = require 'underscore'
 
 banchoLimiter = new RateLimiter 1, 'second'
 limits = {}
@@ -152,13 +153,22 @@ updateUserBest = (stream, callback) =>
 			else if best?
 				for score, i in best
 					if (new Date(score.date)).getTime() > userBest[name].timeUpdated
-						#console.log cli.whiteBright.bgCyan (new Date(score.date)).getTime() + '>' + userBest[name].timeUpdated
-						#console.log cli.cyanBright name + ' got a new top rank! #' + (i + 1) + ' - ' + score.beatmap_id + ' - ' + score.pp + 'pp!'
-						if Channel.isAdmin()
-							Mikuia.Chat.say Channel.getName(), '[beta] Top Rank #' + (i + 1) + ' - ' + score.pp + 'pp!'
+
+						await
+							Channel.getSetting 'osu', 'topRanks', defer err, topRanks
+							Channel.getSetting 'osu', 'topRankFormat', defer err2, topRankFormat
+
+						formatData = _.extend {}, score, 
+							rank: i + 1
+
+						console.log cli.whiteBright.bgCyan (new Date(score.date)).getTime() + '>' + userBest[name].timeUpdated
+						console.log cli.cyanBright name + ' got a new top rank! #' + (i + 1) + ' - ' + score.beatmap_id + ' - ' + score.pp + 'pp!'
+						Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse topRankFormat, formatData
 
 			userBest[name][mode] = best
-			userBest[name].timeUpdated = (new Date()).getTime() + (8 * 60 * 60 * 1000)
+
+			# 6 hour difference between osu! servers...
+			userBest[name].timeUpdated = (new Date()).getTime() + (6 * 60 * 60 * 1000)
 			Mikuia.Log.info cli.magentaBright('osu!') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Updated best ranks for ' + cli.cyanBright(name) + '.')
 		callback false, null
 
@@ -498,7 +508,7 @@ getUser = (name, mode, callback) ->
 	callback err, data
 
 getUserBest = (name, mode, callback) ->
-	await makeAPIRequest '/get_user_best?u=' + name + '&m=' + mode + '&type=string&limit=25', defer err, data
+	await makeAPIRequest '/get_user_best?u=' + name + '&m=' + mode + '&type=string&limit=100', defer err, data
 	callback err, data
 
 Mikuia.Events.on 'twitch.connected', =>
@@ -621,7 +631,7 @@ setInterval () =>
 	if !err && streams?
 		for stream in streams
 			await updateUserBest stream, defer err, whatever
-, 60000
+, 30000
 
 Mikuia.Events.on 'twitch.updated', =>
 	if Object.keys(userBest).length == 0
