@@ -294,16 +294,16 @@
 				"variables": {
 					"beatmap_id": "ID of the beatmap",
 					"score": "Score",
-					"maxcombo", "Max combo",
-					"count50", "Amount of 50s",
-					"count100", "Amount of 100s",
-					"count300", "Amount of 300s",
-					"countmiss", "Amount of misses",
-					"countkatu", "Amount of Katu",
-					"countgeki", "Amount of Geki",
-					"perfect", "FC? (1/0)",
-					"rank", "# of the Top Ranks",
-					"rankSymbol", "Rank (A, S, etc.)",
+					"maxcombo": "Max combo",
+					"count50": "Amount of 50s",
+					"count100": "Amount of 100s",
+					"count300": "Amount of 300s",
+					"countmiss": "Amount of misses",
+					"countkatu": "Amount of Katu",
+					"countgeki": "Amount of Geki",
+					"perfect": "FC? (1/0)",
+					"rank": "# of the Top Ranks",
+					"rankSymbol": "Rank (A, S, etc.)",
 					"pp": "PP Value"
 				}
 			}
