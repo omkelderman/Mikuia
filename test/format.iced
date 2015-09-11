@@ -25,6 +25,14 @@ describe 'Format', ->
 		it 'should forget previously declared variables and functions', (done) ->
 			try	format('{{ inc(a + b) }}') catch e then done()
 
+	describe 'old format', ->
+		it 'should still work', ->
+			format('<%variable%>', variable: 'Hello').should.equal 'Hello'
+		it 'should run functions', ->
+			format('<%round2/variable%>', variable: 3.14159).should.equal '3.14'
+		it 'should run multiple functions correctly', ->
+			format('<%round/commas/variable%>', variable: '1234567.89').should.equal '1,234,568'
+
 	describe 'stock functions', ->
 		it 'should ceil', ->
 			format('{{ ceil(13.37) }}').should.equal '14'

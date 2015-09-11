@@ -54,7 +54,7 @@ class exports.Format
 					variable = data[tokens[tokens.length - 1]]
 					tokens.splice tokens.length - 1, 1
 					for token in tokens
-						if token in helperFunctions
+						if token in Object.keys(helperFunctions)
 							variable = helperFunctions[token] variable
 
 					format = format.replace match[0], variable
