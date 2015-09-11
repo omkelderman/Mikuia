@@ -5,6 +5,7 @@ RollingLimiter = require 'rolling-rate-limiter'
 
 channelLimiter = {}
 channelTotalLimiter = {}
+whisperUserLimiter = {}
 
 class exports.Chat
 	constructor: (@Mikuia) ->
@@ -18,6 +19,7 @@ class exports.Chat
 		@moderators = {}
 		@nextJoinClient = 0
 		@whisperClient = null
+		@whisperLimiter = null
 
 	broadcast: (message) =>
 		await Mikuia.Streams.getAll defer err, streams
@@ -51,7 +53,7 @@ class exports.Chat
 				password: @Mikuia.settings.bot.oauth
 
 		@whisperClient.on 'whisper', (username, message) =>
-			@whisperClient.whisper username, 'Hi, ' + username + '!'
+			@handleWhisper username, message
 
 		@whisperClient.on 'connected', (address, port) =>
 			@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch group chat (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
@@ -76,7 +78,15 @@ class exports.Chat
 			namespace: 'mikuia:chat:limiter:'
 			redis: Mikuia.Database
 
+		@whisperLimiter = RollingLimiter
+			interval: 60000
+			maxInInterval: 99
+			minDifference: 500
+			namespace: 'mikuia:whisper:limiter'
+			redis: Mikuia.Database
+
 		@parseQueue()
+		@parseWhispers()
 
 	getChatters: (channel) => @chatters[channel]
 
@@ -140,6 +150,9 @@ class exports.Chat
 					
 			@Mikuia.Events.emit command, {user, to, message, tokens, settings}
 			Channel.trackIncrement 'commands', 1
+
+	handleWhisper: (username, message) =>
+		@whisperClient.whisper username, 'Hi, ' + username + '!'
 
 	join: (channel, callback) =>
 		if channel.indexOf('#') == -1
@@ -254,6 +267,55 @@ class exports.Chat
 			setTimeout () =>
 				@parseQueue()
 			, 100
+
+	parseWhispers: =>
+		await Mikuia.Database.lpop 'mikuia:whisper:queue', defer err, jsonData
+		if jsonData
+			data = JSON.parse jsonData
+
+			if !whisperUserLimiter[data.username]?
+				whisperUserLimiter[data.username] = new RateLimiter 2, 3000, true
+
+			whisperUserLimiter[data.username].removeTokens 1, (err, userRR) =>
+				if userRR > -1
+					await Mikuia.Database.zrangebyscore 'mikuia:whisper:limiter', '-inf', '+inf', defer err, limitEntries
+					
+					currentTime = (new Date).getTime() * 1000
+					remainingRequests = 99
+					
+					for limitEntry in limitEntries
+						if parseInt(limitEntry) + 60000000 > currentTime
+							remainingRequests--
+
+					if remainingRequests > 0
+						@whisperLimiter '', (err, timeLeft) =>
+							if !timeLeft
+								@whisperClient.whisper data.username, data.message
+
+								Mikuia.Events.emit 'mikuia.whisper', data.username, data.message
+
+								setTimeout () =>
+									@parseWhispers()
+								, 500
+							else
+								await Mikuia.Database.lpush 'mikuia:whisper:queue', jsonData, defer whatever
+
+								setTimeout () =>
+									@parseWhispers()
+								, 60000
+					else
+						setTimeout () =>
+							@parseWhispers()
+						, 100
+				else
+					await Mikuia.Database.rpush 'mikuia:chat:queue', jsonData, defer whatever
+					setTimeout () =>
+						@parseWhispers()
+					, 10
+		else
+			setTimeout () =>
+				@parseWhispers()
+			, 10
 
 	part: (channel) =>
 		if channel.indexOf('#') == -1
@@ -459,4 +521,10 @@ class exports.Chat
 		callback err
 
 	whisper: (username, message) =>
-		@whisperClient.whisper username, message
+		lines = message.split '\\n'
+		for line in lines
+			if !Mikuia.settings.bot.disableChat && line.trim() != ''
+				line = JSON.stringify
+					username: username
+					message: line
+				await Mikuia.Database.rpush 'mikuia:whisper:queue', line, defer whatever
