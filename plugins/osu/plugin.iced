@@ -70,7 +70,7 @@ banchoSay = (name, message) =>
 					fs.appendFileSync 'logs/osu/' + name + '.txt', 'Mikuia: ' + cleanMessage + '\n'
 		@bancho.send name, message
 
-checkForRequest = (user, Channel, message) =>
+checkForRequest = (user, Channel, message, whisper) =>
 	continueCheck = true
 	await Channel.getSetting 'osu', 'requestSubMode', defer err, requestSubMode
 	if !err && requestSubMode
@@ -101,7 +101,7 @@ checkForRequest = (user, Channel, message) =>
 				if !err && beatmaps.length
 					switch match[1]
 						when 'b'
-							sendRequest Channel, user, username, beatmaps[0], message
+							sendRequest Channel, user, username, beatmaps[0], message, whisper
 						when 's'
 							customModes = false
 							preferredMode = '0'
@@ -131,7 +131,7 @@ checkForRequest = (user, Channel, message) =>
 										highestDifficultyRating = map.difficultyrating
 										highestDifficultyMap = map
 
-							sendRequest Channel, user, username, highestDifficultyMap, message
+							sendRequest Channel, user, username, highestDifficultyMap, message, whisper
 
 updateUserBest = (stream, callback) =>
 	await Mikuia.Database.hget 'mikuia:stream:' + stream, 'game', defer err, game
@@ -351,7 +351,7 @@ makeTillerinoRequest = (beatmap_id, mods, callback) =>
 		else
 			callback true, null
 
-sendRequest = (Channel, user, username, map, message) =>
+sendRequest = (Channel, user, username, map, message, whisper) =>
 	if map?
 		continueRequest = true
 
@@ -491,7 +491,10 @@ sendRequest = (Channel, user, username, map, message) =>
 
 			# Chat
 			if !err && requestChatInfo
-				Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse chatRequestFormat, data
+				if whisper
+					Mikuia.Chat.whisper user.username, Mikuia.Format.parse chatRequestFormat, data
+				else
+					Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse chatRequestFormat, data
 
 			# osu!
 			if !err2
@@ -566,14 +569,17 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 	if !err && enabled
 		await Channel.getSetting 'osu', 'requests', defer err, requestsEnabled
 		if !err && requestsEnabled
-			checkForRequest user, Channel, message
+			checkForRequest user, Channel, message, false
 
 Mikuia.Events.on 'osu.np', (data) ->
-	Mikuia.Chat.say data.to, 'Darude - Sandstorm'
+	if data.settings._whisper
+		Mikuia.Chat.whisper data.user.username, 'Darude - Sandstorm'
+	else
+		Mikuia.Chat.say Channel.getName(), 'Darude - Sandstorm' 
 
 Mikuia.Events.on 'osu.request', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
-	checkForRequest data.user, Channel, data.message
+	checkForRequest data.user, Channel, data.message, data.settings._whisper
 
 Mikuia.Events.on 'osu.stats', (data) =>
 	tokens = data.tokens.slice 0
@@ -599,7 +605,7 @@ Mikuia.Events.on 'osu.stats', (data) =>
 	if username != ''
 		await getUser username, mode, defer err, user
 		if !err && user?[0]?.username?
-			Mikuia.Chat.say data.to, Mikuia.Format.parse data.settings.format,
+			message = Mikuia.Format.parse data.settings.format,
 				username: user[0].username
 				id: user[0].user_id
 				rank: user[0].pp_rank
@@ -616,6 +622,11 @@ Mikuia.Events.on 'osu.stats', (data) =>
 				rank_s: user[0].count_rank_s
 				rank_a: user[0].count_rank_a
 				country: user[0].country
+
+			if data.settings._whisper
+				Mikuia.Chat.whisper data.user.username, message
+			else
+				Mikuia.Chat.say Channel.getName(), message 
 
 # Updating ranks!
 
