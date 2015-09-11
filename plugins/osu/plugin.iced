@@ -370,28 +370,28 @@ sendRequest = (Channel, user, username, map, message) =>
 			modValue = 0
 			modString = ''
 
-			if message.indexOf('+DT') > -1
+			if message.toLowerCase().indexOf('+dt') > -1
 				modValue += 64
 				modString += '+DoubleTime'
-			if message.indexOf('+NC') > -1
+			if message.toLowerCase().indexOf('+nc') > -1
 				modValue += 512
 				modString += '+Nightcore'
-			if message.indexOf('+HR') > -1
+			if message.toLowerCase().indexOf('+hr') > -1
 				modValue += 16
 				modString += '+HardRock'
-			if message.indexOf('+HD') > -1
+			if message.toLowerCase().indexOf('+hd') > -1
 				modValue += 8
 				modString += '+Hidden'
-			if message.indexOf('+EZ') > -1
+			if message.toLowerCase().indexOf('+ez') > -1
 				modValue += 2
 				modString += '+Easy'
-			if message.indexOf('+HT') > -1
+			if message.toLowerCase().indexOf('+ht') > -1
 				modValue += 256
 				modString += '+HalfTime'
-			if message.indexOf('+SO') > -1
+			if message.toLowerCase().indexOf('+so') > -1
 				modValue += 4096
 				modString += '+SpunOut'
-			if message.indexOf('+NF') > -1
+			if message.toLowerCase().indexOf('+nf') > -1
 				modValue += 1
 				modString += '+NoFail'
 
