@@ -10,7 +10,15 @@
 			"hidden": true
 		},
 		"coins.command": {
-			"description": "Multi-purpose coin command."
+			"description": "Multi-purpose coin command.",
+			"settings": {
+				"disablePayments": {
+					"name": "Disable Payments",
+					"description": "Disable the ability to pay other users.",
+					"default": false,
+					"type": "boolean"
+				}
+			}
 		}
 	},
 	"settings": {

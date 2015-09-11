@@ -131,7 +131,7 @@ Mikuia.Events.on 'coins.command', (data) =>
 						recipients.push username
 
 			when 'give', 'pay'
-				if data.tokens.length == 4
+				if data.tokens.length == 4 and not data.settings.disablePayments
 					username = data.tokens[2]
 					coinAmount = parseInt data.tokens[3]
 
