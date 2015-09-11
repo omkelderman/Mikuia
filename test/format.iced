@@ -22,14 +22,16 @@ describe 'Format', ->
 		it 'should find defined functions', ->
 			format('{{ inc(a) }}', a: 5, inc: (x) -> x + 1).should.equal '6'
 
-		it 'should forget previously declared variables and functions', (done) ->
-			try	format('{{ inc(a + b) }}') catch e then done()
+		it 'should forget previously declared variables and functions', ->
+			format('{{ inc(a + b) }}').should.equal '(error)'
 
 	describe 'old format', ->
 		it 'should still work', ->
 			format('<%variable%>', variable: 'Hello').should.equal 'Hello'
+
 		it 'should run functions', ->
 			format('<%round2/variable%>', variable: 3.14159).should.equal '3.14'
+
 		it 'should run multiple functions correctly', ->
 			format('<%round/commas/variable%>', variable: '1234567.89').should.equal '1,234,568'
 

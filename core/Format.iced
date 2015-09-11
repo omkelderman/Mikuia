@@ -69,4 +69,8 @@ class exports.Format
 		math = mathjs.create()
 		math.import (_.extend data, helperFunctions), { override: true }
 		format.replace /{{([^}}]+)}}/g, (match, p) ->
-			math.eval p
+			try
+				math.eval p
+			catch e
+				console.log e
+				return '(error)'
