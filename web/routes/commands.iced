@@ -86,6 +86,8 @@ module.exports =
 				type: 'number'
 			settings._coinCost =
 				type: 'number'
+			settings._whisper =
+				type: 'boolean'
 			for settingName, setting of settings
 				if setting.type == 'boolean'
 					if req.body[settingName]? && req.body[settingName] == 'on'

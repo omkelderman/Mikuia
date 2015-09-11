@@ -56,6 +56,9 @@ block content
 											if command.settings._onlyBroadcaster
 												.badge.badge-roundless.badge-primary.pull-right Only Broadcaster
 
+											if command.settings._whisper
+												.badge.badge-roundless.badge-info.pull-right Whisper Response
+
 									td
 										a.btn.btn-default.btn-sm.command-settings(href='/dashboard/commands/settings/' + command.name) Settings
 										a.btn.btn-danger.btn-sm.command-remove(href='#', title=command.name) Remove

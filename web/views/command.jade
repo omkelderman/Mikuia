@@ -93,6 +93,24 @@ block content
 								span.help-block Amount of coins deducted for using the command.
 								.form-control-focus
 							br
+							h3 Whispers
+							br
+							.form-group.form-md-checkboxes
+								.md-checkbox-list
+									.md-checkbox
+										if userSettings && userSettings._whisper
+											if userSettings._whisper
+												input.md-check(type='checkbox', id='_whisper', name='_whisper', checked)
+											else
+												input.md-check(type='checkbox', id='_whisper', name='_whisper')
+										else
+											input.md-check(type='checkbox', id='_whisper', name='_whisper')
+										label(for='_whisper')
+											span
+											span.check
+											span.box
+											| Whisper Response 
+											i.fa.fa-question-circle(rel='tooltip', title='The command response will be whispered (if possible)')
 
 			.col-lg-4.col-md-6.col-sm-12
 				.portlet.light

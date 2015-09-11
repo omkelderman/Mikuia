@@ -52,7 +52,7 @@ Mikuia.Events.on 'base.dummy', (data) =>
 		message: data.message
 		username: data.user.username
 
-	if data.settings.whisper
+	if data.settings._whisper
 		Mikuia.Chat.whisper data.user.username, dummyMessage
 	else
 		if dummyCustomFormat
