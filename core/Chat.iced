@@ -46,8 +46,9 @@ class exports.Chat
 			options:
 				debug: @Mikuia.settings.bot.debug
 			connection:
-				random: 'group'
 				reconnect: true
+				server: '199.9.253.119'
+				port: '80'
 			identity:
 				username: @Mikuia.settings.bot.name
 				password: @Mikuia.settings.bot.oauth
