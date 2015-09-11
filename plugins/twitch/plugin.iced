@@ -3,6 +3,7 @@ request = require 'request'
 Mikuia.Events.on 'twitch.followcheck', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
 
+	message = null
 	targetChannel = Channel.getName()
 	targetUser = data.user.username
 
@@ -23,9 +24,15 @@ Mikuia.Events.on 'twitch.followcheck', (data) =>
 						console.log parseError
 
 				if !parseError
-					Mikuia.Chat.say data.to, Mikuia.Format.parse data.settings.format,
+					message = Mikuia.Format.parse data.settings.format,
 						dateFollowed: jsonData.created_at
 						displayName: displayName
 
 			else
-				Mikuia.Chat.say data.to, displayName + ' is not following this channel.'
+				message = displayName + ' is not following this channel.'
+
+	if message
+		if data.settings._whisper
+			Mikuia.Chat.whisper data.user.username, message
+		else
+			Mikuia.Chat.say data.to, message
