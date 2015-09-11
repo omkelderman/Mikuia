@@ -1,4 +1,4 @@
-addDummy = (username, channel, tokens) =>
+addDummy = (username, channel, tokens, whisper) =>
 	Channel = new Mikuia.Models.Channel channel
 	isMod = checkMod channel, username
 
@@ -7,17 +7,24 @@ addDummy = (username, channel, tokens) =>
 			Mikuia.Chat.say channel, 'You failed D:'
 		else if tokens.length > 2
 			command = tokens[1]
+			message = ''
 			text = tokens.slice(2, tokens.length).join ' '
 
 			await
 				Channel.addCommand command, 'base.dummy', defer err, data
 				Channel.setCommandSetting command, 'message', text, defer err2, data
-			if !err & !err2
-				Mikuia.Chat.say channel, 'Command "' + command + '" probably added.'
-			else
-				Mikuia.Chat.say channel, 'Um, something failed. Oops.'
 
-removeCommand = (username, channel, tokens) =>
+			if not err and not err2
+				message = 'Command "' + command + '" probably added.'
+			else
+				message = 'Um, something failed. Oops.'
+
+			if whisper
+				Mikuia.Chat.whisper username, message
+			else
+				Mikuia.Chat.say channel, message
+
+removeCommand = (username, channel, tokens, whisper) =>
 	Channel = new Mikuia.Models.Channel channel
 	isMod = checkMod channel, username
 
@@ -26,14 +33,22 @@ removeCommand = (username, channel, tokens) =>
 			Mikuia.Chat.say channel, 'Fail.'
 		else if tokens.length == 2
 			command = tokens[1]
-			await Channel.removeCommand command, defer err, data
-			if !err
-				Mikuia.Chat.say channel, 'Command "' + command + '" probably removed.'
-			else
-				Mikuia.Chat.say channel, 'I probably screwed something up... oh well.'
+			message = ''
 
+			await Channel.removeCommand command, defer err, data
+
+			if not err
+				message = 'Command "' + command + '" probably removed.'
+			else
+				message = 'I probably screwed something up... oh well.'
+
+			if whisper
+				Mikuia.Chat.whisper username, message
+			else
+				Mikuia.Chat.say channel, message
+			
 Mikuia.Events.on 'base.add.dummy', (data) =>
-	addDummy data.user.username, data.to, data.tokens
+	addDummy data.user.username, data.to, data.tokens, data.settings._whisper
 
 Mikuia.Events.on 'base.dummy', (data) =>
 	args = data.tokens.slice(1, data.tokens.length).join ' '
@@ -78,14 +93,21 @@ Mikuia.Events.on 'base.levels', (data) =>
 			experience = 0
 
 		level = Mikuia.Tools.getLevel experience
-		Mikuia.Chat.say data.to, displayName + ': #' + (rank + 1) + ' - Lv ' + level + ' (' + experience + ' / ' + Mikuia.Tools.getExperience(level + 1) + ' XP)'
+		message = displayName + ': #' + (rank + 1) + ' - Lv ' + level + ' (' + experience + ' / ' + Mikuia.Tools.getExperience(level + 1) + ' XP)'
+
+		if data.settings._whisper
+			Mikuia.Chat.whisper data.user.username, message
+		else
+			Mikuia.Chat.say data.to, message
 
 Mikuia.Events.on 'base.remove', (data) =>
-	removeCommand data.user.username, data.to, data.tokens
+	removeCommand data.user.username, data.to, data.tokens, data.settings._whisper
 
 Mikuia.Events.on 'base.uptime', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
 	await Channel.isLive defer err, isLive
+
+	message = ''
 
 	if isLive
 		await Mikuia.Streams.get Channel.getName(), defer err, stream
@@ -105,11 +127,16 @@ Mikuia.Events.on 'base.uptime', (data) =>
 			if seconds < 10
 				seconds = '0' + seconds
 
-			Mikuia.Chat.say data.to, 'Uptime: ' + hours + 'h ' + minutes + 'm ' + seconds + 's'
+			message = 'Uptime: ' + hours + 'h ' + minutes + 'm ' + seconds + 's'
 		else
-			Mikuia.Chat.say data.to, 'Something went wrong, try again!'
+			message = 'Something went wrong, try again!'
 	else
-		Mikuia.Chat.say data.to, 'The stream is not live.'		
+		message =  'The stream is not live.'
+
+	if data.settings._whisper
+		Mikuia.Chat.whisper data.to, message
+	else
+		Mikuia.Chat.say data.to, message
 
 Mikuia.Events.on 'twitch.message', (from, to, message) =>
 	globalCommand = @Plugin.getSetting 'globalCommand'
@@ -132,7 +159,7 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 				when 'commands'
 					Mikuia.Chat.say to, 'Commands for this channel: http://mikuia.tv/user/' + Channel.getName()
 				when 'dummy'
-					addDummy from.username, to, tokens.slice 1
+					addDummy from.username, to, tokens.slice 1, false
 				when 'emit'
 					if isAdmin
 						type = tokens[2]
@@ -189,7 +216,7 @@ Mikuia.Events.on 'twitch.message', (from, to, message) =>
 					else
 						Mikuia.Chat.say to, displayName + ' > ' + Mikuia.Leagues.getLeagueFullText(rating) + ' (' + fights + ' fights, ' + rating + ' elo)'
 				when 'remove'
-					removeCommand from.username, to, tokens.slice 1
+					removeCommand from.username, to, tokens.slice 1, false
 				when 'say'
 					if isAdmin
 						Mikuia.Chat.sayUnfiltered to, tokens.slice(2).join(' ')
