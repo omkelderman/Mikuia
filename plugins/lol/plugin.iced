@@ -58,12 +58,17 @@ Mikuia.Events.on 'lol.league.summary', (data) =>
 					for player in league.entries
 						console.log player
 						if parseInt(player.playerOrTeamId) == summonerData[name].id
-							Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse data.settings.format,
+							message = Mikuia.Format.parse data.settings.format,
 								division: player.division
 								leaguePoints: player.leaguePoints
 								losses: player.losses
 								tier: leagueNames[league.tier]
 								wins: player.wins
+
+							if data.settings._whisper
+								Mikuia.Chat.whisper data.user.username, message
+							else
+								Mikuia.Chat.say Channel.getName(), message 
 
 Mikuia.Events.on 'lol.masteries.active.summary', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
@@ -93,11 +98,16 @@ Mikuia.Events.on 'lol.masteries.active.summary', (data) =>
 					for mastery in masteryPage.masteries
 						points[masteryCategories[mastery.id]] += mastery.rank
 
-					Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse data.settings.format,
+					message = Mikuia.Format.parse data.settings.format,
 						pageName: masteryPage.name
 						offensePoints: points.Offense
 						defensePoints: points.Defense
 						utilityPoints: points.Utility
+
+					if data.settings._whisper
+						Mikuia.Chat.whisper data.user.username, message
+					else
+						Mikuia.Chat.say Channel.getName(), message 
 
 Mikuia.Events.on 'lol.runes.active.list', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
@@ -128,7 +138,12 @@ Mikuia.Events.on 'lol.runes.active.list', (data) =>
 					for runeId, runeCount of runeList
 						runeCounts.push runeCount + 'x ' + runeStaticData.data[runeId].name
 
-					Mikuia.Chat.say Channel.getName(), runeCounts.join ', '
+					message = runeCounts.join ', '
+
+					if data.settings._whisper
+						Mikuia.Chat.whisper data.user.username, message
+					else
+						Mikuia.Chat.say Channel.getName(), message 
 
 Mikuia.Events.on 'lol.stats.ranked.champion', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
@@ -139,6 +154,7 @@ Mikuia.Events.on 'lol.stats.ranked.champion', (data) =>
 
 	championId = null
 	championName = 'Unknown'
+	message = null
 
 	if data.tokens.length > 1
 		championName = data.tokens.slice(1, data.tokens.length).join('').toLowerCase()
@@ -162,7 +178,7 @@ Mikuia.Events.on 'lol.stats.ranked.champion', (data) =>
 						championId = participant.championId
 						championName = championRealNames[championMappings[championId]]
 			else
-				Mikuia.Chat.say Channel.getName(), 'Not currently in-game.'
+				message = 'Not currently in-game.'
 
 	if championId
 		await client.getSummonersByName [name],
@@ -186,7 +202,13 @@ Mikuia.Events.on 'lol.stats.ranked.champion', (data) =>
 
 						formatData.championName = championName
 
-						Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse(data.settings.format, formatData)
+						message = Mikuia.Format.parse(data.settings.format, formatData)
 
 				if !championFound and championId?
-					Mikuia.Chat.say Channel.getName(), 'No stats for ' + championName + '.'
+					message = 'No stats for ' + championName + '.'
+
+	if message
+		if data.settings._whisper
+			Mikuia.Chat.whisper data.user.username, message
+		else
+			Mikuia.Chat.say Channel.getName(), message
