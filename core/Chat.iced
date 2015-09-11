@@ -3,6 +3,7 @@ irc = require 'tmi.js'
 RateLimiter = require('limiter').RateLimiter
 RollingLimiter = require 'rolling-rate-limiter'
 
+channelContext = {}
 channelLimiter = {}
 channelTotalLimiter = {}
 whisperUserLimiter = {}
@@ -91,12 +92,16 @@ class exports.Chat
 
 	getChatters: (channel) => @chatters[channel]
 
-	handleMessage: (user, to, message) =>
+	handleMessage: (user, to, message, forceWhisper) =>
 		Channel = new @Mikuia.Models.Channel to
 		Chatter = new @Mikuia.Models.Channel user.username
 		await
 			Channel.getDisplayName defer err, displayName
 			Chatter.isBanned defer err, isBanned
+
+		channelContext[user.username] = 
+			channel: Channel.getName()
+			user: user
 
 		chatterUsername = cli.yellowBright user.username
 
@@ -109,10 +114,11 @@ class exports.Chat
 		if user.subscriber
 			chatterUsername = cli.blueBright '[s] ' + chatterUsername
 
-		if message.toLowerCase().indexOf(Mikuia.settings.bot.name.toLowerCase()) > -1 || message.toLowerCase().indexOf(Mikuia.settings.bot.admin) > -1
-			@Mikuia.Log.info cli.cyanBright('[' + @channelClients['#' + Channel.getName()] + ']') + ' / ' + cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.red(message))
-		else
-			@Mikuia.Log.info cli.cyanBright('[' + @channelClients['#' + Channel.getName()] + ']') + ' / ' + cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.whiteBright(message)
+		if not forceWhisper
+			if message.toLowerCase().indexOf(Mikuia.settings.bot.name.toLowerCase()) > -1 || message.toLowerCase().indexOf(Mikuia.settings.bot.admin) > -1
+				@Mikuia.Log.info cli.cyanBright('[' + @channelClients['#' + Channel.getName()] + ']') + ' / ' + cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.red(message))
+			else
+				@Mikuia.Log.info cli.cyanBright('[' + @channelClients['#' + Channel.getName()] + ']') + ' / ' + cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.whiteBright(message)
 
 		if !isBanned
 			@Mikuia.Events.emit 'twitch.message', user, to, message
@@ -132,6 +138,9 @@ class exports.Chat
 
 		await Channel.queryCommand trigger, user, defer err, o
 		{command, settings, isAllowed} = o
+
+		if forceWhisper
+			settings._whisper = true
 
 		# abort if there's an error, access denied or no command
 		return if err || !isAllowed || isBanned || !command?
@@ -153,7 +162,10 @@ class exports.Chat
 			Channel.trackIncrement 'commands', 1
 
 	handleWhisper: (username, message) =>
-		@whisper username, 'Hi, ' + username + '!'
+		if channelContext[username]?.channel?
+			@handleMessage channelContext[username].user, channelContext[username].channel, message, true
+		else
+			@whisper username, 'Unknown channel context. Please say something on the channel you\'re active in!'
 
 	join: (channel, callback) =>
 		if channel.indexOf('#') == -1
@@ -370,7 +382,7 @@ class exports.Chat
 
 		client.on 'chat', (channel, user, message) =>
 			if user.username != @Mikuia.settings.bot.name.toLowerCase()
-				@handleMessage user, channel, message
+				@handleMessage user, channel, message, false
 
 		client.on 'connected', (address, port) =>
 			@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch chat (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
