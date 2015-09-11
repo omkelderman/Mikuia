@@ -153,7 +153,7 @@ class exports.Chat
 			Channel.trackIncrement 'commands', 1
 
 	handleWhisper: (username, message) =>
-		@whisperClient.whisper username, 'Hi, ' + username + '!'
+		@whisper username, 'Hi, ' + username + '!'
 
 	join: (channel, callback) =>
 		if channel.indexOf('#') == -1
@@ -309,7 +309,7 @@ class exports.Chat
 							@parseWhispers()
 						, 100
 				else
-					await Mikuia.Database.rpush 'mikuia:chat:queue', jsonData, defer whatever
+					await Mikuia.Database.rpush 'mikuia:whisper:queue', jsonData, defer whatever
 					setTimeout () =>
 						@parseWhispers()
 					, 10
