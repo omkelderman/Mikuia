@@ -121,7 +121,7 @@ class exports.Chat
 				@Mikuia.Log.info cli.cyanBright('[' + @channelClients['#' + Channel.getName()] + ']') + ' / ' + cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.whiteBright(message)
 
 		if !isBanned
-			@Mikuia.Events.emit 'twitch.message', user, to, message
+			@Mikuia.Events.emit 'twitch.message', user, to, message, forceWhisper
 
 		Channel.trackIncrement 'messages', 1
 

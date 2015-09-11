@@ -138,9 +138,9 @@ Mikuia.Events.on 'base.uptime', (data) =>
 	else
 		Mikuia.Chat.say data.to, message
 
-Mikuia.Events.on 'twitch.message', (from, to, message) =>
+Mikuia.Events.on 'twitch.message', (from, to, message, isWhisper) =>
 	globalCommand = @Plugin.getSetting 'globalCommand'
-	if message.indexOf(globalCommand) == 0
+	if message.indexOf(globalCommand) == 0 and not isWhisper
 		if message.trim() == globalCommand
 			Mikuia.Chat.say to, 'Hey, I\'m Mikuia, and I\'m a bot made by Hatsuney! Learn more about me at http://mikuia.tv'
 		else
