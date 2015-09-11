@@ -17,6 +17,7 @@ class exports.Chat
 		@messageLimiter = null
 		@moderators = {}
 		@nextJoinClient = 0
+		@whisperClient = null
 
 	broadcast: (message) =>
 		await Mikuia.Streams.getAll defer err, streams
@@ -39,6 +40,30 @@ class exports.Chat
 			@clients[i] = client
 			@clientJoins[i] = []
 
+		@whisperClient = new irc.client
+			options:
+				debug: @Mikuia.settings.bot.debug
+			connection:
+				random: 'group'
+				reconnect: true
+			identity:
+				username: @Mikuia.settings.bot.name
+				password: @Mikuia.settings.bot.oauth
+
+		@whisperClient.on 'whisper', (username, message) =>
+			@whisperClient.whisper username, 'Hi, ' + username + '!'
+
+		@whisperClient.on 'connected', (address, port) =>
+			@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch group chat (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
+
+		@whisperClient.on 'disconnected', (reason) =>
+			@Mikuia.Log.fatal cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch group chat. Reason: ' + reason)
+
+		@whisperClient.on 'notice', (channel, noticeId, params) =>
+			@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Received a notice: ') + cli.yellowBright(noticeId)
+
+		@whisperClient.connect()
+
 		@joinLimiter = RollingLimiter
 			interval: 10000
 			maxInInterval: 49
@@ -49,7 +74,7 @@ class exports.Chat
 			interval: 30000
 			maxInInterval: 19
 			namespace: 'mikuia:chat:limiter:'
-			redis: Mikuia.Database		
+			redis: Mikuia.Database
 
 		@parseQueue()
 
@@ -280,11 +305,11 @@ class exports.Chat
 		client.id = i
 		client.connect()
 
-		client.addListener 'chat', (channel, user, message) =>
+		client.on 'chat', (channel, user, message) =>
 			if user.username != @Mikuia.settings.bot.name.toLowerCase()
 				@handleMessage user, channel, message
 
-		client.addListener 'connected', (address, port) =>
+		client.on 'connected', (address, port) =>
 			@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch chat (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
 
 			client.raw 'CAP REQ :twitch.tv/membership'
@@ -298,10 +323,10 @@ class exports.Chat
 
 			callback false, client
 
-		client.addListener 'disconnected', (reason) =>
+		client.on 'disconnected', (reason) =>
 			@Mikuia.Log.fatal cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch chat. Reason: ' + reason)
 
-		client.addListener 'join', (channel, username) =>
+		client.on 'join', (channel, username) =>
 			if username == @Mikuia.settings.bot.name.toLowerCase()
 				Channel = new Mikuia.Models.Channel channel
 				await
@@ -319,7 +344,7 @@ class exports.Chat
 
 				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the channel. Rate Limiting Profile: ') + rateLimitingProfile
 
-		client.addListener 'notice', (channel, noticeId, params) =>
+		client.on 'notice', (channel, noticeId, params) =>
 			if noticeId == 'msg_banned' || noticeId == 'msg_timedout'
 				Channel = new Mikuia.Models.Channel channel
 				await Channel.getDisplayName defer err, displayName
@@ -327,7 +352,7 @@ class exports.Chat
 				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Banned or timed out on ' + cli.greenBright(displayName) + cli.whiteBright('.'))
 				@Mikuia.Events.emit 'twitch.banned', channel
 
-		client.addListener 'part', (channel, username) =>
+		client.on 'part', (channel, username) =>
 			if username == @Mikuia.settings.bot.name.toLowerCase()
 				Channel = new Mikuia.Models.Channel channel
 				await Channel.getDisplayName defer err, displayName
@@ -432,3 +457,6 @@ class exports.Chat
 			Channel.trackValue 'chatters', chatters.chatter_count
 
 		callback err
+
+	whisper: (username, message) =>
+		@whisperClient.whisper username, message

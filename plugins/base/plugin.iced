@@ -52,16 +52,19 @@ Mikuia.Events.on 'base.dummy', (data) =>
 		message: data.message
 		username: data.user.username
 
-	if dummyCustomFormat
-		dummyMessage = Mikuia.Format.parse dummyCustomMessage,
-			args: args
-			color: data.user.color
-			displayName: viewerDisplayName
-			dummyMessage: dummyMessage
-			message: data.message
-			username: data.user.username
-
-	Mikuia.Chat.say data.to, dummyMessage
+	if data.settings.whisper
+		Mikuia.Chat.whisper data.user.username, dummyMessage
+	else
+		if dummyCustomFormat
+			dummyMessage = Mikuia.Format.parse dummyCustomMessage,
+				args: args
+				color: data.user.color
+				displayName: viewerDisplayName
+				dummyMessage: dummyMessage
+				message: data.message
+				username: data.user.username
+			
+		Mikuia.Chat.say data.to, dummyMessage
 
 Mikuia.Events.on 'base.levels', (data) =>
 	Channel = new Mikuia.Models.Channel data.user.username

@@ -22,6 +22,12 @@
 						"message": "Whole message",
 						"username": "Username of the command invoker"
 					}
+				},
+				"whisper": {
+					"name": "Whisper",
+					"description": "Send as a whisper.",
+					"default": false,
+					"type": "boolean"
 				}
 			}
 		},
