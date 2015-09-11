@@ -86,7 +86,7 @@ block content
 											if enabledPlugins.indexOf(handler.plugin) > -1
 												if handlerName == 'base.dummy'
 													option(value=handlerName, selected=true) #{handlerName} - #{handler.description}
-												else
+												else if !handler.hidden
 													option(value=handlerName) #{handlerName} - #{handler.description}
 									span.help-block This specifies what you expect the command to do.
 									.form-control-focus

@@ -6,7 +6,8 @@
 	"hidden": false,
 	"handlers": {
 		"coins.balance": {
-			"description": "Shows user's coin balance."
+			"description": "Shows user's coin balance.",
+			"hidden": true
 		},
 		"coins.command": {
 			"description": "Multi-purpose coin command."

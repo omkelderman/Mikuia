@@ -79,33 +79,12 @@ updateCoins = () =>
 
 setInterval updateCoins, 60000
 
-showBalance = (data) =>
-	Channel = new Mikuia.Models.Channel data.to
-
-	await Mikuia.Database.zscore 'channel:' + data.to.replace('#', '') + ':coins', data.user.username, defer error, coinBalance
-		
-	if !error
-		Channel = new Mikuia.Models.Channel data.to
-		Viewer = new Mikuia.Models.Channel data.user.username
-
-		if !coinBalance?
-			coinBalance = 0
-
-		await
-			Viewer.getDisplayName defer err, displayName
-			Channel.getSetting 'coins', 'name', defer error, name
-			Channel.getSetting 'coins', 'namePlural', defer error, namePlural
-
-		if parseInt(coinBalance) == 1
-			Mikuia.Chat.say data.to, displayName + ': ' + coinBalance + ' ' + name + '.'
-		else
-			Mikuia.Chat.say data.to, displayName + ': ' + coinBalance + ' ' + namePlural + '.'
-
-Mikuia.Events.on 'coins.balance', (data) =>
-	showBalance data
-
 Mikuia.Events.on 'coins.command', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
+	message = null
+	recipients = [
+		data.user.username
+	]
 
 	if data.tokens.length > 1
 		trigger = data.tokens[1]
@@ -128,23 +107,28 @@ Mikuia.Events.on 'coins.command', (data) =>
 						await Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', coinAmount, Viewer.getName(), defer whatever
 
 						if parseInt(coinAmount) == 1
-							Mikuia.Chat.say data.to, 'Gave 1 ' + name + ' to ' + displayName + '.'
+							message = 'Gave 1 ' + name + ' to ' + displayName + '.'
 						else
-							Mikuia.Chat.say data.to, 'Gave ' + coinAmount + ' ' + namePlural + ' to ' + displayName + '.'
+							message = 'Gave ' + coinAmount + ' ' + namePlural + ' to ' + displayName + '.'
+						recipients.push username
+
 					else if trigger is 'remove' or trigger is 'take'
 						await Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', coinAmount * -1, Viewer.getName(), defer whatever
 
 						if parseInt(coinAmount) == 1
-							Mikuia.Chat.say data.to, 'Took 1 ' + name + ' from ' + displayName + '.'
+							message = 'Took 1 ' + name + ' from ' + displayName + '.'
 						else
-							Mikuia.Chat.say data.to, 'Took ' + coinAmount + ' ' + namePlural + ' from ' + displayName + '.'
+							message = 'Took ' + coinAmount + ' ' + namePlural + ' from ' + displayName + '.'
+						recipients.push username
+
 					else if trigger is 'set'
 						await Mikuia.Database.zadd 'channel:' + Channel.getName() + ':coins', coinAmount, Viewer.getName(), defer whatever
 
 						if parseInt(coinAmount) == 1
-							Mikuia.Chat.say data.to, displayName + ' now has 1 ' + name + '.'
+							message = displayName + ' now has 1 ' + name + '.'
 						else
-							Mikuia.Chat.say data.to, displayName + ' now has ' + coinAmount + ' ' + namePlural + '.'
+							message = displayName + ' now has ' + coinAmount + ' ' + namePlural + '.'
+						recipients.push username
 
 			when 'give', 'pay'
 				if data.tokens.length == 4
@@ -169,12 +153,37 @@ Mikuia.Events.on 'coins.command', (data) =>
 								Mikuia.Database.zincrby 'channel:' + Channel.getName() + ':coins', coinAmount, Recipient.getName(), defer whatever
 
 							if coinAmount == 1
-								Mikuia.Chat.say data.to, senderDisplayName + ' -> ' + recipientDisplayName + ' (' + coinAmount + ' ' + name + ')'
+								message = senderDisplayName + ' -> ' + recipientDisplayName + ' (' + coinAmount + ' ' + name + ')'
 							else
-								Mikuia.Chat.say data.to, senderDisplayName + ' -> ' + recipientDisplayName + ' (' + coinAmount + ' ' + namePlural + ')'
+								message = senderDisplayName + ' -> ' + recipientDisplayName + ' (' + coinAmount + ' ' + namePlural + ')'
+							recipients.push username
 
 			when 'help'
-				Mikuia.Chat.say data.to, 'There\'s no help for you! :D'
+				message = 'There\'s no help for you! :D'
 
 	else
-		showBalance data
+		await Mikuia.Database.zscore 'channel:' + data.to.replace('#', '') + ':coins', data.user.username, defer error, coinBalance
+			
+		if !error
+			Channel = new Mikuia.Models.Channel data.to
+			Viewer = new Mikuia.Models.Channel data.user.username
+
+			if !coinBalance?
+				coinBalance = 0
+
+			await
+				Viewer.getDisplayName defer err, displayName
+				Channel.getSetting 'coins', 'name', defer error, name
+				Channel.getSetting 'coins', 'namePlural', defer error, namePlural
+
+			if parseInt(coinBalance) == 1
+				message = displayName + ': ' + coinBalance + ' ' + name + '.'
+			else
+				message = displayName + ': ' + coinBalance + ' ' + namePlural + '.'
+
+	if message
+		if data.settings._whisper
+			for recipient in recipients
+				Mikuia.Chat.whisper recipient, message
+		else
+			Mikuia.Chat.say data.to, message
