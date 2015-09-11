@@ -42,7 +42,6 @@ Mikuia.Events.on 'fun.1v1', (data) =>
 					oldAttackerRating = attackerRating
 					oldDefenderRating = defenderRating
 
-
 					# Streamers automatically get Level 100 on their own channels... bit OP.
 					# Maybe the total level should be copied here?
 					# Maybe the highest level on their channel achieved by someone?
@@ -117,7 +116,11 @@ Mikuia.Events.on 'fun.1v1', (data) =>
 							Mikuia.Leagues.addFightWin Defender.getName(), defer err
 							Mikuia.Leagues.addFightLoss Attacker.getName(), defer err
 				
-					Mikuia.Chat.say data.to, chatMessage
+					if data.settings._whisper
+						Mikuia.Chat.whisper Attacker.getName(), chatMessage
+						Mikuia.Chat.whisper Defender.getName(), chatMessage
+					else
+						Mikuia.Chat.say data.to, chatMessage
 
 					await
 						Mikuia.Leagues.updateRating Attacker.getName(), attackerRating, defer err
@@ -169,4 +172,8 @@ Mikuia.Events.on 'fun.roll', (data) =>
 				limit = data.tokens[1]
 
 	roll = Math.floor(Math.random() * limit)
-	Mikuia.Chat.say data.to, displayName + ' rolled ' + roll + '.'
+
+	if data.settings._whisper
+		Mikuia.Chat.whisper data.user.username, displayName + ' rolled ' + roll + '.'
+	else
+		Mikuia.Chat.say data.to, displayName + ' rolled ' + roll + '.'
