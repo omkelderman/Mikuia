@@ -159,7 +159,7 @@ Mikuia.Events.on 'twitch.message', (from, to, message, isWhisper) =>
 				when 'commands'
 					Mikuia.Chat.say to, 'Commands for this channel: http://mikuia.tv/user/' + Channel.getName()
 				when 'dummy'
-					addDummy from.username, to, tokens.slice 1, false
+					addDummy from.username, to, tokens.slice(1), false
 				when 'emit'
 					if isAdmin
 						type = tokens[2]
@@ -216,7 +216,7 @@ Mikuia.Events.on 'twitch.message', (from, to, message, isWhisper) =>
 					else
 						Mikuia.Chat.say to, displayName + ' > ' + Mikuia.Leagues.getLeagueFullText(rating) + ' (' + fights + ' fights, ' + rating + ' elo)'
 				when 'remove'
-					removeCommand from.username, to, tokens.slice 1, false
+					removeCommand from.username, to, tokens.slice(1), false
 				when 'say'
 					if isAdmin
 						Mikuia.Chat.sayUnfiltered to, tokens.slice(2).join(' ')
