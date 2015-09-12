@@ -575,7 +575,7 @@ Mikuia.Events.on 'osu.np', (data) ->
 	if data.settings._whisper
 		Mikuia.Chat.whisper data.user.username, 'Darude - Sandstorm'
 	else
-		Mikuia.Chat.say Channel.getName(), 'Darude - Sandstorm' 
+		Mikuia.Chat.say data.to, 'Darude - Sandstorm' 
 
 Mikuia.Events.on 'osu.request', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
