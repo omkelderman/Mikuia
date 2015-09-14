@@ -1,0 +1,227 @@
+extends ../../../web/views/layout
+
+block content
+	h3.page-title
+		| Auto DJ 
+		small plays music by itself o-o
+	.page-bar
+		ul.page-breadcrumb
+			li
+				i.fa.fa-home
+				a(href='/dashboard') Dashboard
+				i.fa.fa-angle-right
+			li
+				a(href='/dashboard/autodj') Auto DJ
+		.page-toolbar
+			.btn-group.pull-right
+				a.btn.btn-info.btn-fit-height#playControl Enable Auto DJ
+	
+	.row
+		.col-md-7
+			.portlet.light
+				.portlet-title
+					.caption
+						i.fa.fa-cogs.font-blue-sharp
+						span.caption-subject.bold.uppercase.font-blue-sharp Player 
+						span.caption-helper where the stuff is actually played
+					.actions
+						a.btn.btn-primary#skip(style='display: none;')
+							i.fa.fa-share
+							|  Skip
+				.portlet-body
+					#player_youtube(style='display: none;')
+					iframe#player_soundcloud(style='display: none;', src='https://w.soundcloud.com/player/?url=http://api.soundcloud.com/tracks/51676827', width='534' height='128', scrolling='no', frameborder='no')
+		.col-md-5
+			.portlet.light
+				.portlet-title
+					.caption
+						i.fa.fa-cogs.font-blue-sharp
+						span.caption-subject.bold.uppercase.font-blue-sharp List 
+						span.caption-helper stuff that will be played
+				.portlet-body.autodj-list#list
+					small.text-muted Loading list...
+
+block footerScript
+	script(type='text/javascript', src='https://w.soundcloud.com/player/api.js')
+	script(type='text/javascript', src='https://youtube.com/iframe_api')
+	script(type='text/javascript').
+		var adj_enabled = false;
+		var adj_playing = false;
+		var player_youtube;
+		var player_soundcloud = SC.Widget('player_soundcloud');
+
+		function onSoundCloudFinish() {
+			ADJ_StopAll()
+		}
+
+		function onYouTubeIframeAPIReady() {
+			player_youtube = new YT.Player('player_youtube', {
+				height: '300',
+				width: '534',
+				videoId: 'KSFVuMT77eg',
+				events: {
+					'onReady': onYouTubePlayerReady,
+					'onStateChange': onYouTubePlayerStateChange
+				}
+			})
+		}
+
+		function onYouTubePlayerReady(event) {
+			//- event.target.playVideo()
+		}
+
+		function onYouTubePlayerStateChange(event) {
+			if(event.data == YT.PlayerState.CUED) {
+				event.target.playVideo()
+				ADJ_SetPlaying(true)
+			} else if(event.data == YT.PlayerState.ENDED) {
+				ADJ_SetPlaying(false)
+			}
+		}
+
+		function ADJ_SetPlaying(status) {
+			if(status) {
+				adj_playing = true
+				$('#skip').show()
+			} else {
+				adj_playing = false
+				$('#skip').hide()
+			}
+		}
+
+		function ADJ_StopAll() {
+			SC_Stop()
+			YT_Stop()
+		}
+
+		function ADJ_UpdateList() {
+			$.get('/dashboard/plugins/autodj/list').done(function(response) {
+				data = JSON.parse(response)
+				newHtml = ''
+				for(var i in data) {
+					item = data[i]
+					newHtml += ' \
+						<div id="request_' + item.requestId + '" class="media"> \
+							<div class="media-left"> \
+								<img height="50" class="media-object" src="' + item.thumbnail + '" /> \
+							</div> \
+							<div class="media-body"> \
+								<a href="' + item.url + '" class="autodj-list-title">' + item.title + '</a><br /> \
+								<small>' + item.plays + ' plays</small><br /> \
+								<small class="text-muted">#' + item.requestId + ' - ' + item.requester + '</small> \
+								<a class="pull-right autodj-list-delete" data-requestid="' + item.requestId + '"><i style="color: red;" class="fa fa-close" /></a> \
+							</div> \
+						</div>'
+				}
+				$('#list').html(newHtml)
+				$('.autodj-list-delete').click(function() {
+					requestId = $(this).data('requestid')
+					$.post('/dashboard/plugins/autodj/remove', {
+						requestId: requestId
+					}).done(function(response) {
+						$('#request_' + requestId).remove()
+					})
+				})
+
+				if(data.length > 0) {
+					if(adj_enabled && !adj_playing) {
+
+						switch(data[0].type) {
+							case "youtube":
+								YT_Play(data[0].id)
+								break
+							case "soundcloud":
+								SC_Play(data[0].url)
+								break
+							default:
+								//- ayy lmao?
+								break
+						}
+
+						$.post('/dashboard/plugins/autodj/remove', {
+							requestId: data[0].requestId
+						})
+						$('#request_' + data[0].requestId).remove()
+					}
+				}
+			})
+		}
+
+		function SC_Hide() {
+			$('#player_soundcloud').hide()
+		}
+
+		function SC_Play(soundcloudID) {
+			ADJ_StopAll()
+			SC_Show()
+			player_soundcloud.load(soundcloudID, {
+				auto_play: true
+			})
+
+			ADJ_SetPlaying(true)
+		}
+
+		function SC_Show() {
+			$('#player_soundcloud').show()
+		}
+
+		function SC_Stop() {
+			player_soundcloud.pause()
+			SC_Hide()
+
+			ADJ_SetPlaying(false)
+		}
+
+		function YT_Hide() {
+			$('#player_youtube').hide()
+		}
+
+		function YT_Play(youtubeID) {
+			ADJ_StopAll()
+			YT_Show()
+			player_youtube.cueVideoById({
+				videoId: youtubeID,
+				startSeconds: 0,
+				suggestedQuality: 'default'
+			})
+		}
+
+		function YT_Show() {
+			$('#player_youtube').show()
+		}
+
+		function YT_Stop() {
+			player_youtube.stopVideo()
+			YT_Hide()
+
+			ADJ_SetPlaying(false)
+		}
+		
+		setInterval(function() {
+			ADJ_UpdateList()
+		}, 2000)
+		ADJ_UpdateList()
+
+		$.ready(function() {
+			player_soundcloud.bind(SC.Widget.Events.FINISH, this.onSoundCloudFinish.bind(this))
+		})
+
+		$('#playControl').click(function() {
+			if(adj_enabled) {
+				adj_enabled = false
+				$('#playControl').removeClass('btn-danger')
+				$('#playControl').addClass('btn-info')
+				$('#playControl').html('Enable Auto DJ')
+
+				ADJ_StopAll()
+			} else {
+				adj_enabled = true
+				$('#playControl').removeClass('btn-info')
+				$('#playControl').addClass('btn-danger')
+				$('#playControl').html('Disable Auto DJ')
+			}
+		})
+
+		$('#skip').click(function() {
+			ADJ_StopAll()
+		})

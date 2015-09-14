@@ -1,0 +1,19 @@
+{
+	"name": "[BETA] Auto DJ",
+	"description": "Automatic player for YouTube/SoundCloud.",
+	"baseFile": "plugin.iced",
+	"webFile": "web.iced",
+	"hidden": false,
+	"handlers": {
+		"adj.request": {
+			"description": "Requests a song to be played."
+		}
+	},
+	"settings": {
+		"server": {
+			"scId": "SOUNDCLOUD_API_CLIENT_ID",
+			"scSecret": "SOUNDCLOUD_API_CLIENT_SECRET",
+			"ytApiKey": "YOUTUBE_API_KEY"
+		}
+	}
+}
