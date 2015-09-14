@@ -45,14 +45,11 @@ block footerScript
 	script(type='text/javascript', src='https://w.soundcloud.com/player/api.js')
 	script(type='text/javascript', src='https://youtube.com/iframe_api')
 	script(type='text/javascript').
-		var adj_enabled = false;
-		var adj_playing = false;
+		var adj_enabled = false
+		var adj_playing = false
+		var adj_setup = false
 		var player_youtube;
-		var player_soundcloud = SC.Widget('player_soundcloud');
-
-		function onSoundCloudFinish() {
-			ADJ_StopAll()
-		}
+		var player_soundcloud = SC.Widget('player_soundcloud')
 
 		function onYouTubeIframeAPIReady() {
 			player_youtube = new YT.Player('player_youtube', {
@@ -202,10 +199,6 @@ block footerScript
 		}, 2000)
 		ADJ_UpdateList()
 
-		$.ready(function() {
-			player_soundcloud.bind(SC.Widget.Events.FINISH, this.onSoundCloudFinish.bind(this))
-		})
-
 		$('#playControl').click(function() {
 			if(adj_enabled) {
 				adj_enabled = false
@@ -219,6 +212,13 @@ block footerScript
 				$('#playControl').removeClass('btn-info')
 				$('#playControl').addClass('btn-danger')
 				$('#playControl').html('Disable Auto DJ')
+
+				if(!adj_setup) {
+					player_soundcloud.bind(SC.Widget.Events.FINISH, function() {
+						ADJ_StopAll()
+					})
+					adj_setup = true
+				}
 			}
 		})
 
