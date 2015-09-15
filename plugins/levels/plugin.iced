@@ -54,7 +54,7 @@ updateLevels = () ->
 							activeChannels++
 
 				if activeChannels == 1
-					pointsToAdd = Math.round(Math.random() * 1) + 3
+					pointsToAdd = Math.round(Math.random() * 1) + 4
 				else if activeChannels == 2
 					pointsToAdd = 2
 				else if activeChannels == 3
