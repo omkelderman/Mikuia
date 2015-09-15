@@ -105,6 +105,7 @@ html
 		script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js')
 		script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js')
 		script(type='text/javascript', src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js')
+		script(type='text/javascript', src='//d1culzimi74ed4.cloudfront.net/js/feedback/feedback.js')
 		script(type='text/javascript', src='/socket.io/socket.io.js')
 		script(type='text/javascript').
 			$('[rel=tooltip]').tooltip({
@@ -123,3 +124,14 @@ html
 			    p.src = '//rum-static.pingdom.net/prum.min.js';
 			    s.parentNode.insertBefore(p, s);
 			})();
+
+			ChdFeedbackWidget.init({
+				url: "//mikuia.helprace.com/chd-widgets/feedback",
+				assetsUrl: "//d1culzimi74ed4.cloudfront.net/",
+				feedbackType: "tab",
+				tabTitle: "Feedback & Support",
+				tabPosition: "right",
+				tabBgColor: "#ffffff",
+				tabTextColor: "#7a62d3",
+				tabAction: "false"
+			})
