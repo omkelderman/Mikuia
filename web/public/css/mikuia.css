@@ -152,7 +152,11 @@ body.mikuia {
 	background-position: 100% -630px;
 	background-repeat: no-repeat;
 	height: 100%;
-	text-shadow: 0px 0px 10px #FF6F00;
+	text-shadow: 0px 0px 10px #999;
+}
+
+.infobox-mikuia a {
+	color: white;
 }
 
 .infobox-preview {
