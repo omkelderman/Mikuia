@@ -111,7 +111,7 @@ block footerScript
 				command: commandName
 			}).done(function(response) {
 				if(response.removed) {
-					$('tr[name=' + commandName + ']').fadeOut()
+					$('tr[name="' + commandName + '"]').fadeOut()
 				}
 			})
 		})
