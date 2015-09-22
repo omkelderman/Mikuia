@@ -5,6 +5,17 @@
 	"webFile": "web.iced",
 	"hidden": false,
 	"handlers": {
+		"adj.command": {
+			"description": "Multi-purpose Auto DJ command; allows requesting, and managing requests.",
+			"settings": {
+				"disableRequests": {
+					"name": "Disable Requests",
+					"description": "Disable the ability to request with this command.",
+					"default": true,
+					"type": "boolean"
+				}
+			}
+		},
 		"adj.request": {
 			"description": "Requests a song to be played."
 		}

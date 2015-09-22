@@ -4,35 +4,7 @@ request = require 'request'
 
 require 'moment-duration-format'
 
-queueItem = (item, Channel, data, callback) =>
-	await Mikuia.Database.zrevrangebyscore 'channel:' + Channel.getName() + ':autodj:list', '+inf', '-inf', 'withscores', defer error, list
-
-	nextId = 1
-	if list.length >= 2
-		nextId = parseInt(list[1]) + 1
-
-	await Mikuia.Database.zadd 'channel:' + Channel.getName() + ':autodj:list', nextId, JSON.stringify(item), defer whatever
-	message = '#' + nextId + ': ' + item.title + ' (' + item.duration + ') added to the list.' 
-	if data.settings._whisper
-		Mikuia.Chat.whisper data.user.username, message
-	else
-		Mikuia.Chat.say data.to, message
-
-requestSoundCloudTrackData = (scLink, callback) =>
-	await request 'http://api.soundcloud.com/resolve?url=' + scLink + '&client_id=' + @Plugin.getSetting('scId'), defer error, response, body
-	if not error and response.statusCode == 200
-		callback false, JSON.parse(body)
-	else
-		callback true, {}
-
-requestYouTubeVideoData = (videoId, callback) =>
-	await request 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet,statistics&id=' + videoId + '&key=' + @Plugin.getSetting('ytApiKey'), defer error, response, body
-	if not error and response.statusCode == 200
-		callback false, JSON.parse(body).items[0]
-	else
-		callback true, {}
-
-Mikuia.Events.on 'adj.request', (data) ->
+parseSongRequest = (data) =>
 	Channel = new Mikuia.Models.Channel data.to
 
 	# Credit to jrom
@@ -79,3 +51,66 @@ Mikuia.Events.on 'adj.request', (data) ->
 					url: potentialScLink
 
 				await queueItem item, Channel, data, defer whatever
+
+queueItem = (item, Channel, data, callback) =>
+	await Mikuia.Database.zrevrangebyscore 'channel:' + Channel.getName() + ':autodj:list', '+inf', '-inf', 'withscores', defer error, list
+
+	nextId = 1
+	if list.length >= 2
+		nextId = parseInt(list[1]) + 1
+
+	await Mikuia.Database.zadd 'channel:' + Channel.getName() + ':autodj:list', nextId, JSON.stringify(item), defer whatever
+	message = '#' + nextId + ': ' + item.title + ' (' + item.duration + ') added to the list.' 
+	if data.settings._whisper
+		Mikuia.Chat.whisper data.user.username, message
+	else
+		Mikuia.Chat.say data.to, message
+
+requestSoundCloudTrackData = (scLink, callback) =>
+	await request 'http://api.soundcloud.com/resolve?url=' + scLink + '&client_id=' + @Plugin.getSetting('scId'), defer error, response, body
+	if not error and response.statusCode == 200
+		callback false, JSON.parse(body)
+	else
+		callback true, {}
+
+requestYouTubeVideoData = (videoId, callback) =>
+	await request 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet,statistics&id=' + videoId + '&key=' + @Plugin.getSetting('ytApiKey'), defer error, response, body
+	if not error and response.statusCode == 200
+		callback false, JSON.parse(body).items[0]
+	else
+		callback true, {}
+
+Mikuia.Events.on 'adj.command', (data) ->
+	Channel = new Mikuia.Models.Channel data.to
+	isMod = Mikuia.Chat.checkMod data.to, data.user.username
+	tokens = data.message.trim().split ' '
+
+	if tokens.length > 1
+		trigger = tokens[1]
+
+		switch trigger
+			when 'clear'
+				if isMod
+					await Mikuia.Database.del 'channel:' + Channel.getName() + ':autodj:list', defer whatever
+
+					if data.settings._whisper
+						Mikuia.Chat.whisper data.user.username, 'Cleared the request list.'
+					else
+						Mikuia.Chat.say data.to, 'Cleared the request list.'
+			when 'delete', 'remove'
+				if isMod and tokens.length > 2
+					requestId = parseInt tokens[2].replace('#', '')
+					
+					await Mikuia.Database.zremrangebyscore 'channel:' + Channel.getName() + ':autodj:list', requestId, requestId, defer err, amountRemoved
+
+					if amountRemoved > 0
+						if data.settings._whisper
+							Mikuia.Chat.whisper data.user.username, 'Removed request #' + requestId + '.'
+						else
+							Mikuia.Chat.say data.to, 'Removed request #' + requestId + '.'
+
+			else
+				parseSongRequest data
+
+Mikuia.Events.on 'adj.request', (data) ->
+	parseSongRequest data

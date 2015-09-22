@@ -27,6 +27,13 @@ class exports.Chat
 		for stream in streams
 			@say stream, '.me broadcast: ' + message
 
+	checkMod: (channel, username) =>
+		if channel == '#' + username
+			return true
+		else
+			moderators = @mods channel
+			moderators? and username in moderators
+
 	connect: =>
 		connections = Mikuia.settings.bot.connections
 

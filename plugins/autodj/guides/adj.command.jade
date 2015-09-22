@@ -1,0 +1,35 @@
+p.
+	This handler is used to request songs for Auto DJ and manage those requests.
+	#[br]
+	Used with any other arguments than the ones listed, it will try to add a request.
+h3 Examples:
+br
+pre
+	b User:
+	|  !req https://www.youtube.com/watch?v=zBWVu7onS8Q
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  #1: [Electro] Eiffel 65 - Im Blue (DJ Royal Remix) (4:40) added to the list.
+h3 Arguments:
+br
+.note.note-success
+	b clear (Mod Only)
+	br
+	| Clears the request list.
+pre
+	b User:
+	|  !adj clear
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Cleared the request list.
+br
+.note.note-success
+	b delete/remove (Mod Only)
+	br
+	| Removes a specific request.
+pre
+	b Broadcaster:
+	|  !adj remove 2
+	br
+	b #{Mikuia.settings.bot.name}:
+	|  Removed request #2.
