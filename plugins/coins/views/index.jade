@@ -17,6 +17,7 @@ block content
 				a Coins
 		.page-toolbar
 			.btn-group.pull-right
+				a.btn.btn-danger.btn-fit-height#reset(data-target='#resetModal', data-toggle='modal') Reset coins
 				a.btn.btn-warning.btn-fit-height#edit(data-target='#editModal', data-toggle='modal') Edit someone's coins
 	.row
 		.col-md-12
@@ -79,8 +80,32 @@ block content
 					|  
 					a.btn.red(onclick='take($("#manualUsername").val())') Take
 
+	.modal.fade#resetModal
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal') &times;
+					h4.modal-title Reset coins
+				.modal-body
+					h1 Do you really want to do that?
+					p.
+						This will #[b permanently] remove all coins from all users on your channel.
+						#[br]
+						Are you sure that's what you wanted to do?
+						
+				.modal-footer
+					a.btn.btn-danger(onclick='confirmReset()') Yes, delete everything!
+					|  
+					a.btn.btn-default(data-dismiss='modal') Oh god no.
+
 block footerScript
 	script(type='text/javascript').
+
+		function confirmReset() {
+			$.post('/dashboard/plugins/coins/reset').done(function() {
+				location.reload()
+			})
+		}
 
 		function give(username) {
 			var coinAmount = prompt('How many coins do you want to give to ' + username + '?')

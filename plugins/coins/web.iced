@@ -48,3 +48,8 @@ Mikuia.Web.post '/dashboard/plugins/coins/edit', checkAuth, (req, res) ->
 				await Mikuia.Database.zincrby 'channel:' + req.user.username + ':coins', parseInt(req.body.amount) * -1, Viewer.getName(), defer error, whatever
 
 	res.send 200
+
+Mikuia.Web.post '/dashboard/plugins/coins/reset', checkAuth, (req, res) ->
+	await Mikuia.Database.del 'channel:' + req.user.username + ':coins', defer error, whatever
+
+	res.send 200
