@@ -18,16 +18,37 @@ block content
 	
 	.row
 		.col-md-7
+			.portlet.light#nowPlaying(style='display: none;')
+				.portlet-title
+					.caption
+						i.fa.fa-cogs.font-blue-sharp
+						span.caption-subject.bold.uppercase.font-blue-sharp Now Playing 
+						span.caption-helper probably a John Cena Theme remix
+					.actions
+						a.btn.btn-primary#skip(style='display: none;')
+							i.fa.fa-share
+							|  Skip
+				.portlet-body
+					.media
+						.media-left
+							img.media-object#nowPlayingThumbnail(src='http://placekitten.com/g/96/96')
+						.media-body
+							h3#nowPlayingTitle
+							br
+							.label.label-danger#nowPlayingRequestId
+							.label.label-warning#nowPlayingDuration
+							.label.label-info
+								| requested by 
+								span#nowPlayingRequester
+							br
+							a(target='_blank', href='#')#nowPlayingLink Open in new tab
+
 			.portlet.light
 				.portlet-title
 					.caption
 						i.fa.fa-cogs.font-blue-sharp
 						span.caption-subject.bold.uppercase.font-blue-sharp Player 
 						span.caption-helper where the stuff is actually played
-					.actions
-						a.btn.btn-primary#skip(style='display: none;')
-							i.fa.fa-share
-							|  Skip
 				.portlet-body
 					#player_youtube(style='display: none;')
 					iframe#player_soundcloud(style='display: none;', src='https://w.soundcloud.com/player/?url=http://api.soundcloud.com/tracks/51676827', width='534' height='128', scrolling='no', frameborder='no')
@@ -79,10 +100,12 @@ block footerScript
 		function ADJ_SetPlaying(status) {
 			if(status) {
 				adj_playing = true
-				$('#skip').show()
+				$('#nowPlaying').fadeIn()
+				$('#skip').fadeIn()
 			} else {
 				adj_playing = false
-				$('#skip').hide()
+				$('#nowPlaying').fadeOut()
+				$('#skip').fadeOut()
 			}
 		}
 
@@ -110,7 +133,11 @@ block footerScript
 							</div> \
 						</div>'
 				}
-				$('#list').html(newHtml)
+				if(newHtml != '') {
+					$('#list').html(newHtml)
+				} else {
+					$('#list').html('<small class="text-muted">The list is empty!</small>')
+				}
 				$('.autodj-list-delete').click(function() {
 					requestId = $(this).data('requestid')
 					$.post('/dashboard/plugins/autodj/remove', {
@@ -138,10 +165,20 @@ block footerScript
 						$.post('/dashboard/plugins/autodj/remove', {
 							requestId: data[0].requestId
 						})
+						ADJ_UpdateNowPlaying(data[0])
 						$('#request_' + data[0].requestId).remove()
 					}
 				}
 			})
+		}
+
+		function ADJ_UpdateNowPlaying(data) {
+			$('#nowPlayingTitle').text(data.title)
+			$('#nowPlayingRequester').text(data.requester)
+			$('#nowPlayingThumbnail').attr('src', data.thumbnail)
+			$('#nowPlayingRequestId').text('#' + data.requestId)
+			$('#nowPlayingDuration').text(data.duration)
+			$('#nowPlayingLink').attr('href', data.url)
 		}
 
 		function SC_Hide() {

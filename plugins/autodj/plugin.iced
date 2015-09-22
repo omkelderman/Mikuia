@@ -1,6 +1,10 @@
+moment = require 'moment'
+parseIsoDuration = require 'parse-iso-duration'
 request = require 'request'
 
-queueItem = (item, Channel, callback) =>
+require 'moment-duration-format'
+
+queueItem = (item, Channel, data, callback) =>
 	await Mikuia.Database.zrevrangebyscore 'channel:' + Channel.getName() + ':autodj:list', '+inf', '-inf', 'withscores', defer error, list
 
 	nextId = 1
@@ -8,6 +12,11 @@ queueItem = (item, Channel, callback) =>
 		nextId = parseInt(list[1]) + 1
 
 	await Mikuia.Database.zadd 'channel:' + Channel.getName() + ':autodj:list', nextId, JSON.stringify(item), defer whatever
+	message = '#' + nextId + ': ' + item.title + ' (' + item.duration + ') added to the list.' 
+	if data.settings._whisper
+		Mikuia.Chat.whisper data.user.username, message
+	else
+		Mikuia.Chat.say data.to, message
 
 requestSoundCloudTrackData = (scLink, callback) =>
 	await request 'http://api.soundcloud.com/resolve?url=' + scLink + '&client_id=' + @Plugin.getSetting('scId'), defer error, response, body
@@ -17,7 +26,7 @@ requestSoundCloudTrackData = (scLink, callback) =>
 		callback true, {}
 
 requestYouTubeVideoData = (videoId, callback) =>
-	await request 'https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=' + videoId + '&key=' + @Plugin.getSetting('ytApiKey'), defer error, response, body
+	await request 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet,statistics&id=' + videoId + '&key=' + @Plugin.getSetting('ytApiKey'), defer error, response, body
 	if not error and response.statusCode == 200
 		callback false, JSON.parse(body).items[0]
 	else
@@ -40,13 +49,14 @@ Mikuia.Events.on 'adj.request', (data) ->
 				requester: data.user.username
 				thumbnail: yt.snippet.thumbnails.default.url
 				title: yt.snippet.title
+				duration: moment.duration(parseIsoDuration(yt.contentDetails.duration) / 1000, 'seconds').format()
 				plays: yt.statistics.viewCount
 				likes: yt.statistics.likeCount
 				dislikes: yt.statistics.dislikeCount
 				comments: yt.statistics.commentCount
 				url: 'http://youtu.be/' + potentialYouTubeId
 
-			await queueItem item, Channel, defer whatever
+			await queueItem item, Channel, data, defer whatever
 
 	else
 		scMatch = /https?:\/\/(soundcloud.com|snd.sc)\/(.*)$/g.exec data.message
@@ -61,10 +71,11 @@ Mikuia.Events.on 'adj.request', (data) ->
 					requester: data.user.username
 					thumbnail: sc.artwork_url
 					title: sc.title
+					duration: moment.duration(sc.duration / 1000, 'seconds').format()
 					plays: sc.playback_count
 					likes: sc.favoritings_count
 					dislikes: 0
 					comments: sc.comment_count
 					url: potentialScLink
 
-				await queueItem item, Channel, defer whatever
+				await queueItem item, Channel, data, defer whatever
