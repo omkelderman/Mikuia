@@ -37,11 +37,12 @@ block content
 							br
 							.label.label-danger#nowPlayingRequestId
 							.label.label-warning#nowPlayingDuration
-							.label.label-info
+							.label.label-default
 								| requested by 
 								span#nowPlayingRequester
-							br
-							a(target='_blank', href='#')#nowPlayingLink Open in new tab
+							a(target='_blank', href='#')#nowPlayingLink
+								.label.label-info
+									.fa.fa-share-square-o
 
 			.portlet.light
 				.portlet-title
