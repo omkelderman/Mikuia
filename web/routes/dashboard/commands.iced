@@ -35,7 +35,7 @@ module.exports =
 					coinName: coinName
 					coinNamePlural: coinNamePlural
 
-		res.render 'commands',
+		res.render 'dashboard/commands',
 			commands: commands
 			enabledPlugins: enabledPlugins
 			handlers: handlers
@@ -124,7 +124,7 @@ module.exports =
 				if !err
 					guide = jade.render guideFile
 
-			res.render 'command',
+			res.render 'dashboard/command',
 				command: req.params.name
 				guide: guide
 				handlerName: handlerName

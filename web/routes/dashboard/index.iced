@@ -15,7 +15,7 @@ module.exports = (req, res) ->
 	for err in [err1, err2, err3, err4, err5]
 		console.log 'dashboard error', err if err
 
-	res.render 'dashboard', {
+	res.render 'dashboard/index', {
 		enabled, live, supporter, supporterLeftText,
 		supporterStart, supporterStatus
 		channel: Channel.getName()

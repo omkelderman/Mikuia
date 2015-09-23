@@ -112,41 +112,48 @@ app.use (req, res, next) ->
 
 fs.mkdirs 'web/public/img/avatars'
 
-fileList = fs.readdirSync 'web/routes'
-for file in fileList
-	filePath = path.resolve 'web/routes/' + file
-	routes[file.replace('.iced', '')] = require filePath
+routeList =
+	community: 'web/routes/community'
+	dashboard: 'web/routes/dashboard'
 
-app.get '/dashboard', checkAuth, routes.dashboard
-app.get '/dashboard/commands', checkAuth, routes.commands.commands
-app.get '/dashboard/commands/settings/:name', checkAuth, routes.commands.settings
-app.get '/dashboard/plugins', checkAuth, routes.plugins.plugins
-app.get '/dashboard/settings', checkAuth, routes.settings.settings
+for routeName, routeDir of routeList
+	routes[routeName] = {}
+	fileList = fs.readdirSync routeDir
+	for file in fileList
+		filePath = path.resolve routeDir + '/' + file
+		routes[routeName][file.replace('.iced', '')] = require filePath
+
+routes.login = require './routes/login'
+
+app.get '/dashboard', checkAuth, routes.dashboard.index
+app.get '/dashboard/commands', checkAuth, routes.dashboard.commands.commands
+app.get '/dashboard/commands/settings/:name', checkAuth, routes.dashboard.commands.settings
+app.get '/dashboard/plugins', checkAuth, routes.dashboard.plugins.plugins
+app.get '/dashboard/settings', checkAuth, routes.dashboard.settings.settings
 app.get '/login', routes.login
 app.get '/logout', (req, res) ->
 	req.logout()
 	res.redirect '/'
 
-app.post '/dashboard/commands/add', checkAuth, routes.commands.add
-app.post '/dashboard/commands/remove', checkAuth, routes.commands.remove
-app.post '/dashboard/commands/save/:name', checkAuth, routes.commands.save
-app.post '/dashboard/plugins/toggle', checkAuth, routes.plugins.pluginToggle
-app.post '/dashboard/settings/save/:name', checkAuth, routes.settings.save
-app.post '/dashboard/settings/toggle', checkAuth, routes.settings.toggle
+app.post '/dashboard/commands/add', checkAuth, routes.dashboard.commands.add
+app.post '/dashboard/commands/remove', checkAuth, routes.dashboard.commands.remove
+app.post '/dashboard/commands/save/:name', checkAuth, routes.dashboard.commands.save
+app.post '/dashboard/plugins/toggle', checkAuth, routes.dashboard.plugins.pluginToggle
+app.post '/dashboard/settings/save/:name', checkAuth, routes.dashboard.settings.save
+app.post '/dashboard/settings/toggle', checkAuth, routes.dashboard.settings.toggle
 
 app.get '/', routes.community.index
+app.get '/about', routes.community.about
 app.get '/badge/:badgeId', routes.community.badge
 app.get '/guide', routes.community.guide
-app.get '/leagues', checkAuth, routes.community.leagues
-app.get '/leagues/leaderboards', routes.community.leagueleaderboards
+app.get '/leagues', checkAuth, routes.community.leagues.index
+app.get '/leagues/leaderboards', routes.community.leagues.leaderboards
 app.get '/levels', routes.community.levels
 app.get '/levels/:userId', routes.community.levels
-app.get '/mlvl', routes.community.mlvl
-app.get '/slack', routes.community.slack
-app.post '/slack/invite', routes.community.slackInvite
-app.get '/stats', routes.community.stats
+app.get '/slack', routes.community.slack.index
+app.post '/slack/invite', routes.community.slack.invite
 app.get '/streams', routes.community.streams
-app.get '/supporter', routes.community.support
+app.get '/supporter', routes.community.supporter
 app.get '/user/:userId', routes.community.user
 app.get '/user/:userId/:subpage', routes.community.user
 
@@ -199,9 +206,6 @@ app.get '/:checkword/:subpage?*', (req, res, next) =>
 		routes.community.user req, res
 	else
 		next()
-
-app.get '/*', (req, res) =>
-	res.render 'community/404'
 
 app.listen Mikuia.settings.web.port
 

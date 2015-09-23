@@ -21,7 +21,7 @@ module.exports =
 							categories[pluginName][setting.category] = {}
 						categories[pluginName][setting.category][settingName] = setting
 
-		res.render 'plugins',
+		res.render 'dashboard/plugins',
 			enabled: enabled
 			enabledPlugins: enabledPlugins
 			plugins: plugins

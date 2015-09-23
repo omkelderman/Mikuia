@@ -22,7 +22,7 @@ class exports.Plugin
 
 	handlerExists: (handler) -> @handlers[handler]?
 
-	load: (name, fileType) ->
+	load: (name, fileType, callback) ->
 		await fs.readFile 'plugins/' + name + '/manifest.json', defer err, json
 		if err
 			@Mikuia.Log.fatal cli.whiteBright('Mikuia') + ' / ' + cli.whiteBright('Unable to open plugin ') + cli.yellowBright(name) + cli.whiteBright('\'s manifest')
@@ -66,3 +66,5 @@ class exports.Plugin
 						@Mikuia.Log.warning '[' + cli.magentaBright(name) + '] ' + message
 					error: (message) =>
 						@Mikuia.Log.error '[' + cli.magentaBright(name) + '] ' + message
+
+		if callback then callback()

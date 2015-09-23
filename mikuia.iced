@@ -84,7 +84,11 @@ Mikuia.Settings.read ->
 			if isBot
 				Mikuia.Plugin.load file, 'baseFile'
 			else if isWeb
-				Mikuia.Plugin.load file, 'webFile'
+				await Mikuia.Plugin.load file, 'webFile', defer whatever
+
+		if isWeb
+			Mikuia.Web.get '/*', (req, res) =>
+				res.render 'community/404'
 
 	if isBot
 		Mikuia.Chat.connect()
