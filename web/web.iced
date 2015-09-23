@@ -190,6 +190,19 @@ app.get '/auth/twitch/callback', (req, res, next) =>
 			await Channel.updateAvatar defer err, whatever
 	)(req, res, next)
 
+app.get '/:checkword/:subpage?*', (req, res, next) =>
+	Channel = new Mikuia.Models.Channel req.params.checkword
+
+	await Channel.exists defer err, exists
+	if exists
+		req.params.userId = Channel.getName()
+		routes.community.user req, res
+	else
+		next()
+
+app.get '/*', (req, res) =>
+	res.render 'community/404'
+
 app.listen Mikuia.settings.web.port
 
 updateGithub = (callback) =>
