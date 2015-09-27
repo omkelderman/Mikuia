@@ -248,8 +248,7 @@ class exports.Channel extends Mikuia.Model
 
 	addExperience: (channel, experience, activity, callback) =>
 		await @isBot defer err, isBot
-
-		if !isBot
+		if not isBot
 			await @getLevel channel, defer err, level
 			if activity < 1 || !activity? || isNaN activity
 				experience = 0
@@ -257,7 +256,7 @@ class exports.Channel extends Mikuia.Model
 			otherChannel = new Mikuia.Models.Channel channel
 			await otherChannel.getSetting 'base', 'disableLevels', defer err, disableLevels
 
-			if !disableLevels
+			if not disableLevels
 				await
 					@_hincrby 'experience', channel, experience, defer err, data
 					@getLevel channel, defer err, newLevel

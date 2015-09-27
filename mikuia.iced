@@ -63,15 +63,14 @@ Mikuia.Settings.read ->
 		Mikuia.Log.fatal cli.redBright('Redis') + ' / ' + cli.whiteBright('Database error: ' + err)
 
 	isBot = false
+	isScript = false
 	isWeb = false
 
 	switch process.argv[2]
-		when 'bot'
-			isBot = true
-		when 'web'
-			isWeb = true
-		else
-			isBot = true
+		when 'bot' then isBot = true
+		when 'script' then isScript = true
+		when 'web' then isWeb = true
+		else isBot = true
 			
 	# Let's load plugins.
 	fs.readdir 'plugins', (pluginDirErr, fileList) ->
@@ -89,6 +88,9 @@ Mikuia.Settings.read ->
 		if isWeb
 			Mikuia.Web.get '/*', (req, res) =>
 				res.render 'community/404'
+
+		if isScript
+			Mikuia.Plugin.load 'base', 'baseFile'
 
 	if isBot
 		Mikuia.Chat.connect()
@@ -109,6 +111,10 @@ Mikuia.Settings.read ->
 		viewerLeaderboard = new Mikuia.Models.Leaderboard 'viewers'
 		viewerLeaderboard.setDisplayName 'Viewers'
 		viewerLeaderboard.setDisplayHtml '<i class="fa fa-user" style="color: red;"></i> <%value%>'
+
+	if isScript
+		Script = require './scripts/' + process.argv[3]
+		Script.run process.argv.slice 4
 
 r = repl.start 'Mikuia> '
 r.context.Mikuia = Mikuia
