@@ -9,11 +9,11 @@ block content
 				table.table.table-bordered.table-striped
 					thead
 						tr
-							th Channel
+							th(style='width: 40%;') Channel
 							th Level
 							th Experience
 							th Rank
-							th Progress
+							th(style='width: 20%;') Progress
 					tbody
 						each data in Channel.experience
 							- var experience = data[1]
@@ -35,7 +35,7 @@ block content
 								td
 									h4
 										a(href='/levels/' + data[0]) ##{ranks[data[0]]}
-								td(style='width: 20%;')
+								td
 									+levelProgress(experience)
 
 			.col-md-4.animation-fade-in-left

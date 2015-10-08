@@ -13,10 +13,10 @@ block content
 					thead
 						tr
 							th Rank
-							th User
+							th(style='width: 40%;') User
 							th Experience
 							th Level
-							th Progress
+							th(style='width: 20%;') Progress
 					tbody
 						- var i = 1
 						each data in channels
@@ -39,7 +39,7 @@ block content
 									td
 										h3
 											+level(Mikuia.Tools.getLevel(exp), false, true)
-									td(style='width: 20%;')
+									td
 										+levelProgress(exp)
 								- i++
 

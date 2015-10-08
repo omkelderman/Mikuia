@@ -11,7 +11,7 @@ mixin stream(stream, displayHtml, sortValue)
 			br
 			small.pull-right!=displayHtml.replace('<%value%>', sortValue)						
 			small.media.text-muted
-				a.pull-left(href='/user/' + stream.display_name.toLowerCase(), style='margin-right: 5px;')
+				a.pull-left(href='/user/' + stream.display_name.toLowerCase(), style='margin-right: -5px;')
 					img.media-object(src='/img/avatars/' + stream.display_name.toLowerCase() + '.jpg', width='16', height='16')
 				.media-body
 					.media-heading
