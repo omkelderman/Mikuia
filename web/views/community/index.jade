@@ -120,9 +120,15 @@ block content
 		.container
 			.row
 				.col-md-9.animation-fade-in-right
-					h1 Other Streams
+					h1
+						| Other Streams 
+						small
+							a(href='/streams') see all
+					- var i = 0
 					each miniData in sorting
-						+stream(streams[miniData[0]], displayHtml, miniData[1])
+						if i < 9
+							+stream(streams[miniData[0]], displayHtml, miniData[1])
+							- i++
 				.col-md-3.animation-fade-in-left
 					h1 Woo, Twitter
 					a.twitter-timeline(href='https://twitter.com/Hatsunya', data-widget-id='540548781029462017') Tweets by @Hatsunya
