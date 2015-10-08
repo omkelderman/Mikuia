@@ -60,18 +60,37 @@ block content
 								.text-muted No progress on this channel.
 				else
 					.panel.panel-default
-						.panel-heading Your avatar or name broken?
+						.panel-heading Your avatar or name capitalization broken?
 						.panel-body
 							.text-muted Login to update them!
 
-					.panel.panel-default
-						.panel-heading Bots taking your places?
-						.panel-body
-							.text-muted
-								| You can report bots and get them blocked from gaining experience.
-								br
-								| Please let me know via email or Twitter.
-								br
-								a(href='http://twitter.com/Hatsunya') Twitter
-								|  | 
-								a(href='mailto:psqmaxor@gmail.com') Email
+				.panel.panel-default
+					.panel-heading Bots taking your places?
+					.panel-body
+						.text-muted
+							| You can report bots and get them blocked from gaining experience.
+							br
+							a(href='http://support.mikuia.tv') You can do that on the support site.
+
+				.panel.panel-default
+					.panel-heading Did you change accounts?
+					.panel-body
+						.text-muted
+							| You can get all your levels moved to the new account.
+							br
+							a(href='http://support.mikuia.tv') Submit a ticket on the support site.
+
+				.panel.panel-default
+					.panel-heading How does it work?
+					.panel-body
+						p.
+							Levels are a simple representation of your activity on the channel. The rules are the same for every channel.
+
+						b Description
+						ul
+							li Sending a message sets your activity meter to #[b.text-success 10].
+							li Every minute, your activity meter is reduced by #[b.text-success 1].
+							li Every minute, you get #[b.text-danger 4 or 5 XP] if your activity meter is at least at #[b.text-success 1].
+							li In case you're active on #[b.text-info 2 channels], you get #[b.text-danger 2 XP] per channel.
+							li In case you're active on #[b.text-info 3 channels], you get #[b.text-danger 1 XP] per channel.
+							li If you're active on more than #[b.text-info 3 channels] at the same time, you don't get any points.
