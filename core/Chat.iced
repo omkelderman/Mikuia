@@ -261,8 +261,6 @@ class exports.Chat
 								if !timeLeft
 									@clients[@channelClients['#' + Channel.getName()]].say data.channel, data.message.split('%%WORKER%%').join(@channelClients['#' + Channel.getName()])
 
-									Mikuia.Events.emit 'mikuia.say', data.channel, data.message
-
 									@Mikuia.Log.info cli.cyanBright('[' + @channelClients['#' + Channel.getName()] + ']') + ' / ' + cli.cyan(displayName) + ' / ' + cli.magentaBright(@Mikuia.settings.bot.name) + ' (' + cli.magentaBright(remainingRequests) + ') (' + cli.greenBright(Math.floor(channelRR)) + '): ' + data.message
 
 									@parseQueue()
@@ -397,9 +395,15 @@ class exports.Chat
 		client.id = i
 		client.connect()
 
-		client.on 'chat', (channel, user, message) =>
-			if user.username != @Mikuia.settings.bot.name.toLowerCase()
+		client.on 'chat', (channel, user, message, self) =>
+			if not self
 				@handleMessage user, channel, message, false
+			else
+				Mikuia.Events.emit 'mikuia.say',
+					channel: channel
+					username: user.username
+					user: user
+					message: message
 
 		client.on 'connected', (address, port) =>
 			@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch chat (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
