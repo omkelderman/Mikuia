@@ -144,29 +144,39 @@ class exports.Chat
 			@chatters[Channel.getName()].viewers.push user.username
 
 		await Channel.queryCommand trigger, user, defer err, o
-		{command, settings, isAllowed} = o
+		{command, settings, isAllowed, reasons} = o
 
 		if forceWhisper
 			settings._whisper = true
 
-		# abort if there's an error, access denied or no command
-		return if err || !isAllowed || isBanned || !command?
+		if err then reasons.push 'database'
+		if isBanned then reasons.push 'banned'
 
-		handler = @Mikuia.Plugin.getHandler command
-		await Channel.isPluginEnabled handler.plugin, defer err, enabled
+		if command?
+			if not reasons.length
+				handler = @Mikuia.Plugin.getHandler command
+				await Channel.isPluginEnabled handler.plugin, defer err, enabled
 
-		if !err and enabled and !isBanned 
-			if settings?._coinCost and settings._coinCost > 0
-				User = new Mikuia.Models.Channel user.username
+				if enabled
+					if settings?._coinCost and settings._coinCost > 0
+						User = new Mikuia.Models.Channel user.username
+						await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
 
-				await Mikuia.Database.zscore  "channel:#{Channel.getName()}:coins", User.getName(), defer whatever, coinBalance
-				if parseInt(coinBalance) >= settings._coinCost
-					await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
+					@Mikuia.Events.emit command, {user, to, message, tokens, settings}
+					Channel.trackIncrement 'commands', 1
 				else
-					return
-					
-			@Mikuia.Events.emit command, {user, to, message, tokens, settings}
-			Channel.trackIncrement 'commands', 1
+					reasons.push 'disabled'
+
+			@Mikuia.Events.emit 'mikuia.command',
+				handler: command
+				channel: Channel.getName()
+				user: user
+				message: message
+				tokens: tokens
+				settings: settings
+				status:
+					failure: reasons.length > 0 ? true : false
+					reason: reasons
 
 	handleWhisper: (username, message) =>
 		if channelContext[username]?.channel?

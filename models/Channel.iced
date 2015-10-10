@@ -80,37 +80,44 @@ class exports.Channel extends Mikuia.Model
 			@getCommand trigger, defer commandError, command
 			@getCommandSettings trigger, true, defer settingsError, settings
 		
-		await @isCommandAllowed settings, user, defer isAllowed
+		await @isCommandAllowed settings, user, defer isAllowed, reasons
 
-		callback commandError || settingsError, {command, settings, isAllowed}
+		callback commandError || settingsError, {command, settings, isAllowed, reasons}
 
 	isCommandAllowed: (settings, user, callback) ->
 		chatter = new exports.Channel user.username
 		isAllowed = true
+		reasons = []
 
 		if settings?._minLevel and parseInt(settings._minLevel) > 0
 			await chatter.getLevel @getName(), defer whateverError, userLevel
 			if userLevel < parseInt(settings._minLevel)
 				isAllowed = false
+				reasons.push 'level'
 		
 		if settings?._onlyMods and not chatter.isModOf @getName()
 			isAllowed = false
+			reasons.push 'mod'
 		
 		if settings?._onlySubs and !user.subscriber
 			isAllowed = false
+			reasons.push 'subscriber'
 		
 		if settings?._onlyBroadcaster and user.username isnt @getName()
 			isAllowed = false
+			reasons.push 'broadcaster'
 		
 		if settings?._coinCost and parseInt(settings._coinCost) > 0
 			await Mikuia.Database.zscore 'channel:' + @getName() + ':coins', user.username, defer error, balance
 			if !balance? or parseInt(balance) < parseInt(settings._coinCost)
 				isAllowed = false
+				reasons.push 'coins'
 
 		if user.username == @getName()
 			isAllowed = true
+			reasons = []
 		
-		callback isAllowed
+		callback isAllowed, reasons
 
 	addCommand: (command, handler, callback) ->
 		@_hset 'commands', command, handler, callback
