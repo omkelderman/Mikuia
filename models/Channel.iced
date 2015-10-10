@@ -273,11 +273,17 @@ class exports.Channel extends Mikuia.Model
 					otherChannel.getSetting 'base', 'announceLevels', defer err, announceLevels
 					otherChannel.getSetting 'base', 'announceLimit', defer err2, announceLimit
 
-				if !err && announceLevels && newLevel > level
-					if !err2 && newLevel % announceLimit == 0 && activity > 0
+				if not err and newLevel > level
+					if announceLevels and not err2 and newLevel % announceLimit == 0 and activity > 0
 						await @getDisplayName defer err, displayName
 						await otherChannel.getDisplayName defer err, otherName
 						Mikuia.Chat.sayUnfiltered channel, '.me > ' + displayName + ' just advanced to ' + otherName + ' Level ' + newLevel + '!'
+					
+					Mikuia.Events.emit 'levels.levelup',
+						username: @getName()
+						displayName: displayName
+						channel: channel
+						level: newLevel
 
 		else
 			await @updateTotalLevel defer whatever
