@@ -440,6 +440,10 @@ class exports.Chat
 
 				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Joined the channel. Rate Limiting Profile: ') + rateLimitingProfile
 
+				Mikuia.Events.emit 'mikuia.join',
+					channel: Channel.getName()
+					displayName: displayName
+
 		client.on 'notice', (channel, noticeId, params) =>
 			if noticeId == 'msg_banned' || noticeId == 'msg_timedout'
 				Channel = new Mikuia.Models.Channel channel

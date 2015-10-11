@@ -19,7 +19,7 @@ html
 					a.navbar-brand(href='/')=Mikuia.settings.bot.name
 
 				.collapse.navbar-collapse
-					ul.nav.navbar-nav
+					ul.nav.navbar-nav#links
 						li(class=(path == '/streams' ? 'active' : undefined))
 							a(href='/streams')
 								i.fa.fa-video-camera
@@ -58,12 +58,14 @@ html
 							a(href='http://support.mikuia.tv')
 								i.fa.fa-life-ring
 								|  Support
-					if !user
-						ul.nav.navbar-nav.navbar-right.pull-right
+					ul.nav.navbar-nav.navbar-right.pull-right
+						li#search
+							a(href='#')
+								i.fa.fa-search
+						if !user
 							li
 								a(href='/auth/twitch') Login with Twitch
-					else
-						ul.nav.navbar-nav.navbar-right.pull-right
+						else
 							li.dropdown
 								a.dropdown-toggle(href='#', data-toggle='dropdown')
 									img.img-circle(src='/img/avatars/' + user.username + '.jpg', width='18', height='18')
@@ -78,8 +80,9 @@ html
 										a(href='/dashboard') Dashboard
 									li
 										a(href='/logout') Logout
-					if Mikuia.settings.bot.disableChat
-						p.navbar-text.navbar-right.navbar-alert #{Mikuia.settings.bot.name} is currently globally banned from the chat.
+					form.navbar-form.navbar-left.pull-right#search-bar(role='search', style='display: none;')
+						.form-group
+							input.form-control#search-field(type='text', autocomplete='off', data-provide="typeahead", placeholder='Search')
 		block content
 		.container.animation-fade-in-up
 			hr
@@ -103,6 +106,7 @@ html
 		script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js')
 		script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js')
 		script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js')
+		script(type='text/javascript', src='/js/bootstrap3-typeahead.min.js')
 		script(type='text/javascript', src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
 		script(type='text/javascript', src='/socket.io/socket.io.js')
 		script(type='text/javascript').
@@ -111,6 +115,27 @@ html
 				html: true
 			})
 			$('.timeago').timeago()
+
+			$('#search').click(function() {
+				$('#links').toggle()
+				$('#search-bar').toggle()
+				$('#search-field').focus()
+			})
+
+			$('#search-field').typeahead({
+				delay: 300,
+				items: 5,
+				minLength: 3,
+				source: function(query, process) {
+					$.post('/search', {
+						type: 'username-completion',
+						query: query
+					}).success(function(result) {
+						process(JSON.parse(result))
+					})
+					
+				}
+			})
 
 		script.
 			var _prum = [['id', '548875e2abe53d37782bdebd'],
