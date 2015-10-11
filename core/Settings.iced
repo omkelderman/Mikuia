@@ -13,6 +13,9 @@ defaultSettings =
 		name: 'YourBotNameHere'
 		oauth: 'oauth:YOUR_TWITCH_IRC_OAUTH_KEY'
 		autojoin: []
+	elasticsearch:
+		enable: false
+		host: 'localhost:9200'
 	plugins: {}
 	redis:
 		host: '127.0.0.1'
