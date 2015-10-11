@@ -100,7 +100,7 @@ block content
 
 block footerScript
 	script(type='text/javascript').
-		Mikuia.usernameCompletion($('#manualUsername'))
+		Mikuia.usernameCompletion($('#manualUsername'), false)
 
 		function confirmReset() {
 			$.post('/dashboard/plugins/coins/reset').done(function() {
