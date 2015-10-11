@@ -109,6 +109,7 @@ html
 		script(type='text/javascript', src='/js/bootstrap3-typeahead.min.js')
 		script(type='text/javascript', src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
 		script(type='text/javascript', src='/socket.io/socket.io.js')
+		script(type='text/javascript', src='/js/mikuia.js')
 		script(type='text/javascript').
 			$('[rel=tooltip]').tooltip({
 				container: 'body',
@@ -123,22 +124,7 @@ html
 				$('#search-field').focus()
 			})
 
-			$('#search-field').typeahead({
-				delay: 250,
-				items: 5,
-				minLength: 1,
-				source: function(query, process) {
-					$.post('/search', {
-						type: 'username-completion',
-						query: query
-					}).success(function(result) {
-						process(JSON.parse(result))
-					})
-				},
-				afterSelect: function(item) {
-					window.location = '/user/' + item.toLowerCase()
-				}
-			})
+			Mikuia.usernameCompletion($('#search-field'))
 
 		script.
 			var _prum = [['id', '548875e2abe53d37782bdebd'],
