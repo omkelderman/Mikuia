@@ -426,6 +426,7 @@ class exports.Chat
 			if username == @Mikuia.settings.bot.name.toLowerCase()
 				Channel = new Mikuia.Models.Channel channel
 				await
+					Channel.getCleanDisplayName defer err, cleanDisplayName
 					Channel.getDisplayName defer err, displayName
 					Channel.isSupporter defer err, isSupporter
 
@@ -442,7 +443,7 @@ class exports.Chat
 
 				Mikuia.Events.emit 'mikuia.join',
 					channel: Channel.getName()
-					displayName: displayName
+					displayName: cleanDisplayName
 
 		client.on 'notice', (channel, noticeId, params) =>
 			if noticeId == 'msg_banned' || noticeId == 'msg_timedout'

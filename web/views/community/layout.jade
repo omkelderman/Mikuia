@@ -123,7 +123,7 @@ html
 			})
 
 			$('#search-field').typeahead({
-				delay: 300,
+				delay: 250,
 				items: 5,
 				minLength: 3,
 				source: function(query, process) {
@@ -133,7 +133,6 @@ html
 					}).success(function(result) {
 						process(JSON.parse(result))
 					})
-					
 				}
 			})
 
