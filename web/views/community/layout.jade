@@ -125,7 +125,7 @@ html
 			$('#search-field').typeahead({
 				delay: 250,
 				items: 5,
-				minLength: 3,
+				minLength: 1,
 				source: function(query, process) {
 					$.post('/search', {
 						type: 'username-completion',
@@ -133,6 +133,9 @@ html
 					}).success(function(result) {
 						process(JSON.parse(result))
 					})
+				},
+				afterSelect: function(item) {
+					window.location = '/user/' + item.toLowerCase()
 				}
 			})
 
