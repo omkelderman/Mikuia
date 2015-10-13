@@ -503,10 +503,7 @@ class exports.Chat
 						@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Obtained live channels... (' + chunkList.length + ')')
 						await @Mikuia.Chat.joinMultiple joinList, defer uselessfulness
 
-			# Yay, save dat stuff.
-			if !twitchFailure
-				await @Mikuia.Database.del 'mikuia:streams', defer err, response
-
+			await @Mikuia.Database.del 'mikuia:streams', defer err, response
 			await
 				for stream in streamList
 					@Mikuia.Database.sadd 'mikuia:streams', stream.channel.name, defer err, whatever
