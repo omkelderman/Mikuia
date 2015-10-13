@@ -74,7 +74,7 @@ checkForRequest = (user, Channel, message, whisper) =>
 	continueCheck = true
 	await Channel.getSetting 'osu', 'requestSubMode', defer err, requestSubMode
 	if !err && requestSubMode
-		if user.subscriber
+		if not user.subscriber
 			continueCheck = false
 
 	await Channel.getSetting 'osu', 'requestUserLimit', defer err, requestUserLimit
