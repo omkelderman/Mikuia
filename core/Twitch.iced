@@ -36,7 +36,7 @@ class exports.Twitch
 			if err || not result.req.res.body?.streams?
 				if !completed
 					@Mikuia.Log.error 'Failed to obtain stream list from Twitch API.'
-					callback err, null
+					callback true, null
 					completed = true
 			else
 				if !completed
