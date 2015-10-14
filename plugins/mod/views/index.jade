@@ -1,26 +1,23 @@
-extends ../../../web/views/layout
+extends ../../../web/views/dashboard/layout
 
 block content
-	.page-head
-		.page-title
-			h1
-				| Mod Tools
-				small  because people are cray
-	ul.page-breadcrumb.breadcrumb
-		li
-			a(href='/dashboard') Dashboard
-			i.fa.fa-circle
-		li
-			a Plugins
-			i.fa.fa-circle
-		li
-			a Mod Tools
-			i.fa.fa-circle
-		li
-			a Banned Words
+	h3.page-title
+		| Mod Tools 
+		small because Twitch chat is cray
+	.page-bar
+		ul.page-breadcrumb
+			li
+				i.fa.fa-home
+				a(href='/dashboard') Dashboard
+				i.fa.fa-angle-right
+			li
+				a(href='/dashboard/plugins') Plugins
+				i.fa.fa-angle-right
+			li
+				a Mod Tools
 
 	.row
-		.col-md-4
+		.col-md-6
 			.portlet.light
 				.portlet-title
 					.caption
@@ -54,7 +51,7 @@ block content
 						.input-group-btn
 							button.btn.red#addWord(type='button') Add word
 						input.form-control#word
-		.col-md-4
+		.col-md-6
 			.portlet.light
 				.portlet-title
 					.caption

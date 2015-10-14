@@ -1,7 +1,6 @@
 logs/
 node_modules/
-plugins/keen
-plugins/nodebb
+plugins/custom
 plugins/paypal
 plugins/slack
 plugins/steam

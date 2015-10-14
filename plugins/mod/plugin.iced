@@ -3,7 +3,7 @@ urlregex = require 'url-regex'
 Mikuia.Events.on 'twitch.message', (user, to, message) =>
 	Channel = new Mikuia.Models.Channel to
 	await Channel.isPluginEnabled 'mod', defer err, enabled
-	if !err && enabled
+	if not err and enabled
 		doTimeout = false
 		timeoutReason = ''
 
@@ -125,11 +125,11 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 							if warnings > 0 && !isBan
 								timeoutDuration = timeoutDuration * Math.pow(timeoutMultiplier, warnings)
 
-							Mikuia.Chat.say Channel.getName(), '.timeout ' + user.username + ' ' + timeoutDuration
+							Mikuia.Chat.sayUnfiltered Channel.getName(), '.timeout ' + user.username + ' ' + timeoutDuration
 
 							await Channel._setex 'plugin:mod:warnings:' + user.username, timeoutCooldown, parseInt(warnings) + 1, defer whatever, whatever2
 						else
-							Mikuia.Chat.say Channel.getName(), '.ban ' + user.username
+							Mikuia.Chat.sayUnfiltered Channel.getName(), '.ban ' + user.username
 
 						if enableMessages
 							await Channel.getSetting 'mod', timeoutReason + 'Message', defer whatever, timeoutMessageFormat

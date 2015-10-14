@@ -12,7 +12,6 @@ checkAuth = (req, res, next) ->
 		return next()
 	res.redirect '/login'
 
-
 Mikuia.Web.get '/dashboard/plugins/mod', checkAuth, (req, res) ->
 	Channel = new Mikuia.Models.Channel req.user.username
 	await Channel._smembers 'plugin:mod:bannedWords', defer whatever, words
