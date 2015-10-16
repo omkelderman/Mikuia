@@ -85,6 +85,11 @@ block content
 							a.btn.btn-twitch.btn-xs(href='http://twitch.tv/' + Channel.name)
 								img(src='/img/glitch.png', height='18', width='18')
 								|  View Twitch.tv profile
+							br
+
+							a.btn.btn-default.btn-xs(href='/user/' + Channel.name + '/inventory')
+								.fa.fa-briefcase(style='width: 18px;')
+								|  View inventory
 
 							if splashButtons
 								each pluginButtons in splashButtons
