@@ -1,0 +1,41 @@
+{
+	"rarities": {
+		"common": {
+			"value": 0,
+			"name": "Common",
+			"color": "#999999"
+		},
+		"uncommon": {
+			"value": 1,
+			"name": "Uncommon",
+			"color": "#1eff00"
+		},
+		"rare": {
+			"value": 2,
+			"name": "Rare",
+			"color": "#338BFF"
+		},
+		"epic": {
+			"value": 3,
+			"name": "Epic",
+			"color": "#B356F0"
+		},
+		"legendary": {
+			"value": 4,
+			"name": "Legendary",
+			"color": "#FF9933"
+		},
+		"unique": {
+			"value": 5,
+			"name": "Unique",
+			"color": "#e6cc80"
+		}
+	},
+	"items": {
+		"1": {
+			"name": "Mystery Item",
+			"rarity": "common",
+			"description": "Who knows what it is?"
+		}
+	}
+}

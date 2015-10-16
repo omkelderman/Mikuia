@@ -102,7 +102,6 @@ html
 						br
 						a(href='http://reddit.com/r/cats') Cats
 		br
-		block footerScript
 		script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js')
 		script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js')
 		script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js')
@@ -126,6 +125,7 @@ html
 
 			Mikuia.usernameCompletion($('#search-field'), true)
 
+		block footerScript
 		script.
 			var _prum = [['id', '548875e2abe53d37782bdebd'],
 			             ['mark', 'firstbyte', (new Date()).getTime()]];

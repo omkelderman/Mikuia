@@ -1,0 +1,13 @@
+{
+	"name": "Items",
+	"description": "Mikuia Items",
+	"baseFile": "plugin.iced",
+	"hidden": true,
+	"settings": {
+		"server": {
+			"dropChance": 0.1,
+			"dropCooldown": 600,
+			"dropList": [1]
+		}
+	}
+}
