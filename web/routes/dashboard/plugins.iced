@@ -13,7 +13,7 @@ module.exports =
 			await Channel.getSettings pluginName, defer err, settings[pluginName]
 
 			categories[pluginName] = {}
-			manifest = Mikuia.Plugin.getManifest(pluginName)
+			manifest = Mikuia.Plugin.getManifest pluginName
 			if manifest?.settings?.channel?
 				for settingName, setting of manifest.settings.channel
 					if setting.category?
@@ -34,12 +34,48 @@ module.exports =
 		if data.status? && data.name?
 			switch data.status
 				when "enable"
-					await Channel.enablePlugin data.name, defer err, data
-					res.send
-						enabled: true
+					depsMet = true
+					manifest = Mikuia.Plugin.getManifest data.name
+					missingPlugins = []
+
+					if manifest?.dependencies?	
+						await Channel.getEnabledPlugins defer err, enabledPlugins
+
+						for plugin in manifest.dependencies
+							if plugin not in enabledPlugins
+								depsMet = false
+								missingPlugins.push plugin
+
+					if depsMet
+						await Channel.enablePlugin data.name, defer err, data
+						res.send
+							enabled: true
+					else
+						res.send
+							enabled: false
+							reason: 'This plugin requires: ' + missingPlugins.join(',') + '.' 
+
 				when "disable"
-					await Channel.disablePlugin data.name, defer err, data
-					res.send
-						enabled: false
+					await Channel.getEnabledPlugins defer err, enabledPlugins
+
+					pluginRequired = false
+					requiredBy = []
+
+					for plugin in enabledPlugins
+						manifest = Mikuia.Plugin.getManifest plugin
+
+						if manifest?.dependencies?
+							if data.name in manifest.dependencies
+								pluginRequired = true
+								requiredBy.push plugin
+
+					if not pluginRequired
+						await Channel.disablePlugin data.name, defer err, data
+						res.send
+							enabled: false
+					else
+						res.send
+							enabled: true
+							reason: 'This plugin is required by: ' + requiredBy.join(',') + '.'
 		else
 			res.send 500
