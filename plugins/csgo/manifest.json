@@ -1,0 +1,9 @@
+{
+	"name": "Counter-Strike: Global Offensive",
+	"description": "Stuff related to CS:GO",
+	"baseFile": "plugin.iced",
+	"dependencies": [
+		"steam"
+	],
+	"hidden": false
+}
