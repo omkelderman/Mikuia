@@ -140,7 +140,7 @@ updateUserBest = (stream, callback) =>
 	else
 		Channel = new Mikuia.Models.Channel stream
 		await
-			Channel.getDisplayName defer errer, displayName
+			Channel.getDisplayName defer error, displayName
 			Channel.getSetting 'osu', 'name', defer err, name
 			Channel.getSetting 'osu', 'mode', defer err2, mode
 		if !err && name?
