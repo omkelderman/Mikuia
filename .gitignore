@@ -3,7 +3,6 @@ node_modules/
 plugins/custom
 plugins/paypal
 plugins/slack
-plugins/steam
 web/public/img/avatars/
 npm-debug.log
 settings.json

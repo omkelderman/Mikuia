@@ -1,0 +1,31 @@
+{
+        "name": "Steam",
+        "description": "Steam stuff!",
+        "baseFile": "plugin.iced",
+        "webFile": "web.iced",
+        "hidden": false,
+        "settings": {
+                "channel": {
+                        "steamId": {
+                                "name": "Steam ID",
+                                "category": "General",
+                                "description": "Your Steam ID.",
+                                "default": "",
+                                "type": "disabled",
+                                "link": {
+                                        "url": "/dashboard/plugins/steam/auth",
+                                        "name": "Click here to login with Steam."
+                                }
+                        }
+                },
+                "server": {
+                        "accountName": "steam_account_name",
+                        "password": "steam_password",
+                        "sgCode": "steam_guard_code_leave_empty_before_and_after_first_login",
+                        "apiKey": "steam_web_api_key_here",
+                        "whitelist": [
+                                "steam_id_here"
+                        ]
+                }
+        }
+}
