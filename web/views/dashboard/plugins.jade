@@ -83,5 +83,8 @@ block footerScript
 					$('.plugin-toggle[name=' + name + ']').attr('onclick', "pluginToggle('" + name + "', 'enable')")
 					$('.plugin-settings[name=' + name + ']').hide()
 				}
+				if(response.reason) {
+					toastr.error(response.reason)
+				}
 			})
 		}
