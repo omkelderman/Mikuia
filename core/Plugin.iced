@@ -17,8 +17,9 @@ class exports.Plugin
 
 	getHandlers: -> @handlers
 
-	getManifest: (plugin) ->
-		@plugins[plugin]?.manifest
+	getManifest: (plugin) -> @plugins[plugin]?.manifest
+
+	getPlugin: (plugin) -> @plugins[plugin]?.module
 
 	handlerExists: (handler) -> @handlers[handler]?
 
