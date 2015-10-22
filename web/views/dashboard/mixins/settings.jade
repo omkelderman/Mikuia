@@ -45,7 +45,8 @@ mixin setting(setting, settingName, userSettings)
 					label(for=settingName)=setting.name
 					span.help-block
 						| #{setting.description} 
-						a(href=setting.link.url)=setting.link.name
+						if setting.link
+							a(href=setting.link.url)=setting.link.name
 			when 'format'
 				.form-group.form-md-line-input
 					if userSettings && userSettings[settingName]
