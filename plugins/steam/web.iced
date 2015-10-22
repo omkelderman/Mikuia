@@ -19,6 +19,8 @@ Mikuia.Web.get '/dashboard/plugins/steam/auth', steam.authenticate(), (req, res)
 Mikuia.Web.get '/dashboard/plugins/steam/verify', checkAuth, steam.verify(), (req, res) =>
 	if req.steam?.steamid?
 		Channel = new Mikuia.Models.Channel req.user.username
-		await Channel.setSetting 'steam', 'steamId', req.steam.steamid, defer whatever
+		await
+			Channel.setSetting 'steam', 'steamId', req.steam.steamid, defer whatever
+			Mikuia.Database.hset 'plugin:steam:users', req.steam.steamid, Channel.getName(), defer whatever
 
 	res.redirect '/dashboard/settings#steam'
