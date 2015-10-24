@@ -1,6 +1,10 @@
 csgo = require 'csgo'
 steam = require 'steam'
 
+CSGO = null
+GC = null
+plugin = null
+
 rankNames = [
 	'Unranked'
 	'Silver I'
@@ -26,11 +30,6 @@ rankNames = [
 twitchDone = false
 
 launchAndUpdate = =>
-	plugin = Mikuia.Plugin.getPlugin 'steam'
-
-	GC = new steam.SteamGameCoordinator plugin.bot, 730
-	CSGO = new csgo.CSGOClient plugin.user, GC, false
-
 	# LOL
 	CSGO.launch()
 
@@ -83,10 +82,19 @@ launchAndUpdate = =>
 					CSGO.playerProfileRequest CSGO.ToAccountID playerCheckQueue.pop()
 				, 2000
 			else
+				CSGO.removeAllListeners()
 				CSGO.exit()
+
+	CSGO.on 'unready', =>
+		CSGO.removeAllListeners()
 
 Mikuia.Events.on 'twitch.updated', =>
 	if not twitchDone
+		plugin = Mikuia.Plugin.getPlugin 'steam'
+
+		GC = new steam.SteamGameCoordinator plugin.bot, 730
+		CSGO = new csgo.CSGOClient plugin.user, GC, false
+
 		launchAndUpdate()
 
 		setInterval () =>
