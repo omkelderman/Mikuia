@@ -17,7 +17,30 @@ block content
 				a Settings
 	.row
 		form.form(action='/dashboard/commands/save/' + command, method='post', role='form')
-			.col-lg-4.col-md-6.col-sm-12
+			.col-lg-8.col-md-8.col-sm-12
+				.portlet.light
+					.portlet-title
+						.caption
+							i.fa.fa-cogs
+							span.caption-subject.bold.uppercase Handler Settings
+					.portlet-body.form
+						.form-body
+							if settings
+								+settings(settings, userSettings)
+							else
+								.note.note-warning This handler has no additional settings.
+						.form-actions
+							button.btn.btn-primary(type='submit') Save
+
+				if guide
+					.portlet.light.bg-inverse
+						.portlet-title
+							.caption.font-grey-silver
+								i.fa.fa-cogs.font-grey-silver
+								span.caption-subject.bold.uppercase Handler Guide
+								span.caption-helper  #{handlerName}
+						.portlet-body!=guide
+			.col-lg-4.col-md-4.col-sm-12
 				.portlet.light
 					.portlet-title
 						.caption
@@ -111,27 +134,3 @@ block content
 											span.box
 											| Whisper Response 
 											i.fa.fa-question-circle(rel='tooltip', title='The command response will be whispered (if possible)')
-
-			.col-lg-4.col-md-6.col-sm-12
-				.portlet.light
-					.portlet-title
-						.caption
-							i.fa.fa-cogs
-							span.caption-subject.bold.uppercase Handler Settings
-					.portlet-body.form
-						.form-body
-							if settings
-								+settings(settings, userSettings)
-							else
-								.note.note-warning This handler has no additional settings.
-						.form-actions
-							button.btn.btn-primary(type='submit') Save
-			.col-lg-4.col-md-6.col-sm-12
-				if guide
-					.portlet.light.bg-inverse
-						.portlet-title
-							.caption.font-grey-silver
-								i.fa.fa-cogs.font-grey-silver
-								span.caption-subject.bold.uppercase Handler Guide
-								span.caption-helper  #{handlerName}
-						.portlet-body!=guide
