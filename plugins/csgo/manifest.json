@@ -1,5 +1,5 @@
 {
-	"name": "Counter-Strike: Global Offensive",
+	"name": "[BETA] Counter-Strike: Global Offensive",
 	"description": "Stuff related to CS:GO",
 	"baseFile": "plugin.iced",
 	"dependencies": [
@@ -13,32 +13,14 @@
 			"format": {
 					"name": "Output Format",
 					"description": "Format of the command output.",
-					"default": "{{rank_name}} ({{wins}} wins)",
+					"default": "{{rankName}} ({{wins}} wins)",
 					"type": "format",
 					"variables": {
-						"rank_id": "MM Rank ID",
-						"rank_name": "MM Rank Name",
+						"rankId": "MM Rank ID",
+						"rankName": "MM Rank Name",
 						"wins": "MM Win Count"
 					}
 				}
-			}
-		}
-	},
-	"settings": {
-		"channel": {
-			"rank": {
-				"name": "MM Rank",
-				"category": "MM Stats",
-				"description": "Your MM rank (1 - Silver I, 18 - Global Elite)",
-				"default": "",
-				"type": "disabled"
-			},
-			"wins": {
-				"name": "MM Wins",
-				"category": "MM Stats",
-				"description": "Your MM win count.",
-				"default": "",
-				"type": "disabled"
 			}
 		}
 	}

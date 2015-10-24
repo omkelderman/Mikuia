@@ -73,8 +73,8 @@ launchAndUpdate = =>
 					if profile.ranking?.wins? then wins = profile.ranking.wins
 
 					await
-						Mikuia.Database.hset 'channel:' + Channel.getName() + ':plugin:csgo:settings', 'rank', rank, defer whatever
-						Mikuia.Database.hset 'channel:' + Channel.getName() + ':plugin:csgo:settings', 'wins', wins, defer whatever
+						Channel.setPluginData 'csgo', 'rank', rank, defer whatever
+						Channel.setPluginData 'csgo', 'wins', wins, defer whatever
 
 			if playerCheckQueue.length > 0
 				setTimeout () =>
@@ -93,16 +93,19 @@ Mikuia.Events.on 'steam.connected', =>
 Mikuia.Events.on 'csgo.stats', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
 
-	await Channel.getSettings 'csgo', defer err, settings
-	if not err
-		rank_id = parseInt settings.rank
-		wins = parseInt settings.wins
+	await
+		Channel.getPluginData 'csgo', defer err, pluginData
 
-		if rank_id >= 0 and rank_id <= 18
+	if not err
+		rankId = 0
+		wins = 0
+
+		if pluginData?.rank? then rankId = parseInt pluginData.rank
+		if pluginData?.wins? then wins = parseInt pluginData.wins
+
+		if rankId >= 0 and rankId <= 18
 			message = Mikuia.Format.parse data.settings.format,
-				rank_id: rank_id
-				rank_name: rankNames[rank_id]
-				wins: wins
+				{rankId, rankName: rankNames[rankId], wins}
 
 			if data.settings._whisper
 				Mikuia.Chat.whisper data.user.username, message
