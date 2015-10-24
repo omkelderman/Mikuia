@@ -168,7 +168,7 @@ updateUserBest = (stream, callback) =>
 			userBest[name][mode] = best
 
 			# 6 hour difference between osu! servers...
-			userBest[name].timeUpdated = (new Date()).getTime() + (6 * 60 * 60 * 1000)
+			userBest[name].timeUpdated = (new Date()).getTime() + (7 * 60 * 60 * 1000)
 			Mikuia.Log.info cli.magentaBright('osu!') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Updated best ranks for ' + cli.cyanBright(name) + '.')
 		callback false, null
 
