@@ -23,6 +23,8 @@ rankNames = [
 	'The Global Elite'
 ]
 
+twitchDone = false
+
 launchAndUpdate = =>
 	plugin = Mikuia.Plugin.getPlugin 'steam'
 
@@ -83,12 +85,15 @@ launchAndUpdate = =>
 			else
 				CSGO.exit()
 
-Mikuia.Events.on 'steam.connected', =>
-	launchAndUpdate()
-
-	setInterval () =>
+Mikuia.Events.on 'twitch.updated', =>
+	if not twitchDone
 		launchAndUpdate()
-	, 10 * 60 * 1000
+
+		setInterval () =>
+			launchAndUpdate()
+		, 10 * 60 * 1000
+
+		twitchDone = true
 
 Mikuia.Events.on 'csgo.stats', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
