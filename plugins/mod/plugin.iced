@@ -56,7 +56,7 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 					regex = ''
 
 					if domain.indexOf('*.') == 0
-						regex = regex + '(http:\/\/|https:\/\/|)(([a-z0-9-]+\.)+|)'
+						regex = regex + '(http:\/\/|https:\/\/|)(([a-z0-9-]+\\.)+|)'
 						domain = domain.slice 2, domain.length
 					else
 						regex = regex + '(http:\/\/|https:\/\/|)'
