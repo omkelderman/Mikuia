@@ -32,12 +32,11 @@ bot.on 'logOnResponse', (response) ->
 
 		Mikuia.Events.emit 'steam.connected'
 
-bot.on 'loggedOff', () ->
+bot.on 'loggedOff', ->
 	console.log 'Logged off.'
-	bot.removeAllListeners()
 	bot.disconnect()
 	bot.connect()
-	
+
 bot.on 'error', (e) ->
 	console.log 'Error: ' + e
 
