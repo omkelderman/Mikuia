@@ -45,11 +45,11 @@ user.on 'updateMachineAuth', (authData, callback) ->
 	callback
 		sha_file: crypto.createHash('sha1').update(authData.bytes).digest()
 
-if not Mikuia.settings.bot.debug
-	friends.on 'friend', (steamId, relationshipType) ->
-		if relationshipType == Steam.EFriendRelationship.PendingInvitee
-			friends.addFriend steamId
+friends.on 'friend', (steamId, relationshipType) ->
+	if relationshipType == Steam.EFriendRelationship.PendingInvitee
+		friends.addFriend steamId
 
+if not Mikuia.settings.bot.debug
 	friends.on 'friendMsg', (steamId, message, type) ->
 		if type == Steam.EChatEntryType.ChatMsg and steamId in Mikuia.settings.plugins.steam.whitelist
 			if message.indexOf('/') == 0
