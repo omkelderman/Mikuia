@@ -172,6 +172,15 @@ class exports.Channel extends Mikuia.Model
 	isPluginEnabled: (name, callback) ->
 		@_sismember 'plugins', name, callback
 
+	getPluginData: (plugin, key, callback) ->
+		if !callback?
+			@_hgetall 'plugin:' + plugin + ':data', key
+		else
+			@_hget 'plugin:' + plugin + ':data', key, callback
+
+	setPluginData: (plugin, key, value, callback) ->
+		@_hset 'plugin:' + plugin + ':data', key, value, callback
+
 	# "Convenience" functions that help get and set data...  or something.
 
 	getBio: (callback) ->
