@@ -9,47 +9,47 @@ exports.friends = friends = new Steam.SteamFriends bot
 exports.user = user = new Steam.SteamUser bot
 joinedChannel = {}
 
-bot.connect()
-bot.on 'connected', ->
-	loginDetails =
-		account_name: Mikuia.settings.plugins.steam.accountName
-		password: Mikuia.settings.plugins.steam.password
-
-	if Mikuia.settings.plugins.steam.authCode != ''
-		loginDetails.auth_code = Mikuia.settings.plugins.steam.authCode
-
-	await fs.readFile 'sentry.sha', defer err, sentryFile
-	if not err
-		loginDetails.sha_sentryfile = crypto.createHash('sha1').update(sentryFile).digest()
-
-	user.logOn loginDetails
-
-bot.on 'logOnResponse', (response) ->
-	console.log response
-	if response.eresult == Steam.EResult.OK
-		friends.setPersonaState Steam.EPersonaState.Online
-		friends.setPersonaName 'Mikuia'
-
-		Mikuia.Events.emit 'steam.connected'
-
-bot.on 'loggedOff', ->
-	console.log 'Logged off.'
-	bot.disconnect()
-	bot.connect()
-
-bot.on 'error', (e) ->
-	console.log 'Error: ' + e
-
-user.on 'updateMachineAuth', (authData, callback) ->
-	fs.writeFileSync 'sentry.sha', authData.bytes
-	callback
-		sha_file: crypto.createHash('sha1').update(authData.bytes).digest()
-
-friends.on 'friend', (steamId, relationshipType) ->
-	if relationshipType == Steam.EFriendRelationship.PendingInvitee
-		friends.addFriend steamId
-
 if not Mikuia.settings.bot.debug
+	bot.connect()
+	bot.on 'connected', ->
+		loginDetails =
+			account_name: Mikuia.settings.plugins.steam.accountName
+			password: Mikuia.settings.plugins.steam.password
+
+		if Mikuia.settings.plugins.steam.authCode != ''
+			loginDetails.auth_code = Mikuia.settings.plugins.steam.authCode
+
+		await fs.readFile 'sentry.sha', defer err, sentryFile
+		if not err
+			loginDetails.sha_sentryfile = crypto.createHash('sha1').update(sentryFile).digest()
+
+		user.logOn loginDetails
+
+	bot.on 'logOnResponse', (response) ->
+		console.log response
+		if response.eresult == Steam.EResult.OK
+			friends.setPersonaState Steam.EPersonaState.Online
+			friends.setPersonaName 'Mikuia'
+
+			Mikuia.Events.emit 'steam.connected'
+
+	bot.on 'loggedOff', ->
+		console.log 'Logged off.'
+		bot.disconnect()
+		bot.connect()
+
+	bot.on 'error', (e) ->
+		console.log 'Error: ' + e
+
+	user.on 'updateMachineAuth', (authData, callback) ->
+		fs.writeFileSync 'sentry.sha', authData.bytes
+		callback
+			sha_file: crypto.createHash('sha1').update(authData.bytes).digest()
+
+	friends.on 'friend', (steamId, relationshipType) ->
+		if relationshipType == Steam.EFriendRelationship.PendingInvitee
+			friends.addFriend steamId
+
 	friends.on 'friendMsg', (steamId, message, type) ->
 		if type == Steam.EChatEntryType.ChatMsg and steamId in Mikuia.settings.plugins.steam.whitelist
 			if message.indexOf('/') == 0
