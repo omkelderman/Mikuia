@@ -145,7 +145,11 @@ app.post '/dashboard/settings/toggle', checkAuth, routes.dashboard.settings.togg
 app.get '/', routes.community.index
 app.get '/about', routes.community.about
 app.get '/badge/:badgeId', routes.community.badge
-app.get '/guide', routes.community.guide
+app.get '/guide', routes.community.guides.quickstart
+app.get '/guides/csgo', routes.community.guides.csgo
+app.get '/guides/levels', routes.community.guides.levels
+app.get '/guides/osu', routes.community.guides.osu
+app.get '/guides/quickstart', routes.community.guides.quickstart
 app.get '/leagues', checkAuth, routes.community.leagues.index
 app.get '/leagues/leaderboards', routes.community.leagues.leaderboards
 app.get '/levels', routes.community.levels

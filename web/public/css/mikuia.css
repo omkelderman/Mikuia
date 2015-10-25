@@ -71,6 +71,11 @@ body.mikuia {
 	box-shadow: 0px 0px 10px #E65100 !important;
 }
 
+.bg-material-osu-pink {
+	background-color: #b17 !important;
+	box-shadow: 0px 0px 10px #e39 !important;
+}
+
 .bg-material-red {
 	background-color: #F44336 !important;
 	box-shadow: 0px 0px 10px #B71C1C !important;

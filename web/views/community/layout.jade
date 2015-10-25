@@ -28,10 +28,21 @@ html
 							a(href='/levels')
 								i.fa.fa-star-o
 								|  Levels
-						li(class=(path.indexOf('/guide') == 0 ? 'active' : undefined))
-							a(href='/guide')
+						li.dropdown(class=(path.indexOf('/guide') == 0 ? 'active' : undefined))
+							a.dropdown-toggle(href='#', data-toggle='dropdown')
 								i.fa.fa-book
-								|  Guide
+								|  Guides
+								span.caret
+							ul.dropdown-menu(role='menu')
+								li
+									a(href='/guides/quickstart') Quick Start Guide
+								li.dropdown-header Advanced Guides
+								li
+									a(href='/guides/csgo') CS:GO Rank Command
+								li
+									a(href='/guides/levels') Mikuia Levels
+								li
+									a(href='/guides/osu') osu! Requests
 						li(class=(path == '/supporter' ? 'active' : undefined))
 							a(href='/supporter')
 								i.fa.fa-money

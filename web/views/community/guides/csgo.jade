@@ -1,0 +1,122 @@
+extends ../layout
+
+block content
+	.splash.splash-index.bg-material-grey(style='background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/img/guides/csgo/background.jpg");')
+		.container
+			.row
+				.col-md-12.animation-fade-in-right
+					h1 Counter-Strike: Global Offensive Guide
+	.container
+		.row
+			.col-md-12.animation-fade-in-down
+				.alert.alert-warning
+					strong Warning.
+					|  This guide pretends you got at least to Step 3 in the 
+					a(href='/guides/quickstart') Quick Start Guide
+					| . If you didn't, please check it out, or at least figure out how to enable the bot.
+				p.
+					This guide will explain how to get your own CS:GO MM rank command like this one:
+				img.image-border(src='http://h.hatsu.tv/gxqyxJ.png')
+
+		.row.animation-fade-in-left
+			.col-md-12
+				.page-header
+					h1
+						| Step 1
+						small  Enable the Steam plugin.
+
+		.row.animation-fade-in-right
+			.col-md-6
+				p.
+					First thing you'll have to do is enabling the Steam plugin
+					#[a(href='/dashboard/plugins') here].
+					#[br]
+					It's required by the CS:GO and lets you link your Steam account with Mikuia.
+					#[br]
+					Go to your Dashboard, select Plugins, find Steam on the list, and enable it.
+
+			.col-md-6
+				img.image-border(src='http://h.hatsu.tv/qeCExG.png')
+
+		.row.animation-fade-in-left
+			.col-md-12
+				.page-header
+					h1
+						| Step 2
+						small  Link your account with Steam.
+
+		.row.animation-fade-in-right
+			.col-md-6
+				p.
+					After you enable the plugin, click the #[a(href='/dashboard/settings#steam') Settings] button for the Steam plugin.
+					#[br]
+					You should now see an empty field called "Steam ID".
+					#[br]
+					Click the login link under the field to link your Steam account.
+			.col-md-6
+				img.image-border(src='http://h.hatsu.tv/RDr50U.png')			
+
+		.row.animation-fade-in-left
+			.col-md-12
+				.page-header
+					h1
+						| Step 3
+						small  Enable the CS:GO plugin.
+
+		.row.animation-fade-in-right
+			.col-md-6
+				p.
+					This step is very similar to the first one, you should know what to do 
+					#[a(href='/dashboard/plugins') here].
+					
+			.col-md-6
+				img.image-border(src='http://h.hatsu.tv/xeLJlg.png')
+
+		.row.animation-fade-in-left
+			.col-md-12
+				.page-header
+					h1
+						| Step 4
+						small  Add Mikuia to friends on Steam.
+
+		.row.animation-fade-in-right
+			.col-md-6
+				p
+					| This step is self-explanatory too.
+					br
+					a(href='http://steamcommunity.com/id/mikuia') Here's a profile link.
+					
+			.col-md-6
+				img.image-border(src='http://h.hatsu.tv/xqCB6l.png')
+
+		.row.animation-fade-in-left
+			.col-md-12
+				.page-header
+					h1
+						| Step 5
+						small  Add the command.
+
+		.row.animation-fade-in-right
+			.col-md-6
+				p
+					| Mikuia should now include your profile in the profile info checks every 10 minutes.
+					br
+					| Keep in mind that in order for the rank to update:
+					ul
+						li You need to be live on Twitch.
+						li Your stream game has to be set as Counter-Strike: Global Offensive.
+						li Your Steam account has to be linked to Mikuia.
+						li You need to have CS:GO launched.
+					| Now, you can go to the 
+					a(href='/dashboard/commands') Commands 
+					| and add your rank command.
+					
+			.col-md-6
+				img.image-border(src='http://h.hatsu.tv/H5BVko.png')
+
+		h3.animation-fade-in-up
+			br
+			| Keep in mind that this feature is in beta. If you encounter any critical issues with it, please let me know on 
+			a(href='http://support.mikuia.tv') Mikuia Support
+			| . Have fun.
+			.pull-right - Hatsuney
