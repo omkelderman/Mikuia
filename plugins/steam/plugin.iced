@@ -85,7 +85,7 @@ if not Mikuia.settings.bot.debug
 			console.log steamId + ' (' + type + ')'
 
 	friends.on 'relationships', ->
-		for steamId, relationship in friends.friends
+		for steamId, relationship of friends.friends
 			if relationship == Steam.EFriendRelationship.RequestRecipient
 				friends.addFriend steamId
 
