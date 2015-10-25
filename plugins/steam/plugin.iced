@@ -47,7 +47,7 @@ if not Mikuia.settings.bot.debug
 			sha_file: crypto.createHash('sha1').update(authData.bytes).digest()
 
 	friends.on 'friend', (steamId, relationshipType) ->
-		if relationshipType == Steam.EFriendRelationship.PendingInvitee
+		if relationshipType == Steam.EFriendRelationship.RequestRecipient
 			friends.addFriend steamId
 
 	friends.on 'friendMsg', (steamId, message, type) ->
@@ -83,6 +83,11 @@ if not Mikuia.settings.bot.debug
 					friends.sendMessage steamId, 'You have to join a channel! Use /join <channel>!'
 		else
 			console.log steamId + ' (' + type + ')'
+
+	friends.on 'relationships', ->
+		for steamId, relationship in friends.friends
+			if relationship == Steam.EFriendRelationship.RequestRecipient
+				friends.addFriend steamId
 
 	Mikuia.Events.on 'twitch.message', (user, to, message) =>
 		for steamId, channelName of joinedChannel
