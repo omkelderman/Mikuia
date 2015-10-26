@@ -30,40 +30,36 @@ rankNames = [
 twitchDone = false
 
 launchAndUpdate = =>
-	if plugin.bot.loggedOn
-		# LOL
+	playerCheckQueue = []
+
+	await Mikuia.Streams.getAll defer err, streams
+	if not err and streams?
+		for stream in streams
+			await Mikuia.Database.hget 'mikuia:stream:' + stream, 'game', defer err, game
+			if not err and game == 'Counter-Strike: Global Offensive'
+				Channel = new Mikuia.Models.Channel stream
+				await Channel.isPluginEnabled 'csgo', defer err, enabled
+
+				if enabled
+					await
+						Channel.getDisplayName defer error, displayName
+						Channel.getSetting 'steam', 'steamId', defer err, steamId
+
+					if steamId in Object.keys plugin.friends.personaStates
+						if plugin.friends.personaStates[steamId].gameid == '730'
+							playerCheckQueue.push steamId
+
+	if plugin.bot.loggedOn and playerCheckQueue.length > 0
 		CSGO.launch()
 
 		CSGO.on 'ready', =>
-			playerCheckQueue = []
-
-			await Mikuia.Streams.getAll defer err, streams
-			if not err and streams?
-				for stream in streams
-					await Mikuia.Database.hget 'mikuia:stream:' + stream, 'game', defer err, game
-					if not err and game == 'Counter-Strike: Global Offensive'
-						Channel = new Mikuia.Models.Channel stream
-						await Channel.isPluginEnabled 'csgo', defer err, enabled
-
-						if enabled
-							await
-								Channel.getDisplayName defer error, displayName
-								Channel.getSetting 'steam', 'steamId', defer err, steamId
-
-							if steamId in Object.keys plugin.friends.personaStates
-								if plugin.friends.personaStates[steamId].gameid == '730'
-									playerCheckQueue.push steamId
-
-			if playerCheckQueue.length > 0
-				CSGO.playerProfileRequest CSGO.ToAccountID playerCheckQueue.pop()
-			else
-				CSGO.exit()
+			CSGO.playerProfileRequest CSGO.ToAccountID playerCheckQueue.pop()
 
 			CSGO.on 'playerProfile', (playerProfile) =>
 				if playerProfile?.account_profiles?[0]?
 					profile = playerProfile.account_profiles[0]
 
-					await Mikuia.Database.hget 'plugin:steam:users', CSGO.ToSteamID(profile.account_id), defer err, channel
+					await Mikuia.Database.hget 'plugin:steam:users', CSGO.ToSteamID profile.account_id, defer err, channel
 
 					if not err and channel
 						Channel = new Mikuia.Models.Channel channel
