@@ -59,7 +59,7 @@ launchAndUpdate = =>
 				if playerProfile?.account_profiles?[0]?
 					profile = playerProfile.account_profiles[0]
 
-					await Mikuia.Database.hget 'plugin:steam:users', CSGO.ToSteamID profile.account_id, defer err, channel
+					await Mikuia.Database.hget 'plugin:steam:users', CSGO.ToSteamID(profile.account_id), defer err, channel
 
 					if not err and channel
 						Channel = new Mikuia.Models.Channel channel
