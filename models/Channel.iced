@@ -24,8 +24,10 @@ class exports.Channel extends Mikuia.Model
 		Mikuia.Database.sismember 'mikuia:bots', @getName(), callback
 
 	isLive: (callback) ->
-		# This is bad D:
 		Mikuia.Database.sismember 'mikuia:streams', @getName(), callback
+
+	isPrioritized: (callback) ->
+		Mikuia.Database.sismember 'mikuia:prioritized', @getName(), callback
 
 	isStreamer: (callback) ->
 		@_exists 'plugins', callback

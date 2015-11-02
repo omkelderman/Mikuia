@@ -195,9 +195,9 @@ class exports.Chat
 		await
 			Channel.isBanned defer err, isBanned
 			Channel.isEnabled defer err, isMember
+			Channel.isPrioritized defer err, isPrioritized
 
 		if @joined.indexOf(channel) == -1 and isMember and !isBanned
-
 			await Mikuia.Database.zrangebyscore 'mikuia:join:limiter', '-inf', '+inf', defer err, limitEntries
 					
 			currentTime = (new Date).getTime() * 1000
@@ -209,13 +209,20 @@ class exports.Chat
 
 			if remainingRequests > 0
 				@joinLimiter '', (err, timeLeft) =>
-					if !timeLeft
-						@clients[@nextJoinClient].join channel
-						@joined.push channel
-						@clientJoins[@nextJoinClient].push channel
-						@channelClients[channel] = @nextJoinClient
+					if not timeLeft
+						if not isPrioritized
+							clientIdToUse = @nextJoinClient
+							@nextJoinClient++
+						else
+							await @spawnConnection Channel.getName(), defer err, @clients[Channel.getName()]
+							@clientJoins[Channel.getName()] = []
+							clientIdToUse = Channel.getName()
 
-						@nextJoinClient++
+						@clients[clientIdToUse].join channel
+						@clientJoins[clientIdToUse].push channel
+						@channelClients[channel] = clientIdToUse
+						@joined.push channel
+						
 						callback? false
 					else
 						callback? true
@@ -428,9 +435,14 @@ class exports.Chat
 				await
 					Channel.getCleanDisplayName defer err, cleanDisplayName
 					Channel.getDisplayName defer err, displayName
+					Channel.isPrioritized defer err, isPrioritized
 					Channel.isSupporter defer err, isSupporter
 
-				if isSupporter
+				if isPrioritized
+					channelLimiter[Channel.getName()] = new RateLimiter 19, 30000, true
+					channelTotalLimiter[Channel.getName()] = new RateLimiter 38, 30000, true
+					rateLimitingProfile = cli.magentaBright 'Prioritized (19 per 30s)'
+				else if isSupporter
 					channelLimiter[Channel.getName()] = new RateLimiter 5, 30000, true
 					channelTotalLimiter[Channel.getName()] = new RateLimiter 10, 30000, true
 					rateLimitingProfile = cli.redBright 'Supporter (5 per 30s)'
