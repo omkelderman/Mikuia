@@ -150,7 +150,10 @@ class exports.Chat
 		if forceWhisper
 			settings._whisper = true
 
-		if settings?._cooldown and settings._cooldown > 0
+		if not settings?._cooldown
+			settings._cooldown = 2
+
+		if settings._cooldown > 0
 			if not @commandCooldowns[Channel.getName()]?
 				@commandCooldowns[Channel.getName()] = {}
 

@@ -121,11 +121,11 @@ block content
 							br
 							.form-group.form-md-line-input
 								if userSettings && userSettings._cooldown
-									input.form-control(type='number', name='_cooldown', placeholder='0', value=userSettings._cooldown)
+									input.form-control(type='number', name='_cooldown', placeholder='2', value=userSettings._cooldown)
 								else
-									input.form-control(type='number', name='_cooldown', placeholder='0')
+									input.form-control(type='number', name='_cooldown', placeholder='2', value='2')
 								label(for='_minLevel') Cooldown
-								span.help-block Amount of seconds after which the command is usable again.
+								span.help-block Amount of seconds after which the command is usable again (default: 2s)
 								.form-control-focus
 
 							br
