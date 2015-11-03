@@ -1,5 +1,3 @@
-urlregex = require 'url-regex'
-
 Mikuia.Events.on 'twitch.message', (user, to, message) =>
 	Channel = new Mikuia.Models.Channel to
 	await Channel.isPluginEnabled 'mod', defer err, enabled
