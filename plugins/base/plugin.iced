@@ -1,3 +1,5 @@
+channelCooldown = {}
+
 addDummy = (username, channel, tokens, whisper) =>
 	Channel = new Mikuia.Models.Channel channel
 	isMod = checkMod channel, username
@@ -141,89 +143,99 @@ Mikuia.Events.on 'base.uptime', (data) =>
 Mikuia.Events.on 'twitch.message', (from, to, message, isWhisper) =>
 	globalCommand = @Plugin.getSetting 'globalCommand'
 	if message.indexOf(globalCommand) == 0 and not isWhisper
-		if message.trim() == globalCommand
-			Mikuia.Chat.say to, 'Hey, I\'m Mikuia, and I\'m a bot made by Hatsuney! Learn more about me at http://mikuia.tv'
-		else
-			tokens = message.trim().split ' '
-			trigger = tokens[1]
+		Channel = new Mikuia.Models.Channel to
+		canContinue = true
 
-			Channel = new Mikuia.Models.Channel to
-			User = new Mikuia.Models.Channel from.username
-			isAdmin = User.isAdmin()
-			isMod = checkMod to, from.username
+		if channelCooldown[Channel.getName()]?
+			if channelCooldown[Channel.getName()] + 5000 > (new Date()).getTime()
+				canContinue = false
 
-			if isAdmin
-				isMod = true
+		if canContinue
+			channelCooldown[Channel.getName()] = (new Date()).getTime()
+
+			if message.trim() == globalCommand
+				Mikuia.Chat.say to, 'Hey, I\'m Mikuia, and I\'m a bot made by Hatsuney! Learn more about me at http://mikuia.tv'
+			else
+				tokens = message.trim().split ' '
+				trigger = tokens[1]
+
 				
-			switch trigger
-				when 'commands'
-					Mikuia.Chat.say to, 'Commands for this channel: http://mikuia.tv/user/' + Channel.getName()
-				when 'dummy'
-					addDummy from.username, to, tokens.slice(1), false
-				when 'emit'
-					if isAdmin
-						type = tokens[2]
-						switch type
-							when 'handler'
-								handler = tokens[3]
-								if tokens.length > 4
-									dataRaw = tokens[4]
+				User = new Mikuia.Models.Channel from.username
+				isAdmin = User.isAdmin()
+				isMod = checkMod to, from.username
 
-								data =
-									user: from.username
-									to: to
-									message: ''
-									tokens: []
-									settings: {}
+				if isAdmin
+					isMod = true
+					
+				switch trigger
+					when 'commands'
+						Mikuia.Chat.say to, 'Commands for this channel: http://mikuia.tv/user/' + Channel.getName()
+					when 'dummy'
+						addDummy from.username, to, tokens.slice(1), false
+					when 'emit'
+						if isAdmin
+							type = tokens[2]
+							switch type
+								when 'handler'
+									handler = tokens[3]
+									if tokens.length > 4
+										dataRaw = tokens[4]
 
-								if dataRaw?
+									data =
+										user: from.username
+										to: to
+										message: ''
+										tokens: []
+										settings: {}
 
-									if dataRaw.indexOf('{') == 0
-										try
-											jsonData = JSON.parse dataRaw
-										catch error
-											if error
-												Mikuia.Log.error error
+									if dataRaw?
 
-										if jsonData?
-											for key, value of jsonData
-												data[key] = value
-									else
-										for value in dataRaw.split(';')
-											args = value.split '='
-											data[args[0]] = args[1]
+										if dataRaw.indexOf('{') == 0
+											try
+												jsonData = JSON.parse dataRaw
+											catch error
+												if error
+													Mikuia.Log.error error
 
-								console.log data
-								Mikuia.Events.emit handler, data
+											if jsonData?
+												for key, value of jsonData
+													data[key] = value
+										else
+											for value in dataRaw.split(';')
+												args = value.split '='
+												data[args[0]] = args[1]
 
-							else
-								# nope for now ;P
+									console.log data
+									Mikuia.Events.emit handler, data
 
-				when 'levels'
-					Mikuia.Chat.say to, 'Levels for this channel: http://mikuia.tv/levels/' + Channel.getName()
-				when 'mods'
-					if isMod
-						moderators = Mikuia.Chat.mods to
-						if moderators?
-							Mikuia.Chat.say to, 'This is what I know:' + JSON.stringify(moderators)
-				when 'rating'
-					await
-						Mikuia.Leagues.getFightCount User.getName(), defer err, fights
-						Mikuia.Leagues.getRating User.getName(), defer err, rating
-						User.getDisplayName defer err, displayName
-					if fights < 10
-						Mikuia.Chat.say to, displayName + ' > Unranked (' + fights + ' fights, ' + rating + ' elo)'
+								else
+									# nope for now ;P
+
+					when 'levels'
+						Mikuia.Chat.say to, 'Levels for this channel: http://mikuia.tv/levels/' + Channel.getName()
+					when 'mods'
+						if isMod
+							moderators = Mikuia.Chat.mods to
+							if moderators?
+								Mikuia.Chat.say to, 'This is what I know:' + JSON.stringify(moderators)
+					when 'rating'
+						await
+							Mikuia.Leagues.getFightCount User.getName(), defer err, fights
+							Mikuia.Leagues.getRating User.getName(), defer err, rating
+							User.getDisplayName defer err, displayName
+						if fights < 10
+							Mikuia.Chat.say to, displayName + ' > Unranked (' + fights + ' fights, ' + rating + ' elo)'
+						else
+							Mikuia.Chat.say to, displayName + ' > ' + Mikuia.Leagues.getLeagueFullText(rating) + ' (' + fights + ' fights, ' + rating + ' elo)'
+					when 'remove'
+						removeCommand from.username, to, tokens.slice(1), false
+					when 'say'
+						if isAdmin
+							Mikuia.Chat.sayUnfiltered to, tokens.slice(2).join(' ')
+					when 'status'
+						Mikuia.Chat.say to, 'Current Mikuia status: https://p.datadoghq.com/sb/AF-ona-ccd2288b29'
 					else
-						Mikuia.Chat.say to, displayName + ' > ' + Mikuia.Leagues.getLeagueFullText(rating) + ' (' + fights + ' fights, ' + rating + ' elo)'
-				when 'remove'
-					removeCommand from.username, to, tokens.slice(1), false
-				when 'say'
-					if isAdmin
-						Mikuia.Chat.sayUnfiltered to, tokens.slice(2).join(' ')
-				when 'status'
-					Mikuia.Chat.say to, 'Current Mikuia status: https://p.datadoghq.com/sb/AF-ona-ccd2288b29'
-				else
-					# do nothing
+						# do nothing
 
 checkMod = (channel, username) ->
 	if channel == '#' + username
