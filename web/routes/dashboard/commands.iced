@@ -86,6 +86,8 @@ module.exports =
 				type: 'number'
 			settings._coinCost =
 				type: 'number'
+			settings._cooldown =
+				type: 'number'
 			settings._whisper =
 				type: 'boolean'
 			for settingName, setting of settings

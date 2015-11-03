@@ -101,7 +101,7 @@ class exports.Channel extends Mikuia.Model
 			isAllowed = false
 			reasons.push 'mod'
 		
-		if settings?._onlySubs and !user.subscriber
+		if settings?._onlySubs and not user.subscriber
 			isAllowed = false
 			reasons.push 'subscriber'
 		

@@ -14,6 +14,7 @@ class exports.Chat
 		@channelClients = {}
 		@clientJoins = {}
 		@clients = {}
+		@commandCooldowns = {}
 		@connected = false
 		@joined = []
 		@messageLimiter = null
@@ -149,6 +150,18 @@ class exports.Chat
 		if forceWhisper
 			settings._whisper = true
 
+		if settings?._cooldown and settings._cooldown > 0
+			if not @commandCooldowns[Channel.getName()]?
+				@commandCooldowns[Channel.getName()] = {}
+
+			if not @commandCooldowns[Channel.getName()][trigger]?
+				@commandCooldowns[Channel.getName()][trigger] = (new Date()).getTime()
+			else
+				if @commandCooldowns[Channel.getName()][trigger] + (settings._cooldown * 1000) > (new Date()).getTime()
+					reasons.push 'cooldown'
+				else
+					@commandCooldowns[Channel.getName()][trigger] = (new Date()).getTime()
+
 		if err then reasons.push 'database'
 		if isBanned then reasons.push 'banned'
 
@@ -221,6 +234,7 @@ class exports.Chat
 						@clients[clientIdToUse].join channel
 						@clientJoins[clientIdToUse].push channel
 						@channelClients[channel] = clientIdToUse
+						@commandCooldowns[Channel.getName()] = {}
 						@joined.push channel
 						
 						callback? false

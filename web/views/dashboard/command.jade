@@ -115,6 +115,19 @@ block content
 								label(for='_minLevel') Coin Cost
 								span.help-block Amount of coins deducted for using the command.
 								.form-control-focus
+
+							br
+							h3 Cooldown
+							br
+							.form-group.form-md-line-input
+								if userSettings && userSettings._cooldown
+									input.form-control(type='number', name='_cooldown', placeholder='0', value=userSettings._cooldown)
+								else
+									input.form-control(type='number', name='_cooldown', placeholder='0')
+								label(for='_minLevel') Cooldown
+								span.help-block Amount of seconds after which the command is usable again.
+								.form-control-focus
+
 							br
 							h3 Whispers
 							br

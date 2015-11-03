@@ -119,6 +119,9 @@ block content
 											if command.settings._minLevel && parseInt(command.settings._minLevel) > 0
 												.label.label-danger.pull-right Level #{command.settings._minLevel}
 
+											if command.settings._cooldown && parseInt(command.settings._cooldown) > 0
+												.label.label-danger.pull-right #{command.settings._cooldown}s Cooldown
+
 											if command.settings._coinCost && parseInt(command.settings._coinCost) > 0
 												if parseInt(command.settings._coinCost) > 1
 													.label.label-warning.pull-right #{command.settings._coinCost} #{command.coin.coinNamePlural}
