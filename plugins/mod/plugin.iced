@@ -1,3 +1,5 @@
+urlregex = /(?:(?:https?):\/\/)?(?:\S+(?::\S*)?@)?(?:(?:([a-z0-9][a-z0-9\-]*)?[a-z0-9]+)(?:\.(?:[a-z0-9\-])*[a-z0-9]+)*(?:\.(?:[a-z]{2,})(:\d{1,5})?))(?:\/[^\s]*)?/gi
+
 Mikuia.Events.on 'twitch.message', (user, to, message) =>
 	Channel = new Mikuia.Models.Channel to
 	await Channel.isPluginEnabled 'mod', defer err, enabled
@@ -42,9 +44,9 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 		await Channel.getSetting 'mod', 'bannedLinks', defer err, bannedLinksEnabled
 
 		if bannedLinksEnabled
-			if new RegExp("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?").test(message)
+			if urlregex.test message
 				await Channel._smembers 'plugin:mod:whitelistedDomains', defer whatever, domains
-				tokens = message.match urlregex()
+				tokens = message.match urlregex
 				domainMatched = false
 
 				domains.push '*.mikuia.tv'
