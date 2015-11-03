@@ -9,87 +9,86 @@ exports.friends = friends = new Steam.SteamFriends bot
 exports.user = user = new Steam.SteamUser bot
 joinedChannel = {}
 
-if not Mikuia.settings.bot.debug
+bot.connect()
+bot.on 'connected', ->
+	loginDetails =
+		account_name: Mikuia.settings.plugins.steam.accountName
+		password: Mikuia.settings.plugins.steam.password
+
+	if Mikuia.settings.plugins.steam.sgCode != ''
+		loginDetails.auth_code = Mikuia.settings.plugins.steam.sgCode
+
+	await fs.readFile 'sentry.sha', defer err, sentryFile
+	if not err
+		loginDetails.sha_sentryfile = crypto.createHash('sha1').update(sentryFile).digest()
+
+	user.logOn loginDetails
+
+bot.on 'logOnResponse', (response) ->
+	console.log response
+	if response.eresult == Steam.EResult.OK
+		friends.setPersonaState Steam.EPersonaState.Online
+		friends.setPersonaName Mikuia.settings.bot.name
+
+		Mikuia.Events.emit 'steam.connected'
+
+bot.on 'loggedOff', ->
+	console.log 'Logged off.'
+	bot.disconnect()
 	bot.connect()
-	bot.on 'connected', ->
-		loginDetails =
-			account_name: Mikuia.settings.plugins.steam.accountName
-			password: Mikuia.settings.plugins.steam.password
 
-		if Mikuia.settings.plugins.steam.authCode != ''
-			loginDetails.auth_code = Mikuia.settings.plugins.steam.authCode
+bot.on 'error', (e) ->
+	console.log 'Error: ' + e
 
-		await fs.readFile 'sentry.sha', defer err, sentryFile
-		if not err
-			loginDetails.sha_sentryfile = crypto.createHash('sha1').update(sentryFile).digest()
+user.on 'updateMachineAuth', (authData, callback) ->
+	fs.writeFileSync 'sentry.sha', authData.bytes
+	callback
+		sha_file: crypto.createHash('sha1').update(authData.bytes).digest()
 
-		user.logOn loginDetails
+friends.on 'friend', (steamId, relationshipType) ->
+	if relationshipType == Steam.EFriendRelationship.RequestRecipient
+		friends.addFriend steamId
 
-	bot.on 'logOnResponse', (response) ->
-		console.log response
-		if response.eresult == Steam.EResult.OK
-			friends.setPersonaState Steam.EPersonaState.Online
-			friends.setPersonaName 'Mikuia'
+friends.on 'friendMsg', (steamId, message, type) ->
+	if type == Steam.EChatEntryType.ChatMsg and steamId in Mikuia.settings.plugins.steam.whitelist
+		if message.indexOf('/') == 0
+			tokens = message.replace('/', '').split ' '
+			trigger = tokens[0]
+			switch trigger
+				when 'help'
+					friends.sendMessage steamId, 'There is no help for you D:'
 
-			Mikuia.Events.emit 'steam.connected'
+				when 'join'
+					channelName = tokens[1].toLowerCase()
+					joinedChannel[steamId] = channelName
+					friends.sendMessage steamId, 'Joined #' + channelName + '!'
 
-	bot.on 'loggedOff', ->
-		console.log 'Logged off.'
-		bot.disconnect()
-		bot.connect()
+				when 'leave'
+					channelName = joinedChannel[steamId]
+					delete joinedChannel[steamId]
+					friends.sendMessage steamId, 'Left #' + channelName + '!'
 
-	bot.on 'error', (e) ->
-		console.log 'Error: ' + e
+				when 'status'
+					if joinedChannel[steamId]?
+						friends.sendMessage steamId, 'Status: on #' + joinedChannel[steamId] + '.'
+					else
+						friends.sendMessage steamId, 'Status: -'
+		else
+			if joinedChannel[steamId]?
+				message = message.trim()
+				if message.indexOf('.') != 0
+					Mikuia.Chat.say joinedChannel[steamId], message
+			else
+				friends.sendMessage steamId, 'You have to join a channel! Use /join <channel>!'
+	else
+		console.log steamId + ' (' + type + ')'
 
-	user.on 'updateMachineAuth', (authData, callback) ->
-		fs.writeFileSync 'sentry.sha', authData.bytes
-		callback
-			sha_file: crypto.createHash('sha1').update(authData.bytes).digest()
-
-	friends.on 'friend', (steamId, relationshipType) ->
-		if relationshipType == Steam.EFriendRelationship.RequestRecipient
+friends.on 'relationships', ->
+	for steamId, relationship of friends.friends
+		if relationship == Steam.EFriendRelationship.RequestRecipient
 			friends.addFriend steamId
 
-	friends.on 'friendMsg', (steamId, message, type) ->
-		if type == Steam.EChatEntryType.ChatMsg and steamId in Mikuia.settings.plugins.steam.whitelist
-			if message.indexOf('/') == 0
-				tokens = message.replace('/', '').split ' '
-				trigger = tokens[0]
-				switch trigger
-					when 'help'
-						friends.sendMessage steamId, 'There is no help for you D:'
-
-					when 'join'
-						channelName = tokens[1].toLowerCase()
-						joinedChannel[steamId] = channelName
-						friends.sendMessage steamId, 'Joined #' + channelName + '!'
-
-					when 'leave'
-						channelName = joinedChannel[steamId]
-						delete joinedChannel[steamId]
-						friends.sendMessage steamId, 'Left #' + channelName + '!'
-
-					when 'status'
-						if joinedChannel[steamId]?
-							friends.sendMessage steamId, 'Status: on #' + joinedChannel[steamId] + '.'
-						else
-							friends.sendMessage steamId, 'Status: -'
-			else
-				if joinedChannel[steamId]?
-					message = message.trim()
-					if message.indexOf('.') != 0
-						Mikuia.Chat.say joinedChannel[steamId], message
-				else
-					friends.sendMessage steamId, 'You have to join a channel! Use /join <channel>!'
-		else
-			console.log steamId + ' (' + type + ')'
-
-	friends.on 'relationships', ->
-		for steamId, relationship of friends.friends
-			if relationship == Steam.EFriendRelationship.RequestRecipient
-				friends.addFriend steamId
-
-	Mikuia.Events.on 'twitch.message', (user, to, message) =>
-		for steamId, channelName of joinedChannel
-			if to == '#' + channelName
-				friends.sendMessage steamId, user.username + ': ' + message
+Mikuia.Events.on 'twitch.message', (user, to, message) =>
+	for steamId, channelName of joinedChannel
+		if to == '#' + channelName
+			friends.sendMessage steamId, user.username + ': ' + message
