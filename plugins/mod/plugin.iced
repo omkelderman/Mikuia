@@ -44,9 +44,8 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 		await Channel.getSetting 'mod', 'bannedLinks', defer err, bannedLinksEnabled
 
 		if bannedLinksEnabled
-			if urlregex().test(message)
+			if new RegExp("([a-zA-Z0-9]+://)?([a-zA-Z0-9_]+:[a-zA-Z0-9_]+@)?([a-zA-Z0-9.-]+\\.[A-Za-z]{2,4})(:[0-9]+)?(/.*)?").test(message)
 				await Channel._smembers 'plugin:mod:whitelistedDomains', defer whatever, domains
-
 				tokens = message.match urlregex()
 				domainMatched = false
 
@@ -67,7 +66,7 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 					regex = regex + domain
 
 					if regex.charAt(regex.length - 1) != '*'
-						regex = regex + '(\/[a-zA-Z0-9-/&?#%]*|)'
+						regex = regex + '(\/[a-zA-Z0-9-\/&?#%]*|)'
 
 						for token in tokens
 							token = token.trim()
