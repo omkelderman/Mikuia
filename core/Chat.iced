@@ -456,9 +456,10 @@ class exports.Chat
 					Channel.isSupporter defer err, isSupporter
 
 				if isPrioritized
-					channelLimiter[Channel.getName()] = new RateLimiter 19, 30000, true
-					channelTotalLimiter[Channel.getName()] = new RateLimiter 38, 30000, true
-					rateLimitingProfile = cli.magentaBright 'Prioritized (19 per 30s)'
+					# this is basically handled on a different level so whatever
+					channelLimiter[Channel.getName()] = new RateLimiter 1000, 30000, true
+					channelTotalLimiter[Channel.getName()] = new RateLimiter 1000, 30000, true
+					rateLimitingProfile = cli.magentaBright 'Prioritized (unlimited)'
 				else if isSupporter
 					channelLimiter[Channel.getName()] = new RateLimiter 5, 30000, true
 					channelTotalLimiter[Channel.getName()] = new RateLimiter 10, 30000, true
