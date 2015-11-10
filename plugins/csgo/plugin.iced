@@ -32,22 +32,12 @@ twitchDone = false
 launchAndUpdate = =>
 	playerCheckQueue = []
 
-	await Mikuia.Streams.getAll defer err, streams
-	if not err and streams?
-		for stream in streams
-			await Mikuia.Database.hget 'mikuia:stream:' + stream, 'game', defer err, game
-			if not err and game == 'Counter-Strike: Global Offensive'
-				Channel = new Mikuia.Models.Channel stream
-				await Channel.isPluginEnabled 'csgo', defer err, enabled
+	await Mikuia.Database.hgetall 'plugin:steam:users', defer err, steamUsers
 
-				if enabled
-					await
-						Channel.getDisplayName defer error, displayName
-						Channel.getSetting 'steam', 'steamId', defer err, steamId
-
-					if steamId in Object.keys plugin.friends.personaStates
-						if plugin.friends.personaStates[steamId].gameid == '730'
-							playerCheckQueue.push steamId
+	for steamId, steamUser of plugin.friends.personaStates
+		if steamUser.gameid == '730' and steamId of steamUsers
+			await Channel.isPluginEnabled 'csgo', defer err, enabled
+			if enabled then playerCheckQueue.push steamId
 
 	if plugin.bot.loggedOn and playerCheckQueue.length > 0
 		CSGO.launch()
@@ -58,11 +48,9 @@ launchAndUpdate = =>
 			CSGO.on 'playerProfile', (playerProfile) =>
 				if playerProfile?.account_profiles?[0]?
 					profile = playerProfile.account_profiles[0]
-
-					await Mikuia.Database.hget 'plugin:steam:users', CSGO.ToSteamID(profile.account_id), defer err, channel
-
-					if not err and channel
-						Channel = new Mikuia.Models.Channel channel
+					
+					if not err and steamUsers[profile.account_id]?
+						Channel = new Mikuia.Models.Channel steamUsers[profile.account_id]
 
 						rank = ""
 						wins = ""
