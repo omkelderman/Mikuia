@@ -9,7 +9,7 @@ html
 	head
 		link(href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all', rel='stylesheet', type='text/css')
 		link(href='/assets/global/plugins/font-awesome/css/font-awesome.min.css', rel='stylesheet', type='text/css')
-		link(href='//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/yeti/bootstrap.min.css', rel='stylesheet', type='text/css')
+		link(href='/css/bootstrap.min.css', rel='stylesheet', type='text/css')
 		link(href='/css/mikuia.css', rel='stylesheet', type='text/css')
 		title=Mikuia.settings.bot.name
 	body(class=(path == '/' ? 'mikuia' : undefined))
@@ -57,18 +57,14 @@ html
 									a(href='/leagues') Your Rank
 								li
 									a(href='/leagues/leaderboards') Leaderboards
-						li(class=(path.indexOf('/slack') == 0 ? 'active' : undefined))
-							a(href='/slack')
-								i.fa.fa-slack
-								|  Slack
+						li
+							a(href='https://discord.gg/0ejX5ADSL5Mzpbmx')
+								img(src='/img/discord.png', height="12")
+								|  Discord
 						li
 							a(href='https://p.datadoghq.com/sb/AF-ona-ccd2288b29')
 								i.fa.fa-bar-chart
 								|  Status
-						li
-							a(href='http://support.mikuia.tv')
-								i.fa.fa-life-ring
-								|  Support
 					ul.nav.navbar-nav.navbar-right.pull-right
 						li#search
 							a(href='#')
@@ -117,7 +113,7 @@ html
 		script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.0/jquery.timeago.min.js')
 		script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js')
 		script(type='text/javascript', src='/js/bootstrap3-typeahead.min.js')
-		script(type='text/javascript', src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
+		script(type='text/javascript', src='/js/bootstrap.min.js')
 		script(type='text/javascript', src='/socket.io/socket.io.js')
 		script(type='text/javascript', src='/js/mikuia.js')
 		script(type='text/javascript').
