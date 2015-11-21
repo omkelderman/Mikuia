@@ -155,8 +155,6 @@ app.get '/leagues/leaderboards', routes.community.leagues.leaderboards
 app.get '/levels', routes.community.levels
 app.get '/levels/:userId', routes.community.levels
 app.post '/search', routes.community.search
-app.get '/slack', routes.community.slack.index
-app.post '/slack/invite', routes.community.slack.invite
 app.get '/streams', routes.community.streams
 app.get '/supporter', routes.community.supporter
 app.get '/user/:userId', routes.community.user

@@ -50,12 +50,3 @@ class exports.Tools
 			level++
 
 		return level - 1
-
-	inviteToSlack: (email, username) ->
-		request.post
-			url: 'https://mikuia.slack.com/api/users.admin.invite'
-			form:
-				email: email
-				token: Mikuia.settings.slack.token
-				first_name: username
-				set_active: true
