@@ -1,6 +1,6 @@
 {
 	"name": "[BETA] Dota 2",
-	"description": "Stuff related to Dota 2",
+	"description": "Stuff related to Dota 2 (useless for now)",
 	"baseFile": "plugin.iced",
 	"dependencies": [
 		"steam"
