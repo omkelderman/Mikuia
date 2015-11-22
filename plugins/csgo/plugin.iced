@@ -36,6 +36,8 @@ launchAndUpdate = =>
 
 	for steamId, steamUser of plugin.friends.personaStates
 		if steamUser.gameid == '730' and steamId of steamUsers
+			Channel = new Mikuia.Models.Channel steamUser
+
 			await Channel.isPluginEnabled 'csgo', defer err, enabled
 			if enabled then playerCheckQueue.push steamId
 
