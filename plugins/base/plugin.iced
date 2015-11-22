@@ -136,7 +136,7 @@ Mikuia.Events.on 'base.uptime', (data) =>
 		message =  'The stream is not live.'
 
 	if data.settings._whisper
-		Mikuia.Chat.whisper data.to, message
+		Mikuia.Chat.whisper data.user.username, message
 	else
 		Mikuia.Chat.say data.to, message
 
