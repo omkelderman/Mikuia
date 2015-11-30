@@ -289,7 +289,7 @@ checkRankUpdates = (stream, callback) =>
 									Channel.getSetting 'osu', 'eventMinRank', defer err3, eventMinRank
 								if !err && !err2 && !err3
 									#eventString = stats.events[0].display_html.replace(/(<([^>]+)>)/ig,"").trim()
-									match = /images\\\/([A-Z]+)_small.+\\\/u\\\/(\d+).+achieved rank #(\d+) on .+\\\/b\\\/(\d+).+'>(.*) \[(.*)\].+\((.*)\)/.exec stats.events[0].display_html
+									match = /images\\\/([A-Z]+)_small.+\\\/u\\\/(\d+).+achieved (?:<b>)?rank #(\d+)(?:<\\\/b>)? on .+\\\/b\\\/(\d+).+'>(.*) \[(.*)\].+\((.*)\)/.exec stats.events[0].display_html
 									if match?
 										grade = match[1]
 										user_id = match[2]
