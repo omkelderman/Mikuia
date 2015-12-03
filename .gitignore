@@ -3,9 +3,10 @@ node_modules/
 plugins/custom
 plugins/paypal
 plugins/slack
-web/public/img/avatars/
+web/public/img/avatars
+web/public/img/flags
 npm-debug.log
 settings.json
 sftp-config.json
 *.sublime-*
-web/public/img/flags
+.ftpconfig
