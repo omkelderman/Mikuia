@@ -106,11 +106,12 @@ updateLevels = () ->
 
 				# Check if there are any points to add and if the streamer isn't the same as the viewer!
 				for channel in channels
-					if pointsToAdd > 0 and viewer isnt channel
-						# If the viewer doesn't have any activity on that channel, set the value to 0.
-						chatActivity[viewer] ?= {}
-						chatActivity[viewer][channel] ?= 0
 
+					# If the viewer doesn't have any activity on that channel, set the value to 0.
+					chatActivity[viewer] ?= {}
+					chatActivity[viewer][channel] ?= 0
+
+					if pointsToAdd > 0 and viewer isnt channel
 						# That method should be moved out of Channel... sigh.
 						await Channel.addExperience channel, pointsToAdd, chatActivity[viewer][channel], defer whatever
 
