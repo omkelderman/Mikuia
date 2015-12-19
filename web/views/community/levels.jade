@@ -97,7 +97,7 @@ block content
 						.mikuia-card-block
 							h6.text-muted Global Rank
 							h3
-								##{Mikuia.Format.parse('{{commas(value)}}', { value: totalRank })}
+								| ##{Mikuia.Format.parse('{{commas(value)}}', { value: totalRank })}
 						.mikuia-card-block.align-right
 							h6.text-muted Total Experience
 							h3=Mikuia.Format.parse('{{commas(value)}}', { value: totalExperience })

@@ -52,8 +52,6 @@ module.exports = (req, res) ->
 	else
 		await Mikuia.Streams.getAll defer err, allStreams
 
-		console.log allStreams
-
 		displayNames = {}
 		experience = {}
 		logos = {}
@@ -77,15 +75,15 @@ module.exports = (req, res) ->
 
 				chan = new Mikuia.Models.Channel md[0]
 				await chan.getDisplayName defer err, displayNames[md[0]]
-				streams.push md[0]
+
+				if md[0] in allStreams
+					streams.push md[0]
 
 			for stream in streams
 				await Mikuia.Database.zrevrank 'levels:' + stream + ':experience', req.user.username, defer err, ranks[stream]
 
 			for name, rank of ranks
 				ranks[name]++
-
-		console.log streams
 
 		for stream in streams
 			chan = new Mikuia.Models.Channel stream
