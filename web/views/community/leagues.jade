@@ -57,7 +57,7 @@ block content
 									if userInfo.fightCount > 0
 										h3 ##{Mikuia.Format.parse('{{commas(value)}}', { value: userInfo.rank + 1 })}
 									else
-										h3 # -
+										h3 # -no
 									
 								.mikuia-card-block
 									h6.text-muted Rating
@@ -76,7 +76,7 @@ block content
 							h3
 								if userInfo.fightCount < 10
 									img(src='/img/leagues/0.png', width='32')
-									| Unranked
+									|  Unranked
 								else
 									img(src='/img/leagues/#{Mikuia.Leagues.getLeague(userInfo.rating)}.png', width='32')
 									|  #{Mikuia.Leagues.getLeagueText(userInfo.rating)} #{Mikuia.Leagues.getLeagueDivisionText(userInfo.rating)}
