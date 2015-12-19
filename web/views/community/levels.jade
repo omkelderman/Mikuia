@@ -52,6 +52,7 @@ block content
 					h1.mikuia-page-header-text Other Channels
 				else
 					h1.mikuia-page-header-text Live Channels
+					
 				each stream in streams
 					if !user || experience[stream] == undefined
 						.mikuia-card
@@ -81,10 +82,13 @@ block content
 								h6.text-muted Progress
 								h3
 									.text-muted -
-					- otherStreamCount++
+						- otherStreamCount++
 					
 				if otherStreamCount == 0
 					h2.text-muted No live streams here...
+				
+				br
+				a.btn.btn-primary(href='/streams') Browse Streams >>
 
 			.col-md-4.animation-fade-in-up
 				if user
