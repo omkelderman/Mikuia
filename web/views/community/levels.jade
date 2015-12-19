@@ -10,7 +10,7 @@ block content
 					- var exp = experience[stream]
 					- var level = Mikuia.Tools.getLevel(exp)
 					.mikuia-card
-						.mikuia-card-block(style='flex-basis: 400px;')
+						.mikuia-card-block(style='flex-basis: 300px;')
 							.mikuia-card-user
 								.mikuia-card-user-avatar
 									a(href='/levels/' + stream)
@@ -18,11 +18,11 @@ block content
 								.mikuia-card-user-name
 									h4
 										a(href='/levels/' + stream) #{displayNames[stream]} Level
-						.mikuia-card-block.align-right
+						.mikuia-card-block.align-right(style='flex-basis: 125px;')
 							h6.text-muted Users
 							h3=Mikuia.Format.parse('{{commas(value)}}', { value: userCount[stream] })
 							
-						.mikuia-card-block.align-right
+						.mikuia-card-block.align-right(style='flex-basis: 125px;')
 							h6.text-muted Your Rank
 							h3
 								if user
@@ -30,7 +30,7 @@ block content
 								else
 									.text-muted -
 						
-						.mikuia-card-block.align-right
+						.mikuia-card-block.align-right(style='flex-basis: 125px;')
 							h6.text-muted Your Level
 							h3
 								if user
@@ -38,7 +38,7 @@ block content
 								else
 									.text-muted -
 			
-						.mikuia-card-block.align-right
+						.mikuia-card-block.align-right(style='flex-basis: 125px;')
 							h6.text-muted Progress
 							h3
 								if user
