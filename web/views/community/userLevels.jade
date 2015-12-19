@@ -31,17 +31,17 @@ block content
 								h6.text-muted Experience
 								h3 #{Mikuia.Format.parse('{{commas(value)}}', { value: experience })}
 							
-							.mikuia-card-block.align-right(style='flex-basis: 70px;')
+							.mikuia-card-block.align-right(style='flex-basis: 150px;')
 								h6.text-muted Rank
 								h3 
 									a(href='/levels/' + data[0]) ##{Mikuia.Format.parse('{{commas(value)}}', { value: ranks[data[0]] })}
 							
-							.mikuia-card-block.align-right(style='flex-basis: 50px;')
+							.mikuia-card-block.align-right(style='flex-basis: 70px;')
 								h6.text-muted Level
 								h3
 									+level(level, true, true)
 									
-							.mikuia-card-block.align-right(style='flex-basis: 70px;')
+							.mikuia-card-block.align-right(style='flex-basis: 100px;')
 								h6.text-muted Progress
 								h3 #{Mikuia.Tools.getLevelProgress(experience)}%
 
