@@ -80,7 +80,6 @@ block content
 						
 						if Channel.commands.length > 0
 							each command in Channel.commands
-								- console.log(command)
 								.mikuia-card.mikuia-card-align-left.mikuia-profile-command
 									.mikuia-card-block.mikuia-card-block-margin
 										img(src='/img/plugins/' + command.plugin + '.png', width='24', height='24', rel='tooltip', title=command.pluginName)
