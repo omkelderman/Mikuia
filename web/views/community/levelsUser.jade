@@ -47,7 +47,7 @@ block content
 											
 								.mikuia-card-block.align-right(style='flex-basis: 150px;')
 									h6.text-muted Experience
-									h3 #{Mikuia.Format.parse('{{commas(value)}}', { value: exp })}
+									h3 #{Mikuia.Tools.commas(exp)}
 								
 								.mikuia-card-block.align-right(style='flex-basis: 50px;')
 									h6.text-muted Level
@@ -72,11 +72,11 @@ block content
 							.mikuia-card
 								.mikuia-card-block
 									h6.text-muted Rank
-									h3 ##{Mikuia.Format.parse('{{commas(value)}}', { value: rank })}
+									h3 ##{Mikuia.Tools.commas(rank)}
 									
 								.mikuia-card-block
 									h6.text-muted Experience
-									h3 #{Mikuia.Format.parse('{{commas(value)}}', { value: experience })}
+									h3 #{Mikuia.Tools.commas(experience)}
 
 								.mikuia-card-block
 									h6.text-muted Level

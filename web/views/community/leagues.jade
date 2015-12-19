@@ -37,11 +37,11 @@ block content
 									
 								.mikuia-card-block.align-right(style='flex-basis: 150px;')
 									h6.text-muted Rating
-									h3 #{Mikuia.Format.parse('{{commas(value)}}', { value: rating })}
+									h3 #{Mikuia.Tools.commas(rating)}
 								
 								.mikuia-card-block.align-right(style='flex-basis: 75px;')
 									h6.text-muted Fights
-									h3 #{Mikuia.Format.parse('{{commas(value)}}', { value: fights[channel] })}
+									h3 #{Mikuia.Tools.commas(fights[channel])}
 								
 								.mikuia-card-block.align-right(style='flex-basis: 150px;')
 									h6.text-muted League
@@ -55,21 +55,21 @@ block content
 								.mikuia-card-block
 									h6.text-muted Rank
 									if userInfo.fightCount > 0
-										h3 ##{Mikuia.Format.parse('{{commas(value)}}', { value: userInfo.rank + 1 })}
+										h3 ##{Mikuia.Tools.commas(userInfo.rank)}
 									else
 										h3 # -no
 									
 								.mikuia-card-block
 									h6.text-muted Rating
-									h3 #{Mikuia.Format.parse('{{commas(value)}}', { value: userInfo.rating })}
+									h3 #{Mikuia.Tools.commas(userInfo.rating)}
 
 								.mikuia-card-block
 									h6.text-success Won
-									h3 #{Mikuia.Format.parse('{{commas(value)}}', { value: userInfo.fightsWon })}
+									h3 #{Mikuia.Tools.commas(userInfo.fightsWon)}
 								
 								.mikuia-card-block
 									h6.text-danger Lost
-									h3 #{Mikuia.Format.parse('{{commas(value)}}', { value: userInfo.fightsLost })}
+									h3 #{Mikuia.Tools.commas(userInfo.fightsLost)}
 							
 							br
 							.mikuia-page-category-heading Your League

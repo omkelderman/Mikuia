@@ -13,14 +13,10 @@ countdown.setLabels	'ms|s|m|h|d|w|mo|y|dc|ct|ml',
 helperFunctions =
 
 	# Math
-	ceil: (variable) -> Math.ceil parseFloat(variable)
-	commas: (variable) ->
-		# http://stackoverflow.com/questions/2901102/how-to-print-a-number-with-commas-as-thousands-separators-in-javascript
-		parts = parseFloat(variable).toString().split '.'
-		parts[0] = parts[0].replace /\B(?=(\d{3})+(?!\d))/g, ','
-		parts.join '.'
+	ceil: (variable) -> Math.ceil parseFloat variable
+	commas: (variable) -> Mikuia.Tools.commas variable
 	floor: (variable) -> Math.floor parseFloat(variable)
-	round: (variable, decimals) -> 
+	round: (variable, decimals) ->
 		if decimals?
 			Math.round(parseFloat(variable) * Math.pow(10, decimals)) / Math.pow(10, decimals)
 		else Math.round parseFloat(variable)

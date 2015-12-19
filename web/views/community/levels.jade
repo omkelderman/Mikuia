@@ -24,12 +24,12 @@ block content
 												a(href='/levels/' + stream) #{displayNames[stream]} Level
 								.mikuia-card-block.align-right(style='flex-basis: 125px;')
 									h6.text-muted Users
-									h3=Mikuia.Format.parse('{{commas(value)}}', { value: userCount[stream] })
+									h3=Mikuia.Tools.commas(userCount[stream])
 									
 								.mikuia-card-block.align-right(style='flex-basis: 125px;')
 									h6.text-muted Your Rank
 									h3
-										a(href='/levels/' + stream) ##{Mikuia.Format.parse('{{commas(value)}}', { value: ranks[stream] })}
+										a(href='/levels/' + stream) ##{Mikuia.Tools.commas(ranks[stream])}
 								
 								.mikuia-card-block.align-right(style='flex-basis: 100px;')
 									h6.text-muted Your Level
@@ -66,7 +66,7 @@ block content
 											a(href='/levels/' + stream) #{displayNames[stream]} Level
 							.mikuia-card-block.align-right(style='flex-basis: 125px;')
 								h6.text-muted Users
-								h3=Mikuia.Format.parse('{{commas(value)}}', { value: userCount[stream] })
+								h3=Mikuia.Tools.commas(userCount[stream])
 								
 							.mikuia-card-block.align-right(style='flex-basis: 125px;')
 								h6.text-muted Your Rank
@@ -97,10 +97,10 @@ block content
 						.mikuia-card-block
 							h6.text-muted Global Rank
 							h3
-								| ##{Mikuia.Format.parse('{{commas(value)}}', { value: totalRank })}
+								| ##{Mikuia.Tools.commas(totalRank)}
 						.mikuia-card-block.align-right
 							h6.text-muted Total Experience
-							h3=Mikuia.Format.parse('{{commas(value)}}', { value: totalExperience })
+							h3=Mikuia.Tools.commas(totalExperience)
 						.mikuia-card-block.align-right
 							h6.text-muted Global Level
 							h3
