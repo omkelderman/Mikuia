@@ -1,91 +1,118 @@
 extends layout
 
+block settings
+	- var extendedHeader = true
+	- var extendedHeaderBackground = (profileBanner && profileBanner != 'null' ? profileBanner : undefined)
+
 block content
-	.splash(style=(profileBanner != null && profileBanner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + profileBanner + '\'); background-position: center; background-repeat: no-repeat; background-size: cover;' : undefined))
-		.container
-			.row
-				.col-md-12.animation-fade-in-right
-					h1 #{displayName} Level's Top 100
 	.container
-		.row
-			.col-md-8.animation-fade-in-right
-				table.table.table-bordered.table-striped
-					thead
-						tr
-							th Rank
-							th(style='width: 40%;') User
-							th Experience
-							th Level
-							th(style='width: 20%;') Progress
-					tbody
-						- var i = 1
-						each data in channels
-							if data.length > 0
-								- var channel = data[0]
-								- var exp = data[1]
+		.mikuia-page-padding
+			.row.animation-fade-in-down
+				.col-md-8
+					h1.mikuia-page-header-text.text-white #{displayName} Level's Top 100
+				.col-md-4
+					if user && experience
+						h1.mikuia-page-header-text.text-white Your Stats
+					else
+						h1.mikuia-page-header-text.text-white Tips
+			
+			.row.animation-fade-in-up
+				.col-md-8.mikuia-page-card
+				
+					- var i = 1
+					each data in channels
+						if data.length > 0
 
-								tr(class=(user && user.username == channel ? 'info' : undefined))
-									td
-										h4 ##{i}
-									td
-										.media
-											a.pull-left(href='/user/' + channel)
-												img.img-circle.media-object(src=logos[channel], width=24, height=24)
-											.media-body
-												h4.media-heading
-													a(href='/user/' + channel, style=(isStreamer[channel] ? undefined : 'color: #999;'))=displayNames[channel]
-									td
-										h4 #{exp} XP
-									td
-										h3
-											+level(Mikuia.Tools.getLevel(exp), false, true)
-									td
-										+levelProgress(exp)
-								- i++
+							- var channel = data[0]
+							- var exp = data[1]
 
-			.col-md-4.animation-fade-in-left
-				if user
-					.panel.panel-default
-						.panel-heading Your Stats
-						.panel-body
-							if experience
-								h2
-									+level(Mikuia.Tools.getLevel(experience))
-									br
-									.text-muted #{experience} XP
-									| ##{rank}
-								br
-								+levelProgress(experience)
-							else
-								.text-muted No progress on this channel.
-				else
-					.panel.panel-default
-						.panel-heading Your avatar or name capitalization broken?
-						.panel-body
-							.text-muted Login to update them!
+							- var rankingClass = false
+							
+							if i <= 3
+								- rankingClass = true
+							
+							.mikuia-card(class=(rankingClass ? 'mikuia-card-ranking' : undefined))
+								.mikuia-card-block.mikuia-card-ranking-block(style='flex-basis: 70px;')
+									h6.text-muted Rank
+									h3 ##{i}
+								
+								.mikuia-card-block(style='flex-basis: 300px;')
+									.mikuia-card-user
+										.mikuia-card-user-avatar
+											a(href='/user/' + channel)
+												img(src=logos[channel], width='32', height='32')
+										.mikuia-card-user-name
+											h4
+												a(href='/user/' + channel, style=(isStreamer[channel] ? undefined : 'color: #999;'))=displayNames[channel]
+											
+								.mikuia-card-block.align-right(style='flex-basis: 150px;')
+									h6.text-muted Experience
+									h3 #{Mikuia.Format.parse('{{commas(value)}}', { value: exp })}
+								
+								.mikuia-card-block.align-right(style='flex-basis: 50px;')
+									h6.text-muted Level
+									h3
+										+level(Mikuia.Tools.getLevel(exp), true, true)
+								
+								.mikuia-card-block.align-right(style='flex-basis: 70px;')
+									h6.text-muted Progress
+									h3 #{Mikuia.Tools.getLevelProgress(exp)}%
+									
+							- i++
+					
+					if !channels.length
+						h5.text-muted
+							| Nobody has any #{displayName} Levels yet!
+							br
+							| Either they don't broadcast on Twitch, or they don't use Mikuia!
 
-				.panel.panel-default
-					.panel-heading Bots taking your places?
-					.panel-body
-						.text-muted
+				.col-md-4
+					if user && experience
+						.mikuia-page-card.mikuia-page-card-margin-2x
+							.mikuia-card
+								.mikuia-card-block
+									h6.text-muted Rank
+									h3 ##{Mikuia.Format.parse('{{commas(value)}}', { value: rank })}
+									
+								.mikuia-card-block
+									h6.text-muted Experience
+									h3 #{Mikuia.Format.parse('{{commas(value)}}', { value: experience })}
+
+								.mikuia-card-block
+									h6.text-muted Level
+									h3
+										+level(Mikuia.Tools.getLevel(experience), true, true)
+								
+								.mikuia-card-block
+									h6.text-muted Progress
+									h3 #{Mikuia.Tools.getLevelProgress(experience)}%
+					
+					if !user || !experience
+						.mikuia-page-card.mikuia-page-card-margin
+							.mikuia-page-category-heading No avatar or broken name capitalization?
+							p Login to update them!
+					else
+						h1.mikuia-page-header-text Tips
+
+					.mikuia-page-card.mikuia-page-card-margin
+						.mikuia-page-category-heading Bots taking your places?
+						p
 							| You can report bots and get them blocked from gaining experience.
 							br
 							a(href='https://discord.gg/0UJjcqv4bLQMgRl3') Join Discord and tell us about it.
 
-				.panel.panel-default
-					.panel-heading Did you change accounts?
-					.panel-body
-						.text-muted
+					.mikuia-page-card.mikuia-page-card-margin
+						.mikuia-page-category-heading Changed accounts?
+						p
 							| You can get all your levels moved to the new account.
 							br
 							a(href='https://discord.gg/0UJjcqv4bLQMgRl3') Join Discord and spam @Hatsu.
-
-				.panel.panel-default
-					.panel-heading How does it work?
-					.panel-body
+						
+					.mikuia-page-card.mikuia-page-card-margin
+						.mikuia-page-category-heading How does it work?
 						p.
 							Levels are a simple representation of your activity on the channel. The rules are the same for every channel.
-
+							
 						b Description
 						ul
 							li Sending a message sets your activity meter to #[b.text-success 10].

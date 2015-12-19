@@ -19,6 +19,7 @@ module.exports = (req, res) ->
 		leaderboards[lbName] = displayName
 
 	res.render 'community/streams',
+		titlePath: ['Streams']
 		displayHtml: displayHtml
 		leaderboards: leaderboards
 		sorting: sorting

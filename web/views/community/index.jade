@@ -1,126 +1,59 @@
 extends layout
 
+block settings
+	- var extendedHeader = true
+	- var extendedHeaderColor = '#111'
+	- var extendedHeaderHeight = 600
+
 block content
+	.container.text-white
+		.mikuia-index
+			.row
+				.col-md-5.align-center.mikuia-index-screenshot
+				.col-md-5.col-md-offset-1
+					h1
+						| Mikuia 
+						small is a Twitch bot.
+					p.text-muted.
+						Mikuia helps your viewers interact with games you're playing.
+						#[br]
+						Looking up stats, sharing accomplishments and useful information, providing level and coin systems!
+
+					br
+					a.btn.btn-primary(href='/guides/quickstart') Check the guide
+					br
+					br
+					a.btn.btn-info(href='https://discord.gg/0UJjcqv4bLQMgRl3') Join us on Discord
+					br
+					br
+					a.btn.btn-warning(href='/about') Who did this?
+					br
+					br
+					br
+					br
+					a.btn.btn-info(href='http://twitter.com/MikuiaBot')
+						i.fa.fa-twitter
+						|  Follow us on Twitter!
+	
+
 	if featured
-		.splash.splash-index.featured.nomargin.bg-mikuia(style=(featured.profile_banner != null && featured.profile_banner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + featured.profile_banner + '\'); background-position: top; background-repeat: no-repeat; background-size: cover;' : undefined))
-			//- .avatars
-			//- 	ul
-			//- 		each avatarFile in Mikuia.Tools.getAvatars(1000)
-			//- 			li
-			//- 				img(src='/img/avatars/' + avatarFile, width='64', height='64')
-			.container.animation-fade-in-down
+		.mikuia-index-featured(style=(featured.profile_banner != null && featured.profile_banner != 'null' ? 'background: linear-gradient(rgba(17, 17, 17, 1), rgba(0, 0, 0, 0.6)), url(\'' + featured.profile_banner + '\'); background-position: center; background-repeat: no-repeat; background-size: cover;' : undefined))
+			.container.text-white.animation-fade-in-down
 				.row
 					.col-xs-4
-						object.player(type='application/x-shockwave-flash', height='225', width='369', data='http://www.twitch.tv/widgets/live_embed_player.swf?channel=' + featured.name)
-							param(name='allowFullScreen', value='true')
-							param(name='allowScriptAccess', value='always')
-							param(name='allowNetworking', value='all')
-							param(name='movie', value='http://www.twitch.tv/widgets/live_embed_player.swf')
-							param(name='flashvars', value='hostname=www.twitch.tv&channel=' + featured.name + '&auto_play=true&start_volume=0')
-					.col-xs-8.blackbox
-						.pull-right
-							i.fa.fa-user(style='color: red;')
-							|  #{featured.viewers}  
-							i.fa.fa-eye(style='color: #aaa;')
-							|  #{featured.views}  
-							i.fa.fa-user(style='color: #aaa;')
-							|  #{featured.followers}
+						iframe(src='http://player.twitch.tv/?channel=hatsuney', frameborder=0, scrolling='no', autoplay='false', height='225', width='369')
+			
+					.col-xs-8
+						br
+						h4.text-muted Check out an example channel!
 						h1
 							| #{featured.display_name}
 							small  playing #{featured.game}
-						h4 #{featured.status}
+						p #{featured.status}
 						br
-						h6 BIO
-						if featured.bio != 'null'
-							i=featured.bio
-						else
-							i No bio.
-						br
-						br
-						.blackbox-buttons
-							a.btn.btn-twitch.btn-xs(href='http://twitch.tv/' + featured.name)
-								img(src='/img/glitch.png', height='18', width='18')
-								|  Watch on Twitch.tv
-	else
-		br
-		br
-	.infobox(style='background-color: #738bd7; box-shadow: 0px 0px 50px #999;')
-		.container(style='height: 100%;')
-			.infobox-discord.animation-fade-in-down
-				.row
-					.col-md-12
-						a(href='https://discord.gg/0UJjcqv4bLQMgRl3')
-							h1 Join us on Discord!
-							| Ask questions, report issues and share ideas!
-	.container
-		.row
-			.col-md-8.animation-fade-in-right
-				.panel.panel-default
-					.panel-heading Blog
-					.panel-body
-						a(href='http://blog.mikuia.tv')
-							.alert.alert-info
-								h2 Updates are now described on blog.mikuia.tv
-						small.text-muted
-							| Or you can just view the 5 recent 
-							a(href='http://github.com/Mikuia/Mikuia/commits') GitHub commits
-							| .
-						br
-						br
-
-						if Mikuia.Stuff.githubCommits.length > 5
-							- var i = 0
-							each commit in Mikuia.Stuff.githubCommits
-								if i < 5
-									- var date = moment(commit.commit.author.date).format('MMMM Do, YYYY')
-									
-									if previousDate
-										if date != previousDate
-											br
-											h5.text-primary=date
-											br
-									else
-										h5.text-primary=date
-										br
-
-									- var previousDate = date						
-
-									.media.nomargin
-										a.pull-left(href=commit.author.html_url)
-											img.media-object(src=commit.author.avatar_url, width='20', height='20')
-										.media-body
-											a(href=commit.html_url)
-												h5.media-heading!=commit.commit.message
-									- i++
-				
-				each panel in panels
-					.panel.panel-default
-						.panel-heading=panel.title
-						.panel-body!=panel.content
-			.col-md-4.animation-fade-in-left
-				.panel.panel-default
-					.panel-heading What?
-					.panel-body
-						p.
-							Mikuia is a Twitch bot that will help your chat interact with games you're playing!
-							#[br]
-							Looking up stats, sharing accomplishments and useful information, providing level and coin systems!
-						a.btn.btn-info.btn-xs.pull-right(href='/guide') Read the guide >>
-
-				.panel.panel-default
-					.panel-heading Who?
-					.panel-body
-						p.
-							You can check out the authors and the history of the project on the about page.
-						a.btn.btn-warning.btn-xs.pull-right(href='/about') About Mikuia >>
-
-				.panel.panel-default
-					.panel-heading How?
-					.panel-body
-						p.
-							Visit our Discord server, where you can ask questions, report your problems, and share ideas with the community!
-						a.btn.btn-danger.btn-xs.pull-right(href='https://discord.gg/0ejX5ADSL5Mzpbmx') Discord >>
-
+						a.btn.btn-twitch.btn-xs(href='http://twitch.tv/' + featured.name)
+							i.fa.fa-twitch
+							|  Watch on Twitch.tv
 	.well
 		.container
 			.row
@@ -135,7 +68,7 @@ block content
 							+stream(streams[miniData[0]], displayHtml, miniData[1])
 							- i++
 				.col-md-3.animation-fade-in-left
-					h1 Woo, Twitter
-					a.twitter-timeline(href='https://twitter.com/Hatsunya', data-widget-id='540548781029462017') Tweets by @Hatsunya
+					h1 Twitter Feed
+					a.twitter-timeline(href='https://twitter.com/MikuiaBot', data-widget-id='540548781029462017') Tweets by @MikuiaBot
 					script(type='text/javascript').
 						!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");

@@ -42,7 +42,7 @@ block content
 												.badge.badge-roundless.badge-danger.pull-right Level #{command.settings._minLevel}
 
 											if command.settings._cooldown && parseInt(command.settings._cooldown) > 0
-												.label.label-danger.pull-right #{command.settings._cooldown}s Cooldown
+												.badge.badge-roundless.badge-danger.pull-right #{command.settings._cooldown}s Cooldown
 
 											if command.settings._coinCost && parseInt(command.settings._coinCost) > 0
 												if parseInt(command.settings._coinCost) > 1

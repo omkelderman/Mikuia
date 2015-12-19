@@ -85,7 +85,7 @@ app.use (req, res, next) ->
 			await Channel.isLive defer err, isLive
 
 			if isLive
-				await 
+				await
 					Channel.trackGet 'viewers', defer err, tracker.viewers
 					Channel.trackGet 'chatters', defer err, tracker.chatters
 			await Channel.trackGet 'commands', defer err, tracker.commands
@@ -150,8 +150,8 @@ app.get '/guides/csgo', routes.community.guides.csgo
 app.get '/guides/levels', routes.community.guides.levels
 app.get '/guides/osu', routes.community.guides.osu
 app.get '/guides/quickstart', routes.community.guides.quickstart
-app.get '/leagues', checkAuth, routes.community.leagues.index
-app.get '/leagues/leaderboards', routes.community.leagues.leaderboards
+app.get '/leagues', routes.community.leagues.index
+app.get '/leagues/leaderboards', routes.community.leagues.index
 app.get '/levels', routes.community.levels
 app.get '/levels/:userId', routes.community.levels
 app.post '/search', routes.community.search
@@ -213,9 +213,9 @@ app.get '/:checkword/:subpage?*', (req, res, next) =>
 app.listen Mikuia.settings.web.port
 
 updateGithub = (callback) =>
-	request 
+	request
 		url: 'https://api.github.com/repos/Mikuia/Mikuia/commits'
-		headers: 
+		headers:
 			'User-Agent': 'Mikuia/0.0.0.0.1'
 	, (error, response, body) =>
 		if !error
@@ -245,7 +245,7 @@ updateGithub = (callback) =>
 						commit.commit.message = commit.commit.message.replace '[twitch]', '<span class="label label-info">twitch</span>'
 						commit.commit.message = commit.commit.message.replace '[web]', '<span class="label label-info">web</span>'
 						commit.commit.message = commit.commit.message.replace '[wow]', '<span class="label label-warning">wow</span>'
-				
+
 		else
 			Mikuia.Log.error error
 		callback error

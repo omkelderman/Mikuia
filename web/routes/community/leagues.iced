@@ -1,22 +1,19 @@
 module.exports =
 	index: (req, res) ->
-		Channel = new Mikuia.Models.Channel req.user.username
+		userInfo = {}
 
-		await
-			Mikuia.Leagues.getFightCount Channel.getName(), defer err, fightCount
-			Mikuia.Leagues.getFightCountLost Channel.getName(), defer err, fightsLost
-			Mikuia.Leagues.getFightCountWon Channel.getName(), defer err, fightsWon
-			Mikuia.Leagues.getRating Channel.getName(), defer err, rating
-		
-		res.render 'community/leagues',
-			fightCount: fightCount
-			fightsLost: fightsLost
-			fightsWon: fightsWon
-			rating: rating
+		if req.isAuthenticated()
+			Channel = new Mikuia.Models.Channel req.user.username
 
-	leaderboards: (req, res) ->
+			await
+				Mikuia.Database.zrevrank 'leaderboard:1v1rating:scores', Channel.getName(), defer err, userInfo.rank
+				Mikuia.Leagues.getFightCount Channel.getName(), defer err, userInfo.fightCount
+				Mikuia.Leagues.getFightCountLost Channel.getName(), defer err, userInfo.fightsLost
+				Mikuia.Leagues.getFightCountWon Channel.getName(), defer err, userInfo.fightsWon
+				Mikuia.Leagues.getRating Channel.getName(), defer err, userInfo.rating
+
 		await Mikuia.Database.zrevrange 'leaderboard:1v1rating:scores', 0, 99, 'withscores', defer err, ranks
-		
+
 		channels = Mikuia.Tools.chunkArray ranks, 2
 		displayNames = {}
 		fights = {}
@@ -34,9 +31,11 @@ module.exports =
 					channel.getLogo defer err, logos[data[0]]
 					Mikuia.Leagues.getFightCount channel.getName(), defer err, fights[data[0]]
 
-		res.render 'community/leagueLeaderboards',
+		res.render 'community/leagues',
+			titlePath: ['Leagues', 'Leaderboards']
 			channels: channels
 			displayNames: displayNames
 			fights: fights
 			isStreamer: isStreamer
 			logos: logos
+			userInfo: userInfo

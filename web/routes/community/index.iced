@@ -33,6 +33,7 @@ module.exports = (req, res) ->
 	await sortLeaderboard.getDisplayHtml defer err, displayHtml
 
 	res.render 'community/index',
+		titlePath: ['Mikuia.tv']
 		featured: featuredStream
 		panels: panels
 		sorting: sorting

@@ -1,15 +1,9 @@
 extends layout
 
 block content
-	.splash.bg-material-light-green
-		.container
-			.row
-				.col-md-12.animation-fade-in-right
-					h1 Supporter
 	.container
 		.row
 			.col-md-9.animation-fade-in-right
-				
 				h1 Well, hello there!
 				h4
 					| If you're here, it means you have interest in supporting the project!
@@ -71,6 +65,7 @@ block content
 						| Examples: !ban, !slow, !subscribers, !timeout, !unban (!host / !unhost require you to set Mikuia as an editor of your channel)
 
 			.col-md-3.animation-fade-in-left
+				br
 				form(action='https://www.paypal.com/cgi-bin/webscr', method='post', role='form')
 					.panel.panel-default
 						.panel-heading Buy Supporter

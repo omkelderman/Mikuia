@@ -3,9 +3,9 @@ module.exports = (req, res) ->
 		Channel = new Mikuia.Models.Channel req.params.userId
 
 		await Channel.exists defer err, exists
-		if !err 
+		if !err
 			if exists
-				await Channel.getDisplayName defer err, displayName
+				await Channel.getCleanDisplayName defer err, displayName
 				await Channel.getProfileBanner defer err, profileBanner
 				await Mikuia.Database.zrevrange 'levels:' + Channel.getName() + ':experience', 0, 99, 'withscores', defer err, ranks
 
@@ -33,6 +33,7 @@ module.exports = (req, res) ->
 						Mikuia.Database.zrevrank 'levels:' + Channel.getName() + ':experience', req.user.username, defer err, rank
 
 				res.render 'community/levelsUser',
+					titlePath: ['Levels', displayName]
 					channels: channels
 					displayName: displayName
 					displayNames: displayNames
@@ -56,6 +57,7 @@ module.exports = (req, res) ->
 		logos = {}
 		ranks = {}
 		totalLevel = null
+		totalRank = null
 		userCount = {}
 
 		if req.isAuthenticated()
@@ -63,7 +65,9 @@ module.exports = (req, res) ->
 
 			await
 				Channel.getAllExperience defer err, data
-				Channel.getTotalLevel defer err, totalLevel	
+				Channel.getTotalExperience defer err, totalExperience
+				Channel.getTotalLevel defer err, totalLevel
+				Mikuia.Database.zrevrank 'mikuia:experience', Channel.getName(), defer err, totalRank
 
 			for md in data
 				experience[md[0]] = md[1]
@@ -83,6 +87,7 @@ module.exports = (req, res) ->
 			await Mikuia.Database.zcard 'levels:' + stream + ':experience', defer err, userCount[stream]
 
 		await Mikuia.Database.zrevrange 'mikuia:experience', 0, 4, 'withscores', defer err, totalLevels
+
 		mexp = Mikuia.Tools.chunkArray totalLevels, 2
 
 		mlvl = []
@@ -98,6 +103,7 @@ module.exports = (req, res) ->
 				]
 
 		res.render 'community/levels',
+			titlePath: ['Levels']
 			displayNames: displayNames
 			experience: experience
 			level: totalLevel
@@ -106,4 +112,6 @@ module.exports = (req, res) ->
 			ranks: ranks
 			rawExperience: data
 			streams: streams
+			totalExperience: totalExperience
+			totalRank: totalRank + 1
 			userCount: userCount

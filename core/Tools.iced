@@ -7,6 +7,7 @@ class exports.Tools
 
 	chunkArray: (array, size) ->
 		R = []
+		if !array.length then return R
 		for i in [0..array.length] by size
 			R.push array.slice i, i + size
 		return R
@@ -29,10 +30,11 @@ class exports.Tools
 				'<span style="color: red;">UNKNOWN</span>'
 
 	fillArray: (data, size) ->
-		array = data.slice 0
+		array = []
+		data = _.shuffle data.slice 0
 		while array.length < size
-			array.push.apply array, array
-		return _.shuffle array
+			array.push data[Math.round(Math.random() * data.length)]
+		return array
 
 	getAvatars: (limit) ->
 		files = fs.readdirSync 'web/public/img/avatars'
@@ -50,3 +52,10 @@ class exports.Tools
 			level++
 
 		return level - 1
+
+	getLevelProgress: (experience) =>
+		level = @getLevel experience
+		currentExp = experience - @getExperience(level)
+		nextLevelExp = @getExperience(level + 1) - @getExperience(level)
+
+		return Math.floor((currentExp / nextLevelExp) * 100)

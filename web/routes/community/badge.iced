@@ -19,6 +19,7 @@ module.exports = (req, res) ->
 				Channel.getLogo defer err, memberData[member].logo
 
 		res.render 'community/badge',
+			titlePath: ['Badge', data.displayName]
 			Badge: data
 			badgeId: req.params.badgeId
 			members: members
@@ -26,4 +27,5 @@ module.exports = (req, res) ->
 			uniqueChatters: uniqueChatters
 	else
 		res.render 'community/error',
+			titlePath: ['Error']
 			error: 'Badge does not exist.'

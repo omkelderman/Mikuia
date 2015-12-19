@@ -1,2 +1,3 @@
 module.exports = (req, res) ->
-	res.render 'community/about'
+	res.render 'community/about',
+		titlePath: ['About']

@@ -1,63 +1,65 @@
 extends layout
 
 block content
-	.splash.bg-material-red
-		.container
-			.row
-				.col-md-12.animation-fade-in-right
-					h1 Levels
 	.container
 		.row
-			.col-md-8.animation-fade-in-right
-				table.table.table-bordered.table-striped
-					thead
-						tr
-							th(style='width: 40%;') Channel
-							th Users
-							th Your Rank
-							th Your Level
-							th(style='width: 20%;') Progress
-					tbody
-						each stream in streams
-							tr
-								td
-									.media
-										a.pull-left(href='/levels/' + stream)
-											img.img-circle.media-object(src='/img/avatars/' + stream + '.jpg', width=32, height=32)
-										.media-body
-											a.btn.btn-info.btn-xs.pull-right(href='http://twitch.tv/' + stream) Watch
-											h4.media-heading
-												a(href='/levels/' + stream) #{displayNames[stream]} Level
-								td
-									h4=userCount[stream]
+			.col-md-8.animation-fade-in-up
+			
+				h1.mikuia-page-header-text Live Channels 
+				each stream in streams
+					- var exp = experience[stream]
+					- var level = Mikuia.Tools.getLevel(exp)
+					.mikuia-card
+						.mikuia-card-block(style='flex-basis: 400px;')
+							.mikuia-card-user
+								.mikuia-card-user-avatar
+									a(href='/levels/' + stream)
+										img(src='/img/avatars/' + stream + '.jpg', width='32', height='32')
+								.mikuia-card-user-name
+									h4
+										a(href='/levels/' + stream) #{displayNames[stream]} Level
+						.mikuia-card-block.align-right
+							h6.text-muted Users
+							h3=Mikuia.Format.parse('{{commas(value)}}', { value: userCount[stream] })
+							
+						.mikuia-card-block.align-right
+							h6.text-muted Your Rank
+							h3
 								if user
-									if experience[stream] != undefined
-										- var exp = experience[stream]
-										- var level = Mikuia.Tools.getLevel(exp)
-										td
-											h4
-												a(href='/levels/' + stream) ##{ranks[stream]}
-										td.align-center
-											h3
-												+level(level, false, true)
-										td
-											+levelProgress(exp)
-									else
-										td.text-muted # -
-										td.text-muted -
-										td.text-muted No progress.
+									a(href='/levels/' + stream) ##{Mikuia.Format.parse('{{commas(value)}}', { value: ranks[stream] })}
 								else
-									td.text-muted -
-									td.text-muted -
-									td.text-muted Login to see your progress!
-			.col-md-4.animation-fade-in-left
+									.text-muted -
+						
+						.mikuia-card-block.align-right
+							h6.text-muted Your Level
+							h3
+								if user
+									+level(level, true, true)
+								else
+									.text-muted -
+			
+						.mikuia-card-block.align-right
+							h6.text-muted Progress
+							h3
+								if user
+									| #{Mikuia.Tools.getLevelProgress(exp)}%
+								else
+									.text-muted -
+									
+			.col-md-4.animation-fade-in-up
 				if user
-					h2
-						+level(level)
-					br
-					.panel.panel-default
-						.panel-heading Your Levels
-						.panel-body
-							+levelOverview(rawExperience)
-						.panel-footer
-							a(href='/user/' + user.username + '/levels') See more >>
+					h1.mikuia-page-header-text Your Stats
+					.mikuia-card
+						.mikuia-card-block
+							h6.text-muted Global Rank
+							h3
+								##{Mikuia.Format.parse('{{commas(value)}}', { value: totalRank })}
+						.mikuia-card-block.align-right
+							h6.text-muted Total Experience
+							h3=Mikuia.Format.parse('{{commas(value)}}', { value: totalExperience })
+						.mikuia-card-block.align-right
+							h6.text-muted Global Level
+							h3
+								+level(level, true, true)
+					
+					a.pull-right(href='/user/' + user.username + '/levels') See more >>

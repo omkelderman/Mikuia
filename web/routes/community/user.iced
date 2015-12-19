@@ -4,13 +4,15 @@ module.exports = (req, res) ->
 			error: 'No user specified.'
 	else
 		Channel = new Mikuia.Models.Channel req.params.userId
-		
+
 		await Channel.exists defer err, exists
 		if err
 			res.render 'community/error',
+				titlePath: ['Error']
 				error: err
 		else if not exists
 			res.render 'community/error',
+				titlePath: ['Error']
 				error: 'User does not exist.'
 		else
 
@@ -47,6 +49,7 @@ module.exports = (req, res) ->
 				switch req.params.subpage
 					when 'levels'
 						res.render 'community/userLevels',
+							titlePath: ['Profile', channel.display_name, 'Levels']
 							Channel: channel
 							displayNames: displayNames
 							ranks: ranks
@@ -55,11 +58,13 @@ module.exports = (req, res) ->
 							Mikuia.Items.getUserInventory Channel.getName(), defer err, items
 
 						res.render 'community/inventory',
+							titlePath: ['Profile', channel.display_name, 'Inventory']
 							Channel: channel
 							items: items
 					else
 						res.render 'community/error',
-							error: 'No subpage specified.'					
+							titlePath: ['Error']
+							error: 'No subpage specified.'
 			else
 				channel.commands = []
 				sorting = []
@@ -76,11 +81,12 @@ module.exports = (req, res) ->
 					if commands[command] == 'base.dummy'
 						description = settings.message
 						codeText = true
-					
+
 					channel.commands.push
 						name: command
 						description: description
-						plugin: Mikuia.Plugin.getManifest(Mikuia.Plugin.getHandler(commands[command]).plugin).name
+						plugin: Mikuia.Plugin.getHandler(commands[command]).plugin
+						pluginName: Mikuia.Plugin.getManifest(Mikuia.Plugin.getHandler(commands[command]).plugin).name
 						settings: settings
 						coin:
 							coinName: coinName
@@ -105,14 +111,7 @@ module.exports = (req, res) ->
 								button.link = false
 
 				res.render 'community/user',
+					titlePath: ['Profile', channel.display_name]
 					Channel: channel
 					displayNames: displayNames
 					splashButtons: splashButtons
-
-
-
-
-			
-
-			
-			

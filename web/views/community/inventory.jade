@@ -1,29 +1,30 @@
 extends layout
 
+block settings
+	- var extendedHeader = true
+	- var extendedHeaderBackground = (Channel.profileBanner && Channel.profileBanner != 'null' ? Channel.profileBanner : undefined)
+
 block content
-	.splash(style=(Channel.profileBanner != null && Channel.profileBanner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(\'' + Channel.profileBanner + '\'); background-position: center; background-repeat: no-repeat; background-size: cover;' : undefined))
-		.container
-			.row
-				.col-md-12.animation-fade-in-right
-					h1 #{Channel.display_name}'s Inventory
 	.container
-		.row
-			.col-md-7.animation-fade-in-right
-				each item in items
-					a(href='#')
-						.item(class='item-rarity-' + item.rarity, data-instanceid=item.instanceId, data-itemid=item.itemId, data-name=item.name, data-description=item.description, data-rarity=item.rarity, data-color=Mikuia.Items.getItemSchema().rarities[item.rarity].color)
-							img(src='/img/items/' + item.itemId + '.png')
-			.col-md-5.animation-fade-in-left
-				.well.item-preview(style='display: none;')
-					img.image-border.pull-right.item-preview-image(src='http://placekitten.com/g/128/128')
-					h2.item-preview-name
-					span.item-preview-rarity
-					p.item-preview-description
-				
-
-
-				- console.log(items)
-
+		.mikuia-page-padding
+			.row.animation-fade-in-down
+				.col-md-12
+					h1.mikuia-page-header-text.text-white #{Channel.display_name}'s Inventory
+			
+			.row.animation-fade-in-up
+				.col-md-7.mikuia-page-card
+					each item in items
+						a(href='#')
+							.item(class='item-rarity-' + item.rarity, data-instanceid=item.instanceId, data-itemid=item.itemId, data-name=item.name, data-description=item.description, data-rarity=item.rarity, data-color=Mikuia.Items.getItemSchema().rarities[item.rarity].color)
+								img(src='/img/items/' + item.itemId + '.png')
+				.col-md-5.animation-fade-in-left
+					.mikuia-page-card
+						.item-preview(style='display: none;')
+							img.image-border.pull-right.item-preview-image(src='http://placekitten.com/g/128/128')
+							h2.item-preview-name
+							span.item-preview-rarity
+							p.item-preview-description
+							
 block footerScript
 	script(type='text/javascript').
 		$('.item').click(function() {

@@ -1,148 +1,129 @@
 extends layout
 
+block settings
+	- var extendedHeader = true
+	- var extendedHeaderBackground = (Channel.profileBanner && Channel.profileBanner != 'null' ? Channel.profileBanner : undefined)
+
 block content
-	.splash.profile.bg-material-deep-purple-800(class=(Channel.isLive ? 'nomargin' : undefined), style=(Channel.profileBanner != null && Channel.profileBanner != 'null' ? 'background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(\'' + Channel.profileBanner + '\'); background-position: top; background-repeat: no-repeat; background-size: cover;' : undefined))
-		.container
+	.container
+		.mikuia-page-padding-extended.animation-fade-in-up
 			.row
-				.col-xs-3.text-center.animation-fade-in-right
-					img.img-circle.media-object.profile-avatar(src=Channel.logo, width='150', height='150')
-					- var fontSize = 32
-					if Channel.display_name.length > 16
-						- fontSize = 24
-					if Channel.display_name.length > 20
-						- fontSize = 18
+				.col-md-12
+					img.mikuia-profile-avatar(src=Channel.logo, width='128', height='128')
+					.mikuia-profile-bar
+						.mikuia-profile-bar-left
+							.mikuia-profile-bar-badges
+								each badge, badgeId in Channel.badges
+									a(href='/badge/' + badgeId)
+										.mikuia-badge
+											img.mikuia-badge-image(src='/img/badges/' + badgeId + '.png', width='32', height='32', rel='tooltip', title=('<b>' + badge.displayName + '</b><br />' + badge.description + '<br />' + Mikuia.Tools.colorRarity(badge.rarity)))
 
-					h2.weight-500(style='font-size: ' + fontSize + 'px;')=Channel.display_name
-					if Channel.isBot
-						.label.label-info
-							i.fa.fa-cogs
-							|  Bot
-					else if Channel.isBanned
-						.label.label-danger
-							i.fa.fa-minus-circle
-							|  Banned
-					else
-						+level(Channel.level, true)
-					br
-					br
-					if Object.keys(Channel.badges).length > 0
-						small.text-muted BADGES
-						br
-						each badge, badgeId in Channel.badges
-							a(href='/badge/' + badgeId)
-								img(src='/img/badges/' + badgeId + '.png', width='24', height='24', rel='tooltip', title=('<b>' + badge.displayName + '</b><br />' + badge.description + '<br />' + Mikuia.Tools.colorRarity(badge.rarity)))
-					
-					//- .media
-					//- 	.pull-left
-					//- 		
-					//- 	.media-body.profile-name
-					//- 		h1.media-heading
-					//- 			| #{Channel.display_name}
-
-					//- 			.pull-right.hidden-xs
-					//- 				+level(Channel.level)
-
-				.col-xs-9.animation-fade-in-left
-					if Channel.bio != 'null' && Channel.bio != null && !Channel.isBot && !Channel.isBanned
-						h1
-							i=Channel.bio
-					else
-						h1.text-muted
-							i No bio.
-	if !Channel.isBot
-		if Channel.isLive
-			.infobox.infobox-live
-				.container.animation-fade-in-left
-					.row
-						.col-md-2.visible-lg-block
+							.mikuia-profile-bar-level
+								+level(Channel.level, false, true)
+							h3.mikuia-profile-bar-name=Channel.display_name
+							h5.mikuia-profile-bar-text User
+								
+						.mikuia-profile-bar-right
 							a(href='http://twitch.tv/' + Channel.name, target='_blank')
-								img.infobox-preview(src=Channel.stream.preview, width='147', height='90')
-						.col-md-10
-							h1.hidden-xs
-								i.fa.fa-circle(style='color: #f44336;')
-								|  Currently Live 
-								small playing #{Channel.stream.game}
-							h2.visible-xs-block
-								br
-								i.fa.fa-circle(style='color: #f44336;')
-								|  Currently Live 
-								small playing #{Channel.stream.game}
+								.mikuia-profile-bar-icon(rel='tooltip', title='Twitch')
+									i.fa.fa-twitch.fa-2x
+							a(href='/user/' + Channel.name + '/inventory')
+								.mikuia-profile-bar-icon(rel='tooltip', title='Inventory')
+									i.fa.fa-briefcase.fa-2x
+							a(href='/levels/' + Channel.name)
+								.mikuia-profile-bar-icon(rel='tooltip', title=Channel.display_name + ' Levels')
+									i.fa.fa-star-o.fa-2x
+
+			if Channel.isLive
+				.row
+					.col-md-12
+						.mikuia-profile-live
+							.mikuia-profile-live-content
+								.mikuia-profile-live-thumbnail
+									a(href='http://twitch.tv/' + Channel.name, target='_blank')
+										img(src=Channel.stream.preview, width='147', height='90')
+								.mikuia-profile-live-text
+									h3
+										| Live Now 
+										small playing #{Channel.stream.game}
+									.mikuia-profile-live-title=Channel.stream.status
+									a(href='#') Watch on Twitch.tv
+					
+			.mikuia-page-card.no-border-radius
+				.row
+					.col-xs-4
+						.mikuia-page-category-heading Bio
+						if Channel.bio != 'null' && Channel.bio != null && !Channel.isBot && !Channel.isBanned
+							p=Channel.bio
+						else
 							p
-								h5.text-muted
-									| #{Channel.stream.status} >> 
-									a(href='http://twitch.tv/' + Channel.name, target='_blank') Watch on Twitch
-		.container
-			.row
-				.col-md-4.animation-fade-in-right
-					.panel.panel-default
-						.panel-heading Actions
-						.panel-body
-							a.btn.btn-primary.btn-xs(href='/levels/' + Channel.name)
-								.fa.fa-user(style='width: 18px;')
-								|  View top 100 levels
-							br
+								i.text-muted No bio.
+					
+						br
+						.mikuia-page-category-heading User Levels
 
-							a.btn.btn-twitch.btn-xs(href='http://twitch.tv/' + Channel.name)
-								img(src='/img/glitch.png', height='18', width='18')
-								|  View Twitch.tv profile
-							br
-
-							a.btn.btn-default.btn-xs(href='/user/' + Channel.name + '/inventory')
-								.fa.fa-briefcase(style='width: 18px;')
-								|  View inventory
-
-							if splashButtons
-								each pluginButtons in splashButtons
-									each button in pluginButtons.buttons
-										if button.link
-											br
-											a.btn.btn-xs(style='background-color: ' + button.color +'; color: white;', href=button.link)
-												img(src='/img/plugins/' + pluginButtons.plugin + '.png', height='18', width='18')
-												|  #{button.name}
-
-					.panel.panel-default
-						.panel-heading User Levels
-						.panel-body
-							+levelOverview(Channel.experience)
-						.panel-footer
-							a(href='/user/' + Channel.name + '/levels') See more >>
-
-				if Channel.commands.length > 0
-					.col-md-8.animation-fade-in-left
-						.panel.panel-default
-							.panel-heading Commands
-							ul.list-group
-								each command in Channel.commands
-									li.list-group-item
-										.label.label-default.pull-right=command.plugin
-										if command.settings
-											if command.settings._minLevel && parseInt(command.settings._minLevel) > 0
-												.label.label-danger.pull-right Level #{command.settings._minLevel}
-
-											if command.settings._cooldown && parseInt(command.settings._cooldown) > 0
-												.label.label-danger.pull-right #{command.settings._cooldown}s Cooldown
-
-											if command.settings._coinCost && parseInt(command.settings._coinCost) > 0
-												if parseInt(command.settings._coinCost) > 1
-													.label.label-warning.pull-right #{command.settings._coinCost} #{command.coin.coinNamePlural}
-												else
-													.label.label-warning.pull-right #{command.settings._coinCost} #{command.coin.coinName}
-
-											if command.settings._onlyMods
-												.label.label-success.pull-right Only Mods
-
-											if command.settings._onlySubs
-												.label.label-info.pull-right Only Subs
-
-											if command.settings._onlyBroadcaster
-												.label.label-primary.pull-right Only Broadcaster
-
-											if command.settings._whisper
-												.label.label-info.pull-right Whisper Response
+						if Channel.experience.length > 0
+							.mikuia-level-badge-container
+								each data, i in Channel.experience
+									if i < 5	
+										.mikuia-level-badge
+											img.mikuia-level-badge-image(src=(logos ? logos[data[0]] : '/img/avatars/' + data[0] + '.jpg'), width='50', height='50', rel='tooltip', title=displayNames[data[0]] + ' Level ' + Mikuia.Tools.getLevel(data[1]) + '<br />' + data[1] + ' XP')
+											.mikuia-level-badge-level
+												+level(Mikuia.Tools.getLevel(data[1]), true, true)
+						br
+						br
+						br
+						br
+						a(href='/user/' + Channel.name + '/levels') See more >>
+					.col-xs-8
+						.mikuia-page-category-heading Commands
+						
+						if Channel.commands.length > 0
+							each command in Channel.commands
+								- console.log(command)
+								.mikuia-card.mikuia-card-align-left.mikuia-profile-command
+									.mikuia-card-block.mikuia-card-block-margin
+										img(src='/img/plugins/' + command.plugin + '.png', width='24', height='24', rel='tooltip', title=command.pluginName)
+									.mikuia-card-block
+										h4
+											| #{command.name}
+											if command.settings
+												if command.settings._minLevel && parseInt(command.settings._minLevel) > 0
+													span.text-danger(rel='tooltip', title='<b>Level ' + command.settings._minLevel + '</b><br />This command requires #{Channel.display_name} Level #{command.settings._minLevel}.')
+														i.fa.fa-star
+														small.text-danger  #{command.settings._minLevel}
+											
+												if command.settings._cooldown && parseInt(command.settings._cooldown) > 2
+													span.text-danger(rel='tooltip', title='<b>' + command.settings._cooldown + 's Cooldown</b><br />This command is usable every #{command.settings._cooldown} second(s).')
+														i.fa.fa-refresh
+														small.text-danger  #{command.settings._cooldown}s
+														
+												if command.settings._coinCost && parseInt(command.settings._coinCost) > 0
+													if parseInt(command.settings._coinCost) > 1
+														span.text-warning(rel='tooltip', title='<b>#{command.settings._coinCost} #{command.coin.coinNamePlural}</b><br />This command costs #{command.settings._coinCost} #{command.coin.coinNamePlural}.')
+															i.fa.fa-money
+															small.text-warning  #{command.settings._coinCost}
+													else
+														span.text-warning(rel='tooltip',  title='<b>#{command.settings._coinCost} #{command.coin.coinName}</b><br />This command costs #{command.settings._coinCost} #{command.coin.coinName}.')
+															i.fa.fa-money
+															small.text-warning  #{command.settings._coinCost}
+											
+												if command.settings._onlyMods
+													i.text-success.fa.fa-user-plus(rel='tooltip', title='<b>Only Mods</b><br />This command is usable only by moderators.')
+											
+												if command.settings._onlySubs
+													i.text-info.fa.fa-twitch(rel='tooltip', title='<b>Only Subs</b><br />This command is usable only by subscribers.')
+											
+												if command.settings._onlyBroadcaster
+													i.text-primary.fa.fa-video-camera(rel='tooltip', title='<b>Only Broadcaster</b><br />This command is usable only by the streamer.')
+											
+												if command.settings._whisper
+													i.text-info.fa.fa-comment(rel='tooltip', title='<b>Whisper Response</b><br />The reponse to this command will be whispered.')
 										
-										b=command.name
-										|  - 
 										if command.codeText
-											code=command.description
+											if command.settings._onlySubs || command.settings._coinCost || command.settings._minLevel
+												code(rel='tooltip', title='This command has special conditions, you need to use it on chat.') (hidden)
+											else
+												code=command.description
 										else
-											| #{command.description}
+											span=command.description

@@ -1,20 +1,14 @@
 mixin stream(stream, displayHtml, sortValue)
 	if stream
-		.card.col-md-4.col-sm-3
-			a(href='http://twitch.tv/' + stream.display_name.toLowerCase(), target='_blank')
-				img(src=stream.preview, width='260')
-			br
-			a(href='http://twitch.tv/' + stream.display_name.toLowerCase(), title=stream.status, target='_blank')
-				if stream.broadcaster_language
-					img.pull-right.stream-flag(src='/img/flags/' + stream.broadcaster_language + '.png')
-				|  #{stream.status}
-			br
-			small.pull-right!=displayHtml.replace('<%value%>', sortValue)						
-			small.media.text-muted
-				a.pull-left(href='/user/' + stream.display_name.toLowerCase(), style='margin-right: -5px;')
-					img.media-object(src='/img/avatars/' + stream.display_name.toLowerCase() + '.jpg', width='16', height='16')
-				.media-body
-					.media-heading
-						a(href='/user/' + stream.display_name.toLowerCase()) #{stream.display_name}
-						if stream.game
-							|  playing #{stream.game}
+		a(href='http://twitch.tv/' + stream.display_name.toLowerCase(), target='_blank')
+			.mikuia-stream.col-md-3(style='background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(32, 20, 73, 0.8)), url(\'' + stream.preview + '\');')
+				.mikuia-stream-flag
+					img(src='/img/flags/' + stream.broadcaster_language + '.png')
+				.mikuia-stream-lb!=displayHtml.replace('<%value%>', sortValue)
+				.mikuia-stream-details
+					| #{stream.status}
+					.mikuia-stream-details-user
+						img.mikuia-stream-details-user-avatar(src='/img/avatars/' + stream.display_name.toLowerCase() + '.jpg', width='16', height='16')
+						.mikuia-stream-details-user-name
+							span.text-white=stream.display_name
+							small  playing #{stream.game}
