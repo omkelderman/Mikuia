@@ -4,48 +4,88 @@ block content
 	.container
 		.row
 			.col-md-8.animation-fade-in-up
-			
-				h1.mikuia-page-header-text Live Channels 
-				each stream in streams
-					- var exp = experience[stream]
-					- var level = Mikuia.Tools.getLevel(exp)
-					.mikuia-card
-						.mikuia-card-block(style='flex-basis: 300px;')
-							.mikuia-card-user
-								.mikuia-card-user-avatar
-									a(href='/levels/' + stream)
-										img(src='/img/avatars/' + stream + '.jpg', width='32', height='32')
-								.mikuia-card-user-name
-									h4
-										a(href='/levels/' + stream) #{displayNames[stream]} Level
-						.mikuia-card-block.align-right(style='flex-basis: 125px;')
-							h6.text-muted Users
-							h3=Mikuia.Format.parse('{{commas(value)}}', { value: userCount[stream] })
-							
-						.mikuia-card-block.align-right(style='flex-basis: 125px;')
-							h6.text-muted Your Rank
-							h3
-								if user
-									a(href='/levels/' + stream) ##{Mikuia.Format.parse('{{commas(value)}}', { value: ranks[stream] })}
-								else
-									.text-muted -
-						
-						.mikuia-card-block.align-right(style='flex-basis: 125px;')
-							h6.text-muted Your Level
-							h3
-								if user
-									+level(level, true, true)
-								else
-									.text-muted -
-			
-						.mikuia-card-block.align-right(style='flex-basis: 125px;')
-							h6.text-muted Progress
-							h3
-								if user
-									| #{Mikuia.Tools.getLevelProgress(exp)}%
-								else
-									.text-muted -
+				
+				if user
+					- var previousStreamCount = 0
+					
+					h1.mikuia-page-header-text Your Previous Streams 
+					each stream in streams
+						if experience[stream] != undefined
+							- var exp = experience[stream]
+							- var level = Mikuia.Tools.getLevel(exp)
+							.mikuia-card
+								.mikuia-card-block(style='flex-basis: 400px;')
+									.mikuia-card-user
+										.mikuia-card-user-avatar
+											a(href='/levels/' + stream)
+												img(src='/img/avatars/' + stream + '.jpg', width='32', height='32')
+										.mikuia-card-user-name
+											h4
+												a(href='/levels/' + stream) #{displayNames[stream]} Level
+								.mikuia-card-block.align-right
+									h6.text-muted Users
+									h3=Mikuia.Format.parse('{{commas(value)}}', { value: userCount[stream] })
 									
+								.mikuia-card-block.align-right
+									h6.text-muted Your Rank
+									h3
+										a(href='/levels/' + stream) ##{Mikuia.Format.parse('{{commas(value)}}', { value: ranks[stream] })}
+								
+								.mikuia-card-block.align-right
+									h6.text-muted Your Level
+									h3
+										+level(level, true, true)
+					
+								.mikuia-card-block.align-right
+									h6.text-muted Progress
+									h3
+										| #{Mikuia.Tools.getLevelProgress(exp)}%
+
+							- previousStreamCount++
+					
+					if previousStreamCount == 0
+						h2.text-muted There are no live streams that you watched previously.
+				
+				- var otherStreamCount = 0
+				
+				if user
+					h1.mikuia-page-header-text Other Channels
+				else
+					h1.mikuia-page-header-text Live Channels
+				each stream in streams
+					if !user || experience[stream] == undefined
+						.mikuia-card
+							.mikuia-card-block(style='flex-basis: 400px;')
+								.mikuia-card-user
+									.mikuia-card-user-avatar
+										a(href='/levels/' + stream)
+											img(src='/img/avatars/' + stream + '.jpg', width='32', height='32')
+									.mikuia-card-user-name
+										h4
+											a(href='/levels/' + stream) #{displayNames[stream]} Level
+							.mikuia-card-block.align-right
+								h6.text-muted Users
+								h3=Mikuia.Format.parse('{{commas(value)}}', { value: userCount[stream] })
+								
+							.mikuia-card-block.align-right
+								h6.text-muted Your Rank
+								h3
+									.text-muted -
+							
+							.mikuia-card-block.align-right
+								h6.text-muted Your Level
+								h3
+									.text-muted -
+				
+							.mikuia-card-block.align-right
+								h6.text-muted Progress
+								h3
+									.text-muted -
+					- otherStreamCount++
+					
+				if otherStreamCount == 0
+					h2.text-muted No live streams here...
+
 			.col-md-4.animation-fade-in-up
 				if user
 					h1.mikuia-page-header-text Your Stats
