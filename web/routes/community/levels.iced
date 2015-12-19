@@ -50,12 +50,15 @@ module.exports = (req, res) ->
 				error: err
 
 	else
-		await Mikuia.Streams.getAll defer err, streams
+		await Mikuia.Streams.getAll defer err, allStreams
+
+		console.log allStreams
 
 		displayNames = {}
 		experience = {}
 		logos = {}
 		ranks = {}
+		streams = Mikuia.Tools.fillArray allStreams, 10
 		totalLevel = null
 		totalRank = null
 		userCount = {}
@@ -74,6 +77,7 @@ module.exports = (req, res) ->
 
 				chan = new Mikuia.Models.Channel md[0]
 				await chan.getDisplayName defer err, displayNames[md[0]]
+				streams.push md[0]
 
 			for stream in streams
 				await Mikuia.Database.zrevrank 'levels:' + stream + ':experience', req.user.username, defer err, ranks[stream]
@@ -81,26 +85,12 @@ module.exports = (req, res) ->
 			for name, rank of ranks
 				ranks[name]++
 
+		console.log streams
+
 		for stream in streams
 			chan = new Mikuia.Models.Channel stream
 			await chan.getDisplayName defer err, displayNames[stream]
 			await Mikuia.Database.zcard 'levels:' + stream + ':experience', defer err, userCount[stream]
-
-		await Mikuia.Database.zrevrange 'mikuia:experience', 0, 4, 'withscores', defer err, totalLevels
-
-		mexp = Mikuia.Tools.chunkArray totalLevels, 2
-
-		mlvl = []
-		for md in mexp
-			if md.length > 0
-				chan = new Mikuia.Models.Channel md[0]
-				await
-					chan.getDisplayName defer err, displayNames[md[0]]
-					chan.getLogo defer err, logos[md[0]]
-				mlvl.push [
-					md[0]
-					Mikuia.Tools.getLevel md[1]
-				]
 
 		res.render 'community/levels',
 			titlePath: ['Levels']
@@ -108,7 +98,6 @@ module.exports = (req, res) ->
 			experience: experience
 			level: totalLevel
 			logos: logos
-			mlvl: mlvl
 			ranks: ranks
 			rawExperience: data
 			streams: streams

@@ -31,6 +31,7 @@ class exports.Tools
 
 	fillArray: (data, size) ->
 		array = []
+		if data.length < size then return array
 		data = _.shuffle data.slice 0
 		while array.length < size
 			array.push data[Math.round(Math.random() * data.length)]

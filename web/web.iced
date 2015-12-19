@@ -164,7 +164,6 @@ app.get '/auth/twitch', passport.authenticate('twitchtv', { scope: [ 'user_read'
 app.get '/auth/twitch/callback', (req, res, next) =>
 	passport.authenticate('twitchtv', (err, user, info) ->
 		if err
-			console.log 'here!'
 			return res.render 'community/error',
 				error: err
 		if !user
