@@ -54,7 +54,10 @@ block content
 							.mikuia-card
 								.mikuia-card-block
 									h6.text-muted Rank
-									h3 ##{Mikuia.Format.parse('{{commas(value)}}', { value: userInfo.rank + 1 })}
+									if userInfo.fightCount > 0
+										h3 ##{Mikuia.Format.parse('{{commas(value)}}', { value: userInfo.rank + 1 })}
+									else
+										h3 # -
 									
 								.mikuia-card-block
 									h6.text-muted Rating
