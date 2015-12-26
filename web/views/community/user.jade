@@ -120,7 +120,7 @@ block content
 													i.text-info.fa.fa-comment(rel='tooltip', title='<b>Whisper Response</b><br />The reponse to this command will be whispered.')
 										
 										if command.codeText
-											if command.settings._onlySubs || command.settings._coinCost || command.settings._minLevel
+											if command.settings._onlySubs || parseInt(command.settings._coinCost) > 0 || parseInt(command.settings._minLevel) > 0
 												code(rel='tooltip', title='This command has special conditions, you need to use it on chat.') (hidden)
 											else
 												code=command.description
