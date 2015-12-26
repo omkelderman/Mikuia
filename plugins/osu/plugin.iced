@@ -58,7 +58,7 @@ insertStars = (length) =>
 banchoSay = (name, message) =>
 	banchoLimiter.removeTokens 1, (err, rr) =>
 		cleanMessage = message
-		
+
 		for pattern in patterns
 			matches = []
 			while match = pattern.exec message
@@ -91,7 +91,7 @@ checkForRequest = (user, Channel, message, whisper) =>
 	if continueCheck
 		if /osu.ppy.sh\/(b|s)\/(\d+)/g.test message
 			match = /osu.ppy.sh\/(b|s)\/(\d+)/g.exec message
-			
+
 			await
 				Channel.getSetting 'osu', 'name', defer err, username
 				Channel.getSetting 'osu', 'mode', defer err2, mode
@@ -158,7 +158,7 @@ updateUserBest = (stream, callback) =>
 							Channel.getSetting 'osu', 'topRanks', defer err, topRanks
 							Channel.getSetting 'osu', 'topRankFormat', defer err2, topRankFormat
 
-						formatData = _.extend {}, score, 
+						formatData = _.extend {}, score,
 							rank: i + 1
 
 						console.log cli.whiteBright.bgCyan (new Date(score.date)).getTime() + '>' + userBest[name].timeUpdated
@@ -195,7 +195,7 @@ checkRankUpdates = (stream, callback) =>
 				await
 					getUser name, mode, defer err, stats
 					Mikuia.Database.hset 'plugin:osu:channels', name, Channel.getName(), defer errar, whatever
-				
+
 				if err
 					callback true, null
 				else if stats?[0]?
@@ -277,7 +277,7 @@ checkRankUpdates = (stream, callback) =>
 
 					if !userData[name]?
 						userData[name] = {}
-					
+
 					userData[name][mode] = stats
 
 					if !err3 && events
@@ -288,8 +288,7 @@ checkRankUpdates = (stream, callback) =>
 									Channel.getSetting 'osu', 'eventRankFormat', defer err2, eventRankFormat
 									Channel.getSetting 'osu', 'eventMinRank', defer err3, eventMinRank
 								if !err && !err2 && !err3
-									#eventString = stats.events[0].display_html.replace(/(<([^>]+)>)/ig,"").trim()
-									match = /images\\\/([A-Z]+)_small.+\\\/u\\\/(\d+).+achieved (?:<b>)?rank #(\d+)(?:<\\\/b>)? on .+\\\/b\\\/(\d+).+'>(.*) \[(.*)\].+\((.*)\)/.exec stats.events[0].display_html
+									match = /images\/([A-Z]+)_small.+\/u\/(\d+).+achieved (?:<b>)?rank #(\d+)(?:<\/b>)? on .+\/b\/(\d+).+'>(.*) \[(.*)\].+\((.*)\)/.exec stats.events[0].display_html
 									if match?
 										grade = match[1]
 										user_id = match[2]
@@ -299,7 +298,7 @@ checkRankUpdates = (stream, callback) =>
 										version = match[6]
 										mode = match[7]
 
-										if rank <= eventMinRank
+										if rank <= parseInt(eventMinRank)
 											setTimeout () =>
 												Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse eventRankFormat,
 													user_id: user_id
@@ -311,7 +310,7 @@ checkRankUpdates = (stream, callback) =>
 													mode: mode
 													grade: grade
 											, delay * 1000
-											
+
 					if stats?.events?[0]?.date?
 						userData[name].lastEventDate = (new Date(stats.events[0].date)).getTime()
 				else
@@ -338,7 +337,7 @@ makeTillerinoRequest = (beatmap_id, mods, callback) =>
 	start = process.hrtime()
 	request 'http://bot.tillerino.org:1666/beatmapinfo?k=' + @Plugin.getSetting('tillerinoKey') + '&wait=2000&beatmapid=' + beatmap_id + '&mods=' + mods, (error, response, body) ->
 		responseTime = parseInt(process.hrtime(start)[1] / 10000000, 10)
-		
+
 		if !error && response.statusCode == 200
 			Mikuia.Events.emit 'osu.tillerino.request', responseTime
 
@@ -407,11 +406,11 @@ sendRequest = (Channel, user, username, map, message, whisper) =>
 
 			if userBest[username]?[map.mode]?
 				best = userBest[username][map.mode]
-				
+
 				if best[0]?.pp? && best[24]?.pp?
 					maxRange = best[0].pp
 					minRange = best[24].pp
-			
+
 			if tillerinoData?.ppForAcc?.entry?
 				maxDiff = 0
 				minDiff = 0
@@ -532,8 +531,6 @@ Mikuia.Events.on 'twitch.connected', =>
 		fs.appendFileSync 'logs/' + message.from + '.txt', message.from + ': ' + message.message + '\n'
 		if message.message == @Plugin.getSetting 'verifyCommand'
 			code = Math.floor(Math.random() * 900000) + 100000
-
-			#codes[code] = message.from
 			await Mikuia.Database.setex 'plugin:osu:auth:code:' + code, 60, message.from, defer error, whatever
 
 			banchoSay message.from, 'Your code is ' + code + '. You have only a minute to save the wo... I mean to put it on page...'
@@ -541,9 +538,9 @@ Mikuia.Events.on 'twitch.connected', =>
 			if message.message.indexOf('!') == 0
 				tokens = message.message.split ' '
 				trigger = tokens[0].replace '!', ''
-				
+
 				if trigger in twitchCommands
-					
+
 					await Mikuia.Database.hget 'plugin:osu:channels', message.from, defer err, name
 
 					if name?
@@ -575,7 +572,7 @@ Mikuia.Events.on 'osu.np', (data) ->
 	if data.settings._whisper
 		Mikuia.Chat.whisper data.user.username, 'Darude - Sandstorm'
 	else
-		Mikuia.Chat.say data.to, 'Darude - Sandstorm' 
+		Mikuia.Chat.say data.to, 'Darude - Sandstorm'
 
 Mikuia.Events.on 'osu.request', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
@@ -626,7 +623,7 @@ Mikuia.Events.on 'osu.stats', (data) =>
 			if data.settings._whisper
 				Mikuia.Chat.whisper data.user.username, message
 			else
-				Mikuia.Chat.say Channel.getName(), message 
+				Mikuia.Chat.say Channel.getName(), message
 
 # Updating ranks!
 
