@@ -21,8 +21,20 @@ block content
 							.mikuia-profile-bar-level
 								+level(Channel.level, false, true)
 							h3.mikuia-profile-bar-name=Channel.display_name
-							h5.mikuia-profile-bar-text User
+							h6.mikuia-profile-bar-text
+								if Channel.isLive
+									.label.label-xs.label-danger Live
+							
+								if Channel.isBanned
+									.label.label-danger Banned
+								else if Channel.isBot
+									.label.label-info Bot
+								else if Channel.plugins.indexOf('base') > -1
+									.label.label-info Streamer
 								
+								if Mikuia.settings.bot.admins.indexOf(Channel.name) > -1
+									.label.label-warning Administrator
+									
 						.mikuia-profile-bar-right
 							a(href='http://twitch.tv/' + Channel.name, target='_blank')
 								.mikuia-profile-bar-icon(rel='tooltip', title='Twitch')

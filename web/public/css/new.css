@@ -515,6 +515,10 @@ h1, h2, h3, h4, h5, h6 {
 	padding-left: 40px;
 }
 
+.mikuia-profile-bar-text .label {
+	margin-right: 5px;
+}
+
 .mikuia-profile-bar-right {
 	padding-right: 10px;
 }
