@@ -21,19 +21,20 @@ module.exports =
 
 		sorting.sort()
 		for command in sorting
-			description = Mikuia.Plugin.getHandler(commandHandlers[command]).description
+			if Mikuia.Plugin.getHandler(commandHandlers[command])?.description?
+				description = Mikuia.Plugin.getHandler(commandHandlers[command]).description
 
-			await Channel.getCommandSettings command, true, defer err, settings
+				await Channel.getCommandSettings command, true, defer err, settings
 
-			commands.push
-				name: command
-				description: description
-				handler: commandHandlers[command]
-				plugin: Mikuia.Plugin.getManifest(Mikuia.Plugin.getHandler(commandHandlers[command]).plugin).name
-				settings: settings
-				coin:
-					coinName: coinName
-					coinNamePlural: coinNamePlural
+				commands.push
+					name: command
+					description: description
+					handler: commandHandlers[command]
+					plugin: Mikuia.Plugin.getManifest(Mikuia.Plugin.getHandler(commandHandlers[command]).plugin).name
+					settings: settings
+					coin:
+						coinName: coinName
+						coinNamePlural: coinNamePlural
 
 		res.render 'dashboard/commands',
 			commands: commands
@@ -94,7 +95,7 @@ module.exports =
 				if setting.type == 'boolean'
 					if req.body[settingName]? && req.body[settingName] == 'on'
 							req.body[settingName] = true
-						else 
+						else
 							req.body[settingName] = false
 				if req.body[settingName]? && setting.type != 'disabled'
 					if setting.type == 'number'
@@ -107,7 +108,7 @@ module.exports =
 
 	settings: (req, res) ->
 		Channel = new Mikuia.Models.Channel req.user.username
-		
+
 		settings = null
 		userSettings = null
 		if req.params.name?
@@ -119,7 +120,7 @@ module.exports =
 				await Channel.getCommandSettings req.params.name, false, defer err, commandSettingData
 				if !err && commandSettingData?
 					userSettings = commandSettingData
-			
+
 			guide = null
 			if Mikuia.Plugin.getHandler(handlerName)?.plugin?
 				await fs.readFile 'plugins/' + Mikuia.Plugin.getHandler(handlerName).plugin + '/guides/' + handlerName + '.jade', defer err, guideFile
