@@ -73,25 +73,26 @@ module.exports = (req, res) ->
 
 				sorting.sort()
 				for command in sorting
-					description = Mikuia.Plugin.getHandler(commands[command]).description
-					codeText = false
+					if Mikuia.Plugin.getHandler(commands[command])?.description?
+						description = Mikuia.Plugin.getHandler(commands[command]).description
+						codeText = false
 
-					await Channel.getCommandSettings command, true, defer err, settings
+						await Channel.getCommandSettings command, true, defer err, settings
 
-					if commands[command] == 'base.dummy'
-						description = settings.message
-						codeText = true
+						if commands[command] == 'base.dummy'
+							description = settings.message
+							codeText = true
 
-					channel.commands.push
-						name: command
-						description: description
-						plugin: Mikuia.Plugin.getHandler(commands[command]).plugin
-						pluginName: Mikuia.Plugin.getManifest(Mikuia.Plugin.getHandler(commands[command]).plugin).name
-						settings: settings
-						coin:
-							coinName: coinName
-							coinNamePlural: coinNamePlural
-						codeText: codeText
+						channel.commands.push
+							name: command
+							description: description
+							plugin: Mikuia.Plugin.getHandler(commands[command]).plugin
+							pluginName: Mikuia.Plugin.getManifest(Mikuia.Plugin.getHandler(commands[command]).plugin).name
+							settings: settings
+							coin:
+								coinName: coinName
+								coinNamePlural: coinNamePlural
+							codeText: codeText
 
 				if channel.isLive
 					await Mikuia.Streams.get Channel.getName(), defer err, channel.stream
