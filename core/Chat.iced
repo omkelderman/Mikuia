@@ -80,7 +80,7 @@ class exports.Chat
 			interval: 10000
 			maxInInterval: 49
 			namespace: 'mikuia:join:limiter'
-			redis: Mikuia.Database		
+			redis: Mikuia.Database
 
 		@messageLimiter = RollingLimiter
 			interval: 30000
@@ -107,7 +107,7 @@ class exports.Chat
 			Channel.getDisplayName defer err, displayName
 			Chatter.isBanned defer err, isBanned
 
-		channelContext[user.username] = 
+		channelContext[user.username] =
 			channel: Channel.getName()
 			user: user
 
@@ -171,17 +171,19 @@ class exports.Chat
 		if command?
 			if not reasons.length
 				handler = @Mikuia.Plugin.getHandler command
-				await Channel.isPluginEnabled handler.plugin, defer err, enabled
 
-				if enabled
-					if settings?._coinCost and settings._coinCost > 0
-						User = new Mikuia.Models.Channel user.username
-						await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
+				if handler?.plugin?
+					await Channel.isPluginEnabled handler.plugin, defer err, enabled
 
-					@Mikuia.Events.emit command, {user, to, message, tokens, settings}
-					Channel.trackIncrement 'commands', 1
-				else
-					reasons.push 'disabled'
+					if enabled
+						if settings?._coinCost and settings._coinCost > 0
+							User = new Mikuia.Models.Channel user.username
+							await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
+
+						@Mikuia.Events.emit command, {user, to, message, tokens, settings}
+						Channel.trackIncrement 'commands', 1
+					else
+						reasons.push 'disabled'
 
 			@Mikuia.Events.emit 'mikuia.command',
 				handler: command
@@ -215,10 +217,10 @@ class exports.Chat
 
 		if @joined.indexOf(channel) == -1 and isMember and !isBanned
 			await Mikuia.Database.zrangebyscore 'mikuia:join:limiter', '-inf', '+inf', defer err, limitEntries
-					
+
 			currentTime = (new Date).getTime() * 1000
 			remainingRequests = 49
-			
+
 			for limitEntry in limitEntries
 				if parseInt(limitEntry) + 15000000 > currentTime
 					remainingRequests--
@@ -239,7 +241,7 @@ class exports.Chat
 						@channelClients[channel] = clientIdToUse
 						@commandCooldowns[Channel.getName()] = {}
 						@joined.push channel
-						
+
 						callback? false
 					else
 						callback? true
@@ -272,10 +274,10 @@ class exports.Chat
 				channelLimiter[Channel.getName()].removeTokens 1, (err, channelRR) =>
 					if channelRR > -1
 						await Mikuia.Database.zrangebyscore 'mikuia:chat:limiter:' + @channelClients['#' + Channel.getName()], '-inf', '+inf', defer err, limitEntries
-					
+
 						currentTime = (new Date).getTime() * 1000
 						remainingRequests = 19
-						
+
 						for limitEntry in limitEntries
 							if parseInt(limitEntry) + 30000000 > currentTime
 								remainingRequests--
@@ -290,7 +292,7 @@ class exports.Chat
 									@parseQueue()
 								else
 									await Mikuia.Database.lpush 'mikuia:chat:queue', jsonData, defer whatever
-									
+
 									setTimeout () =>
 										@parseQueue()
 									, 30000
@@ -331,10 +333,10 @@ class exports.Chat
 			whisperUserLimiter[data.username].removeTokens 1, (err, userRR) =>
 				if userRR > -1
 					await Mikuia.Database.zrangebyscore 'mikuia:whisper:limiter', '-inf', '+inf', defer err, limitEntries
-					
+
 					currentTime = (new Date).getTime() * 1000
 					remainingRequests = 99
-					
+
 					for limitEntry in limitEntries
 						if parseInt(limitEntry) + 60000000 > currentTime
 							remainingRequests--
@@ -384,7 +386,7 @@ class exports.Chat
 			channel = '#' + channel
 		if message.indexOf('.') == 0 or message.indexOf('/') == 0
 			message = '!' + message.replace('.', '').replace('/', '')
-		
+
 		@sayUnfiltered channel, message
 
 	sayUnfiltered: (channel, message) ->
