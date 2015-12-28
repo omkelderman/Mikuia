@@ -33,7 +33,7 @@
 				"type": "boolean"
 			},
 			"fameLimit": {
-				"name": "Fame Lower Limit",
+				"name": "Minimal Fame Gain",
 				"category": "Changes",
 				"description": "Don't show fame changes below this much fame.",
 				"default": 0,

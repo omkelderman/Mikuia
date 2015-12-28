@@ -33,16 +33,17 @@ checkRankUpdates = (stream, callback) =>
 								diff = json.fame - userData[json.player].fame
 								rank = json.fame_rank - userData[json.player].fame_rank
 
-								if diff >= fameLimit
-									Mikuia.Chat.say Channel.getName(), 'Fame: ' + json.fame + ' (gained ' + diff + ')'
-								else if diff < 0
-									Mikuia.Chat.say Channel.getName(), 'Fame: ' + json.fame + ' (lost ' + Math.abs(diff) + ')'
+								if diff != 0
+									if diff >= parseInt(fameLimit)
+										Mikuia.Chat.say Channel.getName(), 'Fame: ' + json.fame + ' (gained ' + diff + ')'
+									else if diff < 0
+										Mikuia.Chat.say Channel.getName(), 'Fame: ' + json.fame + ' (lost ' + Math.abs(diff) + ')'
 
-								if diff != 0 && Math.abs(diff) >= fameLimit
-									if rank > 0
-										Mikuia.Chat.say Channel.getName(), 'Fame Rank: #' + json.fame_rank + ' (' + rank + ' down' + ')'
-									else if rank < 0
-										Mikuia.Chat.say Channel.getName(), 'Fame Rank: #' + json.fame_rank + ' (' + Math.abs(rank) + ' up!)'
+									if Math.abs(diff) >= parseInt(fameLimit)
+										if rank > 0
+											Mikuia.Chat.say Channel.getName(), 'Fame Rank: #' + json.fame_rank + ' (' + rank + ' down' + ')'
+										else if rank < 0
+											Mikuia.Chat.say Channel.getName(), 'Fame Rank: #' + json.fame_rank + ' (' + Math.abs(rank) + ' up!)'
 							userData[json.player] =
 								fame: json.fame
 								fame_rank: json.fame_rank
