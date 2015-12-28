@@ -20,7 +20,7 @@ checkRankUpdates = (stream, callback) =>
 				Channel.getSetting 'rotmg', 'name', defer err3, username
 
 			if !err && fameChanges && username
-				request 'http://webhost.ischool.uw.edu/~joatwood/realmeye_api/0.3/?player=' + username, (error, response, body) =>
+				request 'https://nightfirec.at/realmeye-api/?player=' + username, (error, response, body) =>
 					if !error && response.statusCode == 200
 						try
 							json = JSON.parse body
@@ -66,7 +66,7 @@ Mikuia.Events.on 'rotmg.rank', (data) =>
 		if username == ''
 			await Channel.getSetting 'rotmg', 'name', defer err, username
 
-		request 'http://webhost.ischool.uw.edu/~joatwood/realmeye_api/0.3/?player=' + username, (error, response, body) =>
+		request 'https://nightfirec.at/realmeye-api/?player=' + username, (error, response, body) =>
 			if !error && response.statusCode == 200
 				try
 					json = JSON.parse body
@@ -79,7 +79,7 @@ Mikuia.Events.on 'rotmg.rank', (data) =>
 						Mikuia.Chat.say Channel.getName(), 'Stats for ' + json.player + ': ★ ' + json.rank + ', ' + json.fame + ' Fame, rank #' + json.fame_rank + '.'
 					else
 						Mikuia.Chat.say Channel.getName(), 'Stats for ' + json.player + ': ★ ' + json.rank + ', ' + json.fame + ' Fame.'
-				 
+
 			else
 				Mikuia.Log.error cli.redBright('RotMG') + ' / ' + cli.cyan(displayName) + ' / Failed to get JSON.'
 
