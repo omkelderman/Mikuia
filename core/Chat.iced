@@ -125,8 +125,6 @@ class exports.Chat
 		if not forceWhisper
 			if message.toLowerCase().indexOf(Mikuia.settings.bot.name.toLowerCase()) > -1 || message.toLowerCase().indexOf(Mikuia.settings.bot.admin) > -1
 				@Mikuia.Log.info cli.cyanBright('[' + @channelClients['#' + Channel.getName()] + ']') + ' / ' + cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.red(message))
-			else
-				@Mikuia.Log.info cli.cyanBright('[' + @channelClients['#' + Channel.getName()] + ']') + ' / ' + cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.whiteBright(message)
 
 		if !isBanned
 			@Mikuia.Events.emit 'twitch.message', user, to, message, forceWhisper
