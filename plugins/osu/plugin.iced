@@ -174,7 +174,7 @@ updateUserBest = (stream, callback) =>
 
 checkRankUpdates = (stream, callback) =>
 	await Mikuia.Database.hget 'mikuia:stream:' + stream, 'game', defer err, game
-	if err || game != 'Osu!'
+	if err or !game? or game.toLowerCase() != 'osu!'
 		callback err, null
 	else
 		Channel = new Mikuia.Models.Channel stream
