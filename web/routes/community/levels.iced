@@ -86,9 +86,10 @@ module.exports = (req, res) ->
 				ranks[name]++
 
 		for stream in streams
-			chan = new Mikuia.Models.Channel stream
-			await chan.getDisplayName defer err, displayNames[stream]
-			await Mikuia.Database.zcard 'levels:' + stream + ':experience', defer err, userCount[stream]
+			if stream?
+				chan = new Mikuia.Models.Channel stream
+				await chan.getDisplayName defer err, displayNames[stream]
+				await Mikuia.Database.zcard 'levels:' + stream + ':experience', defer err, userCount[stream]
 
 		res.render 'community/levels',
 			titlePath: ['Levels']

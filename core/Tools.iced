@@ -40,7 +40,9 @@ class exports.Tools
 		if data.length < size then return array
 		data = _.shuffle data.slice 0
 		while array.length < size
-			array.push data[Math.round(Math.random() * data.length)]
+			randomEntry = data[Math.round(Math.random() * data.length)]
+			if randomEntry?
+				array.push randomEntry
 		return array
 
 	getAvatars: (limit) ->
