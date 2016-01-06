@@ -478,10 +478,15 @@ class exports.Chat
 		client.on 'notice', (channel, noticeId, params) =>
 			if noticeId == 'msg_banned' || noticeId == 'msg_timedout'
 				Channel = new Mikuia.Models.Channel channel
-				await Channel.getDisplayName defer err, displayName
+				await
+					Channel.getDisplayName defer err, displayName
+					Channel.disable defer whatever
 
+				Mikuia.Chat.part Channel.getName()
 				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Banned or timed out on ' + cli.greenBright(displayName) + cli.whiteBright('.'))
-				@Mikuia.Events.emit 'twitch.banned', channel
+				@Mikuia.Events.emit 'twitch.banned',
+					channel: Channel.getName()
+					displayName: displayName
 
 		client.on 'part', (channel, username) =>
 			if username == @Mikuia.settings.bot.name.toLowerCase()
