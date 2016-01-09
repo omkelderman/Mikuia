@@ -35,6 +35,7 @@ module.exports = (req, res) ->
 				Channel.getTotalLevel defer err, channel.level
 				Channel.isBanned defer err, channel.isBanned
 				Channel.isBot defer err, channel.isBot
+				Channel.isLevelDisabled defer err, channel.isLevelDisabled
 				Channel.isLive defer err, channel.isLive
 
 			for data in channel.experience

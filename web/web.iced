@@ -37,7 +37,7 @@ passport.serializeUser (user, done) ->
 passport.deserializeUser (obj, done) ->
 	done null, obj
 
-passport.use new TwitchStrategy
+twitchStrategy = new TwitchStrategy
 	clientID: Mikuia.settings.twitch.key
 	clientSecret: Mikuia.settings.twitch.secret
 	callbackURL: Mikuia.settings.twitch.callbackURL
@@ -45,6 +45,10 @@ passport.use new TwitchStrategy
 , (accessToken, refreshToken, profile, done) ->
 	process.nextTick () ->
 		return done null, profile
+
+twitchStrategy.authorizationParams = => { force_verify: true }
+
+passport.use twitchStrategy
 
 if Mikuia.settings.sentry.enable
 	raven = require 'raven'
@@ -155,6 +159,10 @@ app.get '/leagues/leaderboards', routes.community.leagues.index
 app.get '/levels', routes.community.levels
 app.get '/levels/:userId', routes.community.levels
 app.post '/search', routes.community.search
+app.get '/settings', checkAuth, routes.community.settings.index
+app.post '/settings/move', routes.community.settings.move
+app.post '/settings/move/accept', routes.community.settings.moveAccept
+app.post '/settings/move/reject', routes.community.settings.moveReject
 app.get '/streams', routes.community.streams
 app.get '/supporter', routes.community.supporter
 app.get '/user/:userId', routes.community.user
@@ -210,47 +218,3 @@ app.get '/:checkword/:subpage?*', (req, res, next) =>
 		next()
 
 app.listen Mikuia.settings.web.port
-
-updateGithub = (callback) =>
-	request
-		url: 'https://api.github.com/repos/Mikuia/Mikuia/commits'
-		headers:
-			'User-Agent': 'Mikuia/0.0.0.0.1'
-	, (error, response, body) =>
-		if !error
-			try
-				json = JSON.parse body
-			catch error
-				if error
-					Mikuia.Log.error error
-
-			if json
-				Mikuia.Stuff.githubCommits = json
-
-				for commit in Mikuia.Stuff.githubCommits
-					if commit.commit.message.indexOf('[') == 0
-						commit.commit.message = commit.commit.message.replace '[add]', '<span class="label label-primary">add</span>'
-						commit.commit.message = commit.commit.message.replace '[del]', '<span class="label label-danger">del</span>'
-						commit.commit.message = commit.commit.message.replace '[fix]', '<span class="label label-success">fix</span>'
-
-						commit.commit.message = commit.commit.message.replace '[bot]', '<span class="label label-default">bot</span>'
-						commit.commit.message = commit.commit.message.replace '[coins]', '<span class="label label-warning">coins</span>'
-						commit.commit.message = commit.commit.message.replace '[fun]', '<span class="label label-primary">fun</span>'
-						commit.commit.message = commit.commit.message.replace '[levels]', '<span class="label label-warning">levels</span>'
-						commit.commit.message = commit.commit.message.replace '[lol]', '<span class="label label-warning">lol</span>'
-						commit.commit.message = commit.commit.message.replace '[mod]', '<span class="label label-danger">mod</span>'
-						commit.commit.message = commit.commit.message.replace '[osu]', '<span class="label label-warning">osu</span>'
-						commit.commit.message = commit.commit.message.replace '[rotmg]', '<span class="label label-warning">rotmg</span>'
-						commit.commit.message = commit.commit.message.replace '[twitch]', '<span class="label label-info">twitch</span>'
-						commit.commit.message = commit.commit.message.replace '[web]', '<span class="label label-info">web</span>'
-						commit.commit.message = commit.commit.message.replace '[wow]', '<span class="label label-warning">wow</span>'
-
-		else
-			Mikuia.Log.error error
-		callback error
-
-setInterval () =>
-	await updateGithub defer whatever
-, 300000
-Mikuia.Stuff.githubCommits = []
-await updateGithub defer whatever

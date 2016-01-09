@@ -31,7 +31,10 @@ block content
 									.label.label-info Bot
 								else if Channel.plugins.indexOf('base') > -1
 									.label.label-info Streamer
-								
+									
+								if Channel.isLevelDisabled
+									.label.label-warning Levels Disabled
+							
 								if Mikuia.settings.bot.admins.indexOf(Channel.name) > -1
 									.label.label-warning Administrator
 									

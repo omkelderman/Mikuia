@@ -1,0 +1,181 @@
+extends layout
+
+block settings
+	- var extendedHeader = true
+	- var extendedHeaderBackground = (profileBanner && profileBanner != 'null' ? profileBanner : undefined)
+
+block content
+	.container
+		.mikuia-page-padding-extended.animation-fade-in-up
+			.row.animation-fade-in-down
+				.col-md-12
+					h1.mikuia-page-header-text.text-white User Settings
+			
+			.row.animation-fade-in-up
+				.col-md-12.mikuia-page-card
+					h2 Move Levels
+					p.
+						In case you change the channel (for example "starting over"), you can get your and your viewers' levels moved to a different channel.
+						#[br]
+						The points will get merged between both channels, and the source channel won't be able to gain points anymore.
+						#[br]
+						If the source channel has any points on the target channel, they will get deleted.
+						
+					a.btn.btn-warning(data-target='#moveModal', data-toggle='modal') Move Levels
+
+	.modal.fade#continueModal
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal') &times;
+					h4.modal-title Move Levels
+					
+				.modal-body
+					h2 Now login to the Target channel.
+					p.
+						You should have a pending level move request on the other channel.
+						#[br]
+						Accept it to finish the process.
+						
+				.modal-footer
+					a.btn.btn-danger(href='/logout') Logout
+					|  
+					a.btn.btn-default(data-dismiss='modal') Cancel
+					
+	.modal.fade#errorModal
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal') &times;
+					h4.modal-title Move Levels
+					
+				.modal-body
+					h2 Umm.... something failed.
+					p.
+						You can try again, or go annoy Hatsu with this.
+						
+				.modal-footer
+					a.btn.btn-default(data-dismiss='modal') Close
+
+	.modal.fade#moveModal
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal') &times;
+					h4.modal-title Move Levels
+					
+				.modal-body
+					h2 Which channel is this?
+					p.
+						If this is the channel you're moving your levels from, select #[b Source].
+						#[br]
+						If this is the channel you want your levels moved to, select #[b Target].
+						
+					.row
+						.col-md-6
+							a.btn.btn-block.btn-primary(onclick='showSource()')
+								h2 Source
+								br
+								| #{displayName} ➜ ???
+						.col-md-6
+							a.btn.btn-block.btn-info(onclick='showTarget()')
+								h2 Target
+								br
+								| ??? ➜ #{displayName}
+								
+				.modal-footer
+					a.btn.btn-default(data-dismiss='modal') Cancel
+								
+	.modal.fade#sourceModal
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal') &times;
+					h4.modal-title Move Levels
+					
+				.modal-body
+					h2 What channel are you moving to?
+					p.
+						Please specify the username of your new channel.
+						
+					.input-group
+						.input-group-addon
+							i.fa.fa-user
+						input.form-control#username(type='text', autocomplete='off')
+						.form-control-focus
+						
+				.modal-footer
+					a.btn.btn-success(onclick='continueSource($("#username").val())') Continue
+					|  
+					a.btn.btn-default(data-dismiss='modal') Cancel
+	
+	.modal.fade#targetModal
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal') &times;
+					h4.modal-title Move Levels
+					
+				.modal-body
+					if moveRequests.length > 0
+						b Pending Requests:
+						br
+						each channel in moveRequests
+							| #{channel} - 
+							a(href='#', onclick='accept("' + channel + '")') Accept
+							|  | 
+							a(href='#', onclick='reject("' + channel + '")') Reject
+					else
+						h2 Please login to the Source channel.
+						p.
+							You need to login to the original channel first.
+						
+				.modal-footer
+					a.btn.btn-default(data-dismiss='modal') Cancel
+
+block footerScript
+	script(type='text/javascript').
+		Mikuia.usernameCompletion($('#username'), false)
+		
+		function continueSource(username) {
+			username = username.toLowerCase().trim()
+			if(username != '' && username != '#{user.username}') {
+				$.post('/settings/move', {
+					username: username
+				}).done(function(response) {
+					if(response == 'ok') {
+						$('#sourceModal').modal('hide')
+						$('#continueModal').modal('show')
+					} else {
+						$('#sourceModal').modal('hide')
+						$('#errorModal').modal('show')
+					}
+				})
+			}
+		}
+		
+		function accept(username) {
+			$.post('/settings/move/accept', {
+				username: username
+			}).done(function() {
+				location.reload()
+			})
+		}
+		
+		function reject(username) {
+			$.post('/settings/move/reject', {
+				username: username
+			}).done(function() {
+				location.reload()
+			})
+		}
+		
+		function showSource() {
+			$('#moveModal').modal('hide')
+			$('#sourceModal').modal('show')
+		}
+		
+		function showTarget() {
+			$('#moveModal').modal('hide')
+			$('#targetModal').modal('show')
+		}

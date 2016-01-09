@@ -23,6 +23,9 @@ class exports.Channel extends Mikuia.Model
 	isBot: (callback) ->
 		Mikuia.Database.sismember 'mikuia:bots', @getName(), callback
 
+	isLevelDisabled: (callback) ->
+		Mikuia.Database.sismember 'mikuia:levels:disabled', @getName(), callback
+
 	isLive: (callback) ->
 		Mikuia.Database.sismember 'mikuia:streams', @getName(), callback
 
@@ -81,7 +84,7 @@ class exports.Channel extends Mikuia.Model
 		await
 			@getCommand trigger, defer commandError, command
 			@getCommandSettings trigger, true, defer settingsError, settings
-		
+
 		await @isCommandAllowed settings, user, defer isAllowed, reasons
 
 		callback commandError || settingsError, {command, settings, isAllowed, reasons}
@@ -96,19 +99,19 @@ class exports.Channel extends Mikuia.Model
 			if userLevel < parseInt(settings._minLevel)
 				isAllowed = false
 				reasons.push 'level'
-		
+
 		if settings?._onlyMods and not chatter.isModOf @getName()
 			isAllowed = false
 			reasons.push 'mod'
-		
+
 		if settings?._onlySubs and not user.subscriber
 			isAllowed = false
 			reasons.push 'subscriber'
-		
+
 		if settings?._onlyBroadcaster and user.username isnt @getName()
 			isAllowed = false
 			reasons.push 'broadcaster'
-		
+
 		if settings?._coinCost and parseInt(settings._coinCost) > 0
 			await Mikuia.Database.zscore 'channel:' + @getName() + ':coins', user.username, defer error, balance
 			if !balance? or parseInt(balance) < parseInt(settings._coinCost)
@@ -118,7 +121,7 @@ class exports.Channel extends Mikuia.Model
 		if user.username == @getName()
 			isAllowed = true
 			reasons = []
-		
+
 		callback isAllowed, reasons
 
 	addCommand: (command, handler, callback) ->
@@ -289,7 +292,7 @@ class exports.Channel extends Mikuia.Model
 						await @getDisplayName defer err, displayName
 						await otherChannel.getDisplayName defer err, otherName
 						Mikuia.Chat.sayUnfiltered channel, '.me > ' + displayName + ' just advanced to ' + otherName + ' Level ' + newLevel + '!'
-					
+
 					Mikuia.Events.emit 'levels.levelup',
 						username: @getName()
 						displayName: displayName
@@ -298,7 +301,7 @@ class exports.Channel extends Mikuia.Model
 
 		else
 			await @updateTotalLevel defer whatever
-			
+
 		callback false
 
 	getLevel: (channel, callback) =>
@@ -344,11 +347,11 @@ class exports.Channel extends Mikuia.Model
 
 		if isBot
 			await @_del 'experience', defer err
-		
+
 		for data in experience
 			if isBot
 				data[1] = 0
-				
+
 			totalExperience += parseInt data[1]
 			await Mikuia.Database.zadd 'levels:' + data[0] + ':experience', data[1], @getName(), defer err, whatever
 

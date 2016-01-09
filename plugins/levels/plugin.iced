@@ -11,9 +11,11 @@ Mikuia.Events.on 'twitch.message', (user, to, message) =>
 
 	if live
 		Channel = new Mikuia.Models.Channel user.username
-		await Channel.isBanned defer err, isBanned
+		await
+			Channel.isBanned defer err, isBanned
+			Channel.isLevelDisabled defer err, isLevelDisabled
 
-		if !isBanned
+		if not isBanned and not isLevelDisabled
 			gibePoints = user.username not of lastMessage or new Date().getTime() / 1000 > lastMessage[user.username] + 60
 
 			chatActivity[user.username] ?= {}
