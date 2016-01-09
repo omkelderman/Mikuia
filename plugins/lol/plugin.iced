@@ -48,7 +48,7 @@ Mikuia.Events.on 'lol.league.summary', (data) =>
 	, defer err, summonerData
 
 	if not err and summonerData?[name]?.id?
-		await client.getLeaguesBySummoner summonerData[name].id, 
+		await client.getLeaguesBySummoner summonerData[name].id,
 			region: region
 		, defer err, leagueData
 
@@ -68,7 +68,7 @@ Mikuia.Events.on 'lol.league.summary', (data) =>
 							if data.settings._whisper
 								Mikuia.Chat.whisper data.user.username, message
 							else
-								Mikuia.Chat.say Channel.getName(), message 
+								Mikuia.Chat.say Channel.getName(), message
 
 Mikuia.Events.on 'lol.masteries.active.summary', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
@@ -82,7 +82,7 @@ Mikuia.Events.on 'lol.masteries.active.summary', (data) =>
 	, defer err, summonerData
 
 	if not err and summonerData?[name]?.id?
-		await client.getSummonerMasteries summonerData[name].id, 
+		await client.getSummonerMasteries summonerData[name].id,
 			region: region
 		, defer err, masteryData
 
@@ -90,24 +90,26 @@ Mikuia.Events.on 'lol.masteries.active.summary', (data) =>
 			for masteryPage in masteryData[summonerData[name].id].pages
 				if masteryPage.current
 
+					console.log masteryPage
+
 					points =
-						Offense: 0
-						Defense: 0
-						Utility: 0
+						Ferocity: 0
+						Cunning: 0
+						Resolve: 0
 
 					for mastery in masteryPage.masteries
 						points[masteryCategories[mastery.id]] += mastery.rank
 
 					message = Mikuia.Format.parse data.settings.format,
 						pageName: masteryPage.name
-						offensePoints: points.Offense
-						defensePoints: points.Defense
-						utilityPoints: points.Utility
+						ferocityPoints: points.Ferocity
+						cunningPoints: points.Cunning
+						resolvePoints: points.Resolve
 
 					if data.settings._whisper
 						Mikuia.Chat.whisper data.user.username, message
 					else
-						Mikuia.Chat.say Channel.getName(), message 
+						Mikuia.Chat.say Channel.getName(), message
 
 Mikuia.Events.on 'lol.runes.active.list', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
@@ -121,7 +123,7 @@ Mikuia.Events.on 'lol.runes.active.list', (data) =>
 	, defer err, summonerData
 
 	if not err and summonerData?[name]?.id?
-		await client.getSummonerRunes summonerData[name].id, 
+		await client.getSummonerRunes summonerData[name].id,
 			region: region
 		, defer err, runeData
 
@@ -143,7 +145,7 @@ Mikuia.Events.on 'lol.runes.active.list', (data) =>
 					if data.settings._whisper
 						Mikuia.Chat.whisper data.user.username, message
 					else
-						Mikuia.Chat.say Channel.getName(), message 
+						Mikuia.Chat.say Channel.getName(), message
 
 Mikuia.Events.on 'lol.stats.ranked.champion', (data) =>
 	Channel = new Mikuia.Models.Channel data.to

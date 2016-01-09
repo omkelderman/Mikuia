@@ -15,7 +15,7 @@
 					"variables": {
 						"tier": "Solo Queue tier",
 						"division": "Solo Queue division",
-						"leaguePoints": "Solo Queue League Points",						
+						"leaguePoints": "Solo Queue League Points",
 						"wins": "Wins",
 						"losses": "Losses"
 					}
@@ -28,13 +28,13 @@
 				"format": {
 					"name": "Message Format",
 					"description": "Message format.",
-					"default": "{{pageName}}: {{offensePoints}}/{{defensePoints}}/{{utilityPoints}}",
+					"default": "{{pageName}}: {{ferocityPoints}}/{{cunningPoints}}/{{resolvePoints}}",
 					"type": "format",
 					"variables": {
 						"pageName": "Mastery page name",
-						"offensePoints": "Offense tree points",
-						"defensePoints": "Defense tree points",
-						"utilityPoints": "Utility tree points"
+						"ferocityPoints": "Ferocity tree points",
+						"cunningPoints": "Cunning tree points",
+						"resolvePoints": "Resolve tree points"
 					}
 				}
 			}
