@@ -27,10 +27,7 @@ module.exports = (req, res) =>
 				else
 					suggestions = []
 					for option in response.suggestions[0].options
-						if option.payload.displayName?
-							suggestions.push option.payload.displayName
-						else
-							suggestions.push option.text
+						suggestions.push option.text
 
 					res.send JSON.stringify suggestions
 					console.log suggestions
