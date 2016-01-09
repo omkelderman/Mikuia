@@ -163,7 +163,8 @@ updateUserBest = (stream, callback) =>
 
 						console.log cli.whiteBright.bgCyan (new Date(score.date)).getTime() + '>' + userBest[name].timeUpdated
 						console.log cli.cyanBright name + ' got a new top rank! #' + (i + 1) + ' - ' + score.beatmap_id + ' - ' + score.pp + 'pp!'
-						Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse topRankFormat, formatData
+						if topRanks
+							Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse topRankFormat, formatData
 
 			userBest[name][mode] = best
 
