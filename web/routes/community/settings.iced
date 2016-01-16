@@ -35,8 +35,10 @@ module.exports =
 			await Mikuia.Database.sismember 'channel:' + Target.getName() + ':requests:move', Source.getName(), defer err, isMember
 			if isMember
 				await
-					Source.getAllExperience defer err, experience
+					Mikuia.Database.srem 'channel:' + Target.getName() + ':requests:move', Source.getName(), defer whatever
+					Mikuia.Database.sadd 'mikuia:levels:disabled', Source.getName(), defer whatever
 					Mikuia.Database.zrevrange 'levels:' + Source.getName() + ':experience', 0, -1, 'withscores', defer err, rawLevels
+					Source.getAllExperience defer err, experience
 
 				levels = _.groupBy rawLevels, (a, b) => Math.floor b / 2
 
@@ -57,9 +59,6 @@ module.exports =
 						await Target.addExperience username, xpAmount, 100, defer whatever
 
 					await Source.addExperience username, xpAmount * -1, 100, defer whatever
-
-				await Mikuia.Database.srem 'channel:' + Target.getName() + ':requests:move', Source.getName(), defer whatever
-				await Mikuia.Database.sadd 'mikuia:levels:disabled', Source.getName(), defer whatever
 
 			res.send 'ok'
 		else
