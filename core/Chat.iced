@@ -250,7 +250,6 @@ class exports.Chat
 						@joined.push channel
 						callback? false
 
-						callback? true
 					else
 						callback? true
 			else
