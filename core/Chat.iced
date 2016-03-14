@@ -350,7 +350,7 @@ class exports.Chat
 
 					if remainingRequests > 0
 						@whisperLimiter '', (err, timeLeft) =>
-							if !timeLeft
+							if !timeLeft and data?.username?
 								@whisperClient.whisper data.username, data.message
 
 								Mikuia.Events.emit 'mikuia.whisper', data.username, data.message
