@@ -295,7 +295,7 @@ checkRankUpdates = (stream, callback) =>
 										user_id = match[2]
 										rank = match[3]
 										beatmap_id = match[4]
-										map = match[5]
+										name = match[5]
 										version = match[6]
 										mode = match[7]
 
@@ -306,7 +306,7 @@ checkRankUpdates = (stream, callback) =>
 													username: name
 													rank: rank
 													beatmap_id: beatmap_id
-													map: map
+													name: name
 													version: version
 													mode: mode
 													grade: grade

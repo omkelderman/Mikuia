@@ -258,14 +258,14 @@
 				"name": "Event Rank Format",
 				"category": "Events",
 				"description": "Format of rank event messages on chat.",
-				"default": "{{username}} achieved rank #{{rank}} on {{map}} [{{version}}] ({{mode}})",
+				"default": "{{username}} achieved rank #{{rank}} on {{name}} [{{version}}] ({{mode}})",
 				"type": "format",
 				"variables": {
 					"user_id": "User ID",
 					"username": "Username",
 					"rank": "Obtained Rank",
 					"beatmap_id": "Beatmap ID",
-					"map": "Map Artist & Title",
+					"name": "Map Artist & Title",
 					"version": "Difficulty",
 					"mode": "Game Mode",
 					"grade": "Grade"
