@@ -258,7 +258,7 @@
 				"name": "Event Rank Format",
 				"category": "Events",
 				"description": "Format of rank event messages on chat.",
-				"default": "{{username}} achieved rank #{{rank}} on {{name}} [{{version}}] ({{mode}})",
+				"default": "{{username}} achieved rank #{{rank}} on {{mapName}} [{{version}}] ({{mode}})",
 				"type": "format",
 				"variables": {
 					"user_id": "User ID",
