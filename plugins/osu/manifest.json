@@ -265,7 +265,7 @@
 					"username": "Username",
 					"rank": "Obtained Rank",
 					"beatmap_id": "Beatmap ID",
-					"name": "Map Artist & Title",
+					"mapName": "Map Artist & Title",
 					"version": "Difficulty",
 					"mode": "Game Mode",
 					"grade": "Grade"
