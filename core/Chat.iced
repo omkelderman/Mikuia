@@ -10,6 +10,7 @@ whisperUserLimiter = {}
 
 class exports.Chat
 	constructor: (@Mikuia) ->
+		@awsMarked = {}
 		@chatters = {}
 		@channelClients = {}
 		@clientJoins = {}
@@ -19,7 +20,9 @@ class exports.Chat
 		@joined = []
 		@messageLimiter = null
 		@moderators = {}
-		@nextJoinClient = 0
+		@nextJoinClient =
+			aws: 0
+			main: 0
 		@whisperClient = null
 		@whisperLimiter = null
 
@@ -47,9 +50,10 @@ class exports.Chat
 		, connections * 10 * 1000
 
 		for i in [0..(connections - 1)]
-			await @spawnConnection i, defer err, client
-			@clients[i] = client
-			@clientJoins[i] = []
+			for type in ['main', 'aws']
+				await @spawnConnection type + i, type, defer err, client
+				@clients[type + i] = client
+				@clientJoins[type + i] = []
 
 		@whisperClient = new irc.client
 			options:
@@ -223,14 +227,19 @@ class exports.Chat
 			if remainingRequests > 0
 				@joinLimiter '', (err, timeLeft) =>
 					if not timeLeft
-						if @nextJoinClient >= Mikuia.settings.bot.connections
-							@nextJoinClient = 0
+
+						cluster = 'main'
+						if @awsMarked[Channel.getName()]
+							cluster = 'aws'
+
+						if @nextJoinClient[cluster] >= Mikuia.settings.bot.connections
+							@nextJoinClient[cluster] = 0
 
 						if not isPrioritized
-							clientIdToUse = @nextJoinClient
-							@nextJoinClient++
+							clientIdToUse = cluster + @nextJoinClient[cluster]
+							@nextJoinClient[cluster]++
 						else
-							await @spawnConnection Channel.getName(), defer err, @clients[Channel.getName()]
+							await @spawnConnection Channel.getName(), cluster, defer err, @clients[Channel.getName()]
 							@clientJoins[Channel.getName()] = []
 							clientIdToUse = Channel.getName()
 
@@ -405,12 +414,12 @@ class exports.Chat
 	sayRaw: (channel, message) =>
 		@clients[@channelClients[channel]].say channel, message
 
-	spawnConnection: (i, callback) =>
+	spawnConnection: (i, type, callback) =>
 		client = new irc.client
 			options:
 				debug: @Mikuia.settings.bot.debug
 			connection:
-				cluster: 'aws'
+				cluster: type
 				reconnect: true
 			identity:
 				username: @Mikuia.settings.bot.name
@@ -436,7 +445,7 @@ class exports.Chat
 			client.raw 'CAP REQ :twitch.tv/commands'
 			client.raw 'CAP REQ :twitch.tv/tags'
 
-			if client.id == Mikuia.settings.bot.connections - 1
+			if client.id == 'aws' + (Mikuia.settings.bot.connections - 1)
 				@Mikuia.Events.emit 'twitch.connected'
 				@connected = true
 				@update()
@@ -496,6 +505,13 @@ class exports.Chat
 				delete channelLimiter[Channel.getName()]
 				delete channelTotalLimiter[Channel.getName()]
 				@Mikuia.Log.info cli.cyanBright('[' + client.id + ']') + ' / ' + cli.cyan(displayName) + ' / ' + cli.whiteBright('Left the channel.')
+
+		client.on 'serverchange', (channel) =>
+			Channel = new Mikuia.Models.Channel channel
+
+			@awsMarked[Channel.getName()] = true
+			@part Channel.getName()
+			@join Channel.getName()
 
 	update: =>
 		twitchFailure = false
