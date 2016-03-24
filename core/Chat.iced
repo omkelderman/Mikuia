@@ -66,8 +66,8 @@ class exports.Chat
 				username: @Mikuia.settings.bot.name
 				password: @Mikuia.settings.bot.oauth
 
-		@whisperClient.on 'whisper', (username, message) =>
-			@handleWhisper username, message
+		@whisperClient.on 'whisper', (user, message) =>
+			@handleWhisper user, message
 
 		@whisperClient.on 'connected', (address, port) =>
 			@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch group chat (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
@@ -198,11 +198,11 @@ class exports.Chat
 					failure: reasons.length > 0 ? true : false
 					reason: reasons
 
-	handleWhisper: (username, message) =>
-		if channelContext[username]?.channel?
-			@handleMessage channelContext[username].user, channelContext[username].channel, message, true
+	handleWhisper: (user, message) =>
+		if channelContext[user.username]?.channel?
+			@handleMessage user, channelContext[user.username].channel, message, true
 		else
-			@whisper username, 'Unknown channel context. Please say something on the channel you\'re active in!'
+			@whisper user.username, 'Unknown channel context. Please say something on the channel you\'re active in!'
 
 	join: (channel, callback) =>
 		if channel.indexOf('#') == -1
@@ -350,7 +350,7 @@ class exports.Chat
 
 					if remainingRequests > 0
 						@whisperLimiter '', (err, timeLeft) =>
-							if !timeLeft
+							if !timeLeft and data?.username?
 								@whisperClient.whisper data.username, data.message
 
 								Mikuia.Events.emit 'mikuia.whisper', data.username, data.message

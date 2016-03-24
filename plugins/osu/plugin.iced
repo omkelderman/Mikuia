@@ -295,7 +295,7 @@ checkRankUpdates = (stream, callback) =>
 										user_id = match[2]
 										rank = match[3]
 										beatmap_id = match[4]
-										map = match[5]
+										mapName = match[5]
 										version = match[6]
 										mode = match[7]
 
@@ -306,7 +306,7 @@ checkRankUpdates = (stream, callback) =>
 													username: name
 													rank: rank
 													beatmap_id: beatmap_id
-													map: map
+													mapName: mapName
 													version: version
 													mode: mode
 													grade: grade
@@ -336,7 +336,10 @@ makeAPIRequest = (link, callback) =>
 
 makeTillerinoRequest = (beatmap_id, mods, callback) =>
 	start = process.hrtime()
-	request 'http://bot.tillerino.org:1666/beatmapinfo?k=' + @Plugin.getSetting('tillerinoKey') + '&wait=2000&beatmapid=' + beatmap_id + '&mods=' + mods, (error, response, body) ->
+	request 
+		url: 'http://bot.tillerino.org:1666/beatmapinfo?k=' + @Plugin.getSetting('tillerinoKey') + '&wait=2000&beatmapid=' + beatmap_id + '&mods=' + mods
+		timeout: 2000
+	, (error, response, body) ->
 		responseTime = parseInt(process.hrtime(start)[1] / 10000000, 10)
 
 		if !error && response.statusCode == 200
@@ -436,7 +439,10 @@ sendRequest = (Channel, user, username, map, message, whisper) =>
 				else
 					wholeString = minRangeString + ' | ' + maxRangeString
 			else
-				wholeString = 'no pp data'
+				if err4
+					wholeString = 'Tillerino down'
+				else
+					wholeString = 'no pp data'
 
 			modeText = 'osu!'
 			approvedText = 'Ranked'
