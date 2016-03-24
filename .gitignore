@@ -6,6 +6,7 @@ plugins/slack
 web/public/img/avatars
 web/public/img/flags
 npm-debug.log
+scripts/
 settings.json
 sftp-config.json
 *.sublime-*
