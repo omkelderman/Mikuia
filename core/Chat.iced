@@ -56,7 +56,7 @@ class exports.Chat
 				debug: @Mikuia.settings.bot.debug
 			connection:
 				reconnect: true
-				server: '199.9.253.119'
+				cluster: 'group'
 				port: '80'
 			identity:
 				username: @Mikuia.settings.bot.name
