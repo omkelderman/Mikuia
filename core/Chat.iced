@@ -209,6 +209,7 @@ class exports.Chat
 			Channel.isBanned defer err, isBanned
 			Channel.isEnabled defer err, isMember
 			Channel.isPrioritized defer err, isPrioritized
+			Channel.isSupporter defer err, isSupporter
 
 		if @joined.indexOf(channel) == -1 and isMember and !isBanned
 			await Mikuia.Database.zrangebyscore 'mikuia:join:limiter', '-inf', '+inf', defer err, limitEntries
@@ -226,13 +227,13 @@ class exports.Chat
 						if @nextJoinClient >= Mikuia.settings.bot.connections
 							@nextJoinClient = 0
 
-						if not isPrioritized
-							clientIdToUse = @nextJoinClient
-							@nextJoinClient++
-						else
+						if isPrioritized or isSupporter
 							await @spawnConnection Channel.getName(), defer err, @clients[Channel.getName()]
 							@clientJoins[Channel.getName()] = []
 							clientIdToUse = Channel.getName()
+						else
+							clientIdToUse = @nextJoinClient
+							@nextJoinClient++
 
 						@clients[clientIdToUse].join channel
 						@clientJoins[clientIdToUse].push channel
@@ -455,15 +456,11 @@ class exports.Chat
 					Channel.isPrioritized defer err, isPrioritized
 					Channel.isSupporter defer err, isSupporter
 
-				if isPrioritized
+				if isPrioritized or isSupporter
 					# this is basically handled on a different level so whatever
 					channelLimiter[Channel.getName()] = new RateLimiter 1000, 30000, true
 					channelTotalLimiter[Channel.getName()] = new RateLimiter 1000, 30000, true
-					rateLimitingProfile = cli.magentaBright 'Prioritized (unlimited)'
-				else if isSupporter
-					channelLimiter[Channel.getName()] = new RateLimiter 5, 30000, true
-					channelTotalLimiter[Channel.getName()] = new RateLimiter 10, 30000, true
-					rateLimitingProfile = cli.redBright 'Supporter (5 per 30s)'
+					rateLimitingProfile = cli.magentaBright 'Prioritized / Supporter (20 per 30s)'
 				else
 					channelLimiter[Channel.getName()] = new RateLimiter 3, 30000, true
 					channelTotalLimiter[Channel.getName()] = new RateLimiter 6, 30000, true
