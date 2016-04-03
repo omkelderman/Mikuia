@@ -51,9 +51,9 @@ block content
 				.col-md-6
 					h3.text-success
 						i.fa.fa-comments
-						|  Higher Rate Limits
+						|  Separate Chat Connection
 					p.text-muted
-						| Your rate limits on the chat will be slightly higher, letting your viewers use commands with a shorter delay.
+						| Your channel will get a separate chat connection, allowing the bot to spam 20 messages per 30 seconds!
 
 					br
 					h3(style='color: #FC74B0;')
@@ -66,38 +66,58 @@ block content
 
 			.col-md-3.animation-fade-in-left
 				br
-				form(action='https://www.paypal.com/cgi-bin/webscr', method='post', role='form')
-					.panel.panel-default
-						.panel-heading Buy Supporter
-						.panel-body
-								input(type='hidden', name='business', value='psqmaxor+paypal@gmail.com')
-								input(type='hidden', name='charset', value='UTF-8')
-								input(type='hidden', name='cmd', value='_xclick')
-								input(type='hidden', name='currency_code', value='USD')
-								input(type='hidden', name='item_name', value='Mikuia Supporter')
-								input(type='hidden', name='notify_url', value='http://mikuia.tv/ipn')
+				h4 Mikuia Supporter has been moved to GameWisp.
+				br
+				a.btn.btn-block.btn-danger(href='https://gamewisp.com/channel/hatsuney/public') Subscribe
+				br
+				b Previous supporter purchases DO NOT stack with GameWisp subscription.
+				h3.page-header Small FAQ
+				b What happens to my previous supporter purchases?
+				p Nothing, all your previous supporter purchases stay until they run out.
+				br
+				b What happens if I subscribe while still having a supporter status?
+				p You might reset your supporter status to only next 31 days. Do not subscribe if your current supporter status didn't run out yet.
+				br
+				b I did it anyways, and lost my money. What now?
+				p Contact me on Discord, or via email.
+				br
+				b It didn't work.
+				p Contact me on Discord, or via email!
+				br
+				b I'm bored.
+				p Contact me on... actually, please, don't.
+				br
+				b Meow?
+				p Yep!
 
-								.form-group
-									label(for='custom') Twitch Username (double-check!)
-									input.form-control.input-xs(type='text', name='custom', value=(user) ? user.username : null)
-								.form-group
-									label(for='amount') Duration
-									select.form-control.input-xs(name='amount')
-										option(value='5.00') 1 Month - $5.00
-										option(value='9.00') 2 Months - $9.00 (-10%)
-										option(value='13.50') 3 Months - $13.50 (-15%)
-										option(value='16.00') 4 Months - $16.00 (-20%)
-										option(value='21.00') 6 Months - $21.00 (-30%)
-										option(value='36.00') 12 Months - $36.00 (-40%)
-						.panel-footer
-							button.btn.btn-danger.btn-sm(type='submit', name='submit') Buy Now
-							small.text-muted.pull-right
-								| Powered by 
-								i.fa.fa-paypal
+				//- form(action='https://www.paypal.com/cgi-bin/webscr', method='post', role='form')
+				//- 	.panel.panel-default
+				//- 		.panel-heading Buy Supporter
+				//- 		.panel-body
+				//- 				input(type='hidden', name='business', value='psqmaxor+paypal@gmail.com')
+				//- 				input(type='hidden', name='charset', value='UTF-8')
+				//- 				input(type='hidden', name='cmd', value='_xclick')
+				//- 				input(type='hidden', name='currency_code', value='USD')
+				//- 				input(type='hidden', name='item_name', value='Mikuia Supporter')
+				//- 				input(type='hidden', name='notify_url', value='http://mikuia.tv/ipn')
+
+				//- 				.form-group
+				//- 					label(for='custom') Twitch Username (double-check!)
+				//- 					input.form-control.input-xs(type='text', name='custom', value=(user) ? user.username : null)
+				//- 				.form-group
+				//- 					label(for='amount') Duration
+				//- 					select.form-control.input-xs(name='amount')
+				//- 						option(value='5.00') 1 Month - $5.00
+				//- 						option(value='9.00') 2 Months - $9.00 (-10%)
+				//- 						option(value='13.50') 3 Months - $13.50 (-15%)
+				//- 						option(value='16.00') 4 Months - $16.00 (-20%)
+				//- 						option(value='21.00') 6 Months - $21.00 (-30%)
+				//- 						option(value='36.00') 12 Months - $36.00 (-40%)
+				//- 		.panel-footer
+				//- 			button.btn.btn-danger.btn-sm(type='submit', name='submit') Buy Now
+				//- 			small.text-muted.pull-right
+				//- 				| Powered by 
+				//- 				i.fa.fa-paypal
 
 				small.text-muted
-					| If you have any problems, please visit 
-					a(href='http://support.mikuia.tv') our support page 
-					| as soon as possible!
-					br
-					| Also, if you donated in the past, you can get few months of supporter from your previous donations, just send me a ticket about it!
+					| If you donated in the past, you can get few months of supporter from your previous donations, just contact me at #[a(href='mailto:hatsu@hatsu.tv')]!
