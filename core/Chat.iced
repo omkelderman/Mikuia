@@ -51,30 +51,30 @@ class exports.Chat
 			@clients[i] = client
 			@clientJoins[i] = []
 
-		@whisperClient = new irc.client
-			options:
-				debug: @Mikuia.settings.bot.debug
-			connection:
-				reconnect: true
-				cluster: 'group'
-				port: '80'
-			identity:
-				username: @Mikuia.settings.bot.name
-				password: @Mikuia.settings.bot.oauth
+		# @whisperClient = new irc.client
+		# 	options:
+		# 		debug: @Mikuia.settings.bot.debug
+		# 	connection:
+		# 		reconnect: true
+		# 		cluster: 'group'
+		# 		port: '80'
+		# 	identity:
+		# 		username: @Mikuia.settings.bot.name
+		# 		password: @Mikuia.settings.bot.oauth
 
-		@whisperClient.on 'whisper', (user, message) =>
-			@handleWhisper user, message
+		# @whisperClient.on 'whisper', (user, message) =>
+		# 	@handleWhisper user, message
 
-		@whisperClient.on 'connected', (address, port) =>
-			@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch group chat (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
+		# @whisperClient.on 'connected', (address, port) =>
+		# 	@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Connected to Twitch group chat (' + cli.yellowBright(address + ':' + port) + cli.whiteBright(')'))
 
-		@whisperClient.on 'disconnected', (reason) =>
-			@Mikuia.Log.fatal cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch group chat. Reason: ' + reason)
+		# @whisperClient.on 'disconnected', (reason) =>
+		# 	@Mikuia.Log.fatal cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch group chat. Reason: ' + reason)
 
-		@whisperClient.on 'notice', (channel, noticeId, params) =>
-			@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Received a notice: ') + cli.yellowBright(noticeId)
+		# @whisperClient.on 'notice', (channel, noticeId, params) =>
+		# 	@Mikuia.Log.info cli.magenta('Twitch') + ' / ' + cli.whiteBright('Received a notice: ') + cli.yellowBright(noticeId)
 
-		@whisperClient.connect()
+		# @whisperClient.connect()
 
 		@joinLimiter = RollingLimiter
 			interval: 10000
@@ -96,7 +96,7 @@ class exports.Chat
 			redis: Mikuia.Database
 
 		@parseQueue()
-		@parseWhispers()
+		# @parseWhispers()
 
 	getChatters: (channel) => @chatters[channel]
 
