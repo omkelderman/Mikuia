@@ -191,6 +191,78 @@ h1, h2, h3, h4, h5, h6 {
 	min-height: 486px;
 }
 
+.mikuia-item {
+	border: 1px solid black;
+	float: left;
+	height: 96px;
+	margin: 5px;
+	padding: 15px;
+	width: 96px;
+}
+
+.mikuia-item img {
+	display: block;
+}
+
+.mikuia-item-active {
+	background-color: #eee;
+}
+
+.mikuia-item-emote-unicode {
+	font-size: 50px;
+	position: relative;
+	text-align: center;
+	top: 0;
+}
+
+.mikuia-item-preview {
+	min-height: 300px;
+}
+
+.mikuia-item-preview-emote {
+	float: right;
+	padding-right: 5px;
+}
+
+.mikuia-item-preview-rarity {
+	text-transform: capitalize;
+}
+
+.mikuia-item-rarity-common {
+	border: 1px solid #ccc;
+	color: #ccc;
+}
+
+.mikuia-item-rarity-uncommon {
+	border: 1px solid #3adf38;
+	color: #3adf38;
+}
+
+.mikuia-item-rarity-rare {
+	border: 1px solid #338BFF;
+	box-shadow: 0px 0px 2px #338BFF;
+	color: #338BFF;
+}
+
+.mikuia-item-rarity-epic {
+	border: 1px solid #B356F0;
+	box-shadow: 0px 0px 5px #B356F0;
+	color: #B356F0;
+}
+
+.mikuia-item-rarity-legendary {
+	border: 1px solid #FF9933;
+	box-shadow: 0px 0px 10px #FF9933;
+	color: #FF9933;
+}
+
+.mikuia-item-rarity-unique {
+	background-color: #fbf7eb;
+	border: 1px solid #e6cc80;
+	box-shadow: 0px 0px 10px #e6cc80;
+	color: #e6cc80;
+}
+
 .mikuia-level {
 	border: 2px solid rgba(255, 255, 255, 0.5);
 	border-radius: 16px;
@@ -249,7 +321,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .mikuia-navbar {
 	background-color: #7a62d3;
-	background-image: url('/img/new/pattern.png');
+	background-image: url('/img/pattern.png');
 	background-position: center;
 	border-bottom: 3px solid #b5a2ff;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
