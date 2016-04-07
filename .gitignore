@@ -1,6 +1,7 @@
 logs/
 node_modules/
 plugins/custom
+plugins/gamewisp
 plugins/paypal
 plugins/slack
 web/public/img/avatars
