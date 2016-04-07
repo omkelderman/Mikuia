@@ -51,7 +51,8 @@ module.exports =
 
 			if commandName? and commandName != ''
 				await Channel.addCommand commandName, data.handler, defer err, data
-				res.redirect '/dashboard/commands/settings/' + commandName
+				Mikuia.Log.info Channel.getName() + ' added command: ' + commandName
+				res.redirect '/dashboard/commands/settings/' + encodeURIComponent(commandName)
 			else
 				res.redirect '/dashboard/commands'
 		else
