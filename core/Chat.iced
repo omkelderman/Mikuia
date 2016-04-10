@@ -413,6 +413,7 @@ class exports.Chat
 			connection:
 				cluster: 'aws'
 				reconnect: true
+				timeout: 60
 			identity:
 				username: @Mikuia.settings.bot.name
 				password: @Mikuia.settings.bot.oauth
