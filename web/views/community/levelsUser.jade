@@ -108,6 +108,22 @@ block content
 							br
 							a(href='/settings') Check your settings page.
 						
+					if !user
+						.mikuia-page-card.mikuia-page-card-margin
+							.mikuia-page-category-heading Advertisement
+							span(style='display: block; text-align: center;')
+								script(type='text/javascript').
+									atOptions = {
+										'key' : 'f5db4ac73a290cd7f9c65ae32ea4ae17',
+										'format' : 'iframe',
+										'height' : 250,
+										'width' : 300,
+										'params' : {}
+									};
+									document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.bnhtml.com/invoke.js"></scr' + 'ipt>');
+							small.text-muted If you're very mad about this, contact me at hatsu@hatsu.tv
+
+
 					.mikuia-page-card.mikuia-page-card-margin
 						.mikuia-page-category-heading How does it work?
 						p.
@@ -121,9 +137,3 @@ block content
 							li In case you're active on #[b.text-info 2 channels], you get #[b.text-danger 2 XP] per channel.
 							li In case you're active on #[b.text-info 3 channels], you get #[b.text-danger 1 XP] per channel.
 							li If you're active on more than #[b.text-info 3 channels] at the same time, you don't get any points.
-
-					ins.adsbygoogle(style='display: block;' data-ad-client='ca-pub-5101214707881443' data-ad-slot='5979605213' data-ad-format='auto')
-
-block footerScript
-	script(type='text/javascript').
-		(adsbygoogle = window.adsbygoogle || []).push({});
