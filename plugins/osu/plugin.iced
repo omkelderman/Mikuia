@@ -536,7 +536,7 @@ Mikuia.Events.on 'twitch.connected', =>
 	@bancho.on 'registered', =>
 		Mikuia.Log.info cli.magentaBright('osu!') + ' / ' + cli.whiteBright('Logged in to Bancho as ' + @Plugin.getSetting('name') + '.')
 
-	@bancho.on 'pm', (from, text, message) =>
+	@bancho.on 'pm', (from, message, event) =>
 		Mikuia.Log.info cli.magentaBright('osu!') + ' / ' + cli.whiteBright(from) + ': ' + message
 		fs.appendFileSync 'logs/' + from + '.txt', from + ': ' + message + '\n'
 		if message == @Plugin.getSetting 'verifyCommand'
