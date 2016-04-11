@@ -35,7 +35,18 @@
 		"1": {
 			"name": "Mystery Item",
 			"rarity": "common",
-			"description": "Who knows what it is?"
+			"description": "Who knows what it is?",
+			"type": "item"
+		},
+		"2": {
+			"name": "Admin Thingy",
+			"rarity": "unique",
+			"description": "This thing means that you're an admin or something.",
+			"type": "emote",
+			"emote": {
+				"type": "unicode",
+				"text": "✜"
+			}
 		}
 	}
 }

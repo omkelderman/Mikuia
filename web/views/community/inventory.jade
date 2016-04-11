@@ -15,25 +15,54 @@ block content
 				.col-md-7.mikuia-page-card
 					each item in items
 						a(href='#')
-							.item(class='item-rarity-' + item.rarity, data-instanceid=item.instanceId, data-itemid=item.itemId, data-name=item.name, data-description=item.description, data-rarity=item.rarity, data-color=Mikuia.Items.getItemSchema().rarities[item.rarity].color)
-								img(src='/img/items/' + item.itemId + '.png')
+							.mikuia-item(class='mikuia-item-rarity-' + item.rarity, data-instanceid=item.instanceId, data-itemid=item.itemId, data-name=item.name, data-description=item.description, data-rarity=item.rarity, data-type=item.type, data-emotetype=(item.type == 'emote' ? item.emote.type : undefined), data-emotetext=(item.type == 'emote' ? item.emote.text : undefined), data-color=Mikuia.Items.getItemSchema().rarities[item.rarity].color)
+								if item.type == 'item'
+									img(src='/img/items/' + item.itemId + '.png')
+								else if item.type == 'emote'
+									if item.emote.type == 'unicode'
+										.mikuia-item-emote-unicode=item.emote.text
+									else if item.emote.type == 'twitch'
+										// oh well haha
+										
 				.col-md-5.animation-fade-in-left
 					.mikuia-page-card
-						.item-preview(style='display: none;')
-							img.image-border.pull-right.item-preview-image(src='http://placekitten.com/g/128/128')
-							h2.item-preview-name
-							span.item-preview-rarity
-							p.item-preview-description
+						.mikuia-item-preview(style='display: none;')
+							img.image-border.pull-right.mikuia-item-preview-image(src='http://placekitten.com/g/128/128')
+							.mikuia-item-preview-emote.mikuia-item-emote-unicode
+							h2.mikuia-item-preview-name
+							span.mikuia-item-preview-rarity
+							p.mikuia-item-preview-description
 							
 block footerScript
 	script(type='text/javascript').
-		$('.item').click(function() {
-			$('.item-preview').show()
-			$('.item-preview-image').attr('src', '/img/items/' + $(this).data('itemid') + '.png')
-			$('.item-preview-name').text($(this).data('name'))
-			$('.item-preview-rarity').html($(this).data('rarity'))
-			$('.item-preview-rarity').css('color', $(this).data('color'))
-			$('.item-preview-description').text($(this).data('description'))
-			$('.item-active').removeClass('item-active')
-			$(this).addClass('item-active')
+		$('.mikuia-item').click(function() {
+			$('.mikuia-item-preview').show()
+			if($(this).data('type') == 'emote') {
+				if($(this).data('emotetype') == 'unicode') {
+					$('.mikuia-item-preview-emote').html($(this).data('emotetext'))
+					$('.mikuia-item-preview-image').hide()
+					$('.mikuia-item-preview-emote').show()
+				} else if($(this).data('emotetype') == 'twitch') {
+					$('.mikuia-item-preview-image').attr('src', 'http://placekitten.com/g/128/128')
+					$('.mikuia-item-preview-image').show()
+					$('.mikuia-item-preview-emote').hide()
+				}
+			} else {
+				$('.mikuia-item-preview-image').attr('src', '/img/items/' + $(this).data('itemid') + '.png')
+				$('.mikuia-item-preview-image').show()
+				$('.mikuia-item-preview-emote').hide()
+			}
+			
+			$('.mikuia-item-preview-name').text($(this).data('name'))
+			
+			if($(this).data('type') == 'emote') {
+				$('.mikuia-item-preview-rarity').html($(this).data('rarity') + ' Emote')
+			} else {
+				$('.mikuia-item-preview-rarity').html($(this).data('rarity') + ' Item')
+			}
+			
+			$('.mikuia-item-preview-rarity').css('color', $(this).data('color'))
+			$('.mikuia-item-preview-description').text($(this).data('description'))
+			$('.mikuia-item-active').removeClass('mikuia-item-active')
+			$(this).addClass('mikuia-itemactive')
 		})

@@ -195,60 +195,6 @@ body.mikuia {
 	color: white;
 }
 
-.item {
-	border: 1px solid black;
-	float: left;
-	height: 96px;
-	margin: 5px;
-	padding: 15px;
-	width: 96px;
-}
-
-.item img {
-	display: block;
-}
-
-.item-active {
-	background-color: #eee;
-}
-
-.item-preview {
-	min-height: 300px;
-}
-
-.item-preview-rarity {
-	text-transform: capitalize;
-}
-
-.item-rarity-common {
-	border: 1px solid #ccc;
-}
-
-.item-rarity-uncommon {
-	border: 1px solid #3adf38;
-}
-
-.item-rarity-rare {
-	border: 1px solid #338BFF;
-	box-shadow: 0px 0px 2px #338BFF;
-}
-
-.item-rarity-epic {
-	border: 1px solid #B356F0;
-	box-shadow: 0px 0px 5px #B356F0;
-}
-
-.item-rarity-legendary {
-	border: 1px solid #FF9933;
-	box-shadow: 0px 0px 10px #FF9933;
-}
-
-.item-rarity-unique {
-	background-color: #fbf7eb;
-	border: 1px solid #e6cc80;
-	box-shadow: 0px 0px 10px #e6cc80;
-}
-
 .label {
 	line-height: 1.5;
 }
@@ -301,7 +247,7 @@ body.page-sidebar-closed > .navbar > .page-header-inner > .page-logo > a {
 	position: absolute;
 }
 
-.navbar-mikuia .navbar-nav > li.active > a, 
+.navbar-mikuia .navbar-nav > li.active > a,
 .navbar-mikuia .navbar-nav > li.active > a:hover,
 .navbar-mikuia .navbar-nav > li.active > a:focus,
 .navbar-mikuia .navbar-nav > li > a:hover,
