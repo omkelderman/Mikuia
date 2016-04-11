@@ -520,16 +520,18 @@ getUserBest = (name, mode, callback) ->
 	callback err, data
 
 Mikuia.Events.on 'twitch.connected', =>
-	@bancho = new irc.Client 'irc.ppy.sh', @Plugin.getSetting 'name',
-		nick: @Plugin.getSetting 'name'
+	@bancho = new irc.Client('irc.ppy.sh', @Plugin.getSetting('name'),
 		userName: @Plugin.getSetting 'name'
 		password: @Plugin.getSetting 'password'
 		port: 6667
-		debug: Mikuia.settings.bot.debug
 		autoRejoin: true
 		autoConnect: true
-		sasl: true
+		sasl: false
 		realName: 'Mikuia - a Twitch.tv bot // http://mikuia.tv'
+	)
+
+	@bancho.on 'error', (error) =>
+		console.log error
 
 	@bancho.on 'registered', =>
 		Mikuia.Log.info cli.magentaBright('osu!') + ' / ' + cli.whiteBright('Logged in to Bancho as ' + @Plugin.getSetting('name') + '.')
