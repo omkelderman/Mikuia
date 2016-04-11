@@ -442,8 +442,9 @@ class exports.Chat
 
 			if client.id == Mikuia.settings.bot.connections - 1
 				@Mikuia.Events.emit 'twitch.connected'
+				if !@connected
+					@update()
 				@connected = true
-				@update()
 
 			callback false, client
 
@@ -582,6 +583,7 @@ class exports.Chat
 			if timeout < 15000
 				timeout = 15000
 
+			clearTimeout @updateTimeout
 			@updateTimeout = setTimeout () =>
 				@update()
 			, timeout
