@@ -525,7 +525,7 @@ Mikuia.Events.on 'twitch.connected', =>
 		userName: @Plugin.getSetting 'name'
 		password: @Plugin.getSetting 'password'
 		port: 6667
-		debug: @Mikuia.settings.bot.debug
+		debug: Mikuia.settings.bot.debug
 		autoRejoin: true
 		autoConnect: true
 		sasl: true
