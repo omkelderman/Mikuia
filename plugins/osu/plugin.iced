@@ -1,7 +1,6 @@
 cli = require 'cli-color'
 fs = require 'fs'
-irc = require 'slate-irc'
-net = require 'net'
+irc = require 'irc'
 request = require 'request'
 RateLimiter = require('limiter').RateLimiter
 _ = require 'underscore'
@@ -68,7 +67,7 @@ banchoSay = (name, message) =>
 				if match?
 					message = message.replace match[0], insertStars match[0].length
 					fs.appendFileSync 'logs/osu/' + name + '.txt', 'Mikuia: ' + cleanMessage + '\n'
-		@bancho.send name, message
+		@bancho.say name, message
 
 checkForRequest = (user, Channel, message, whisper) =>
 	continueCheck = true
@@ -521,34 +520,36 @@ getUserBest = (name, mode, callback) ->
 	callback err, data
 
 Mikuia.Events.on 'twitch.connected', =>
-	stream = net.connect
+	@bancho = new irc.Client 'irc.ppy.sh', @Plugin.getSetting 'name',
+		nick: @Plugin.getSetting 'name'
+		userName: @Plugin.getSetting 'name'
+		password: @Plugin.getSetting 'password'
 		port: 6667
-		host: 'irc.ppy.sh'
+		debug: @Mikuia.settings.bot.debug
+		autoRejoin: true
+		autoConnect: true
+		sasl: true
+		realName: 'Mikuia - a Twitch.tv bot // http://mikuia.tv'
 
-	@bancho = irc stream
-	@bancho.pass @Plugin.getSetting 'password'
-	@bancho.nick @Plugin.getSetting 'name'
-	@bancho.user @Plugin.getSetting 'name', 'Mikuia - a Twitch.tv bot // http://mikuia.tv'
+	@bancho.on 'registered', =>
+		Mikuia.Log.info cli.magentaBright('osu!') + ' / ' + cli.whiteBright('Logged in to Bancho as ' + @Plugin.getSetting('name') + '.')
 
-	@bancho.on 'welcome', (nick) =>
-		Mikuia.Log.info cli.magentaBright('osu!') + ' / ' + cli.whiteBright('Logged in to Bancho as ' + cli.magentaBright(nick) + '.')
-
-	@bancho.on 'message', (message) =>
-		Mikuia.Log.info cli.magentaBright('osu!') + ' / ' + cli.whiteBright(message.from) + ': ' + message.message
-		fs.appendFileSync 'logs/' + message.from + '.txt', message.from + ': ' + message.message + '\n'
-		if message.message == @Plugin.getSetting 'verifyCommand'
+	@bancho.on 'pm', (from, text, message) =>
+		Mikuia.Log.info cli.magentaBright('osu!') + ' / ' + cli.whiteBright(from) + ': ' + message
+		fs.appendFileSync 'logs/' + from + '.txt', from + ': ' + message + '\n'
+		if message == @Plugin.getSetting 'verifyCommand'
 			code = Math.floor(Math.random() * 900000) + 100000
-			await Mikuia.Database.setex 'plugin:osu:auth:code:' + code, 60, message.from, defer error, whatever
+			await Mikuia.Database.setex 'plugin:osu:auth:code:' + code, 60, from, defer error, whatever
 
-			banchoSay message.from, 'Your code is ' + code + '. You have only a minute to save the wo... I mean to put it on page...'
+			banchoSay from, 'Your code is ' + code + '. You have only a minute to save the wo... I mean to put it on page...'
 		else
-			if message.message.indexOf('!') == 0
-				tokens = message.message.split ' '
+			if message.indexOf('!') == 0
+				tokens = message.split ' '
 				trigger = tokens[0].replace '!', ''
 
 				if trigger in twitchCommands
 
-					await Mikuia.Database.hget 'plugin:osu:channels', message.from, defer err, name
+					await Mikuia.Database.hget 'plugin:osu:channels', from, defer err, name
 
 					if name?
 						Channel = new Mikuia.Models.Channel name
@@ -557,11 +558,11 @@ Mikuia.Events.on 'twitch.connected', =>
 							Channel.getSetting 'osu', 'name', defer err, osuName
 							Channel.isSupporter defer err, isSupporter
 
-						if osuName == message.from
+						if osuName == from
 							if isSupporter
-								Mikuia.Chat.sayUnfiltered name, message.message.split('!').join('.')
+								Mikuia.Chat.sayUnfiltered name, message.split('!').join('.')
 							else
-								banchoSay message.from, 'This feature is available only for Mikuia Supporters.'
+								banchoSay from, 'This feature is available only for Mikuia Supporters.'
 
 	for word in @Plugin.getSetting('blockedWords')
 		patterns.push new RegExp word, 'ig'
