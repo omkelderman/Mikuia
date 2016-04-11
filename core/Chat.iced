@@ -20,7 +20,6 @@ class exports.Chat
 		@messageLimiter = null
 		@moderators = {}
 		@nextJoinClient = 0
-		@updateTimeout = null
 		@whisperClient = null
 		@whisperLimiter = null
 
@@ -414,7 +413,6 @@ class exports.Chat
 			connection:
 				cluster: 'aws'
 				reconnect: true
-				secure: true
 				timeout: 60
 			identity:
 				username: @Mikuia.settings.bot.name
@@ -450,12 +448,9 @@ class exports.Chat
 		client.on 'disconnected', (reason) =>
 			@Mikuia.Log.error cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch chat. Attempting to reconnect. Reason: ' + reason)
 			for channel in @clientJoins[client.id]
-				delete @channelClients[channel]
+				@channelClients.splice @channelClients.indexOf(channel), 1
 				@joined.splice @joined.indexOf(channel), 1
 				@clientJoins[client.id] = []
-
-				if client.id == Mikuia.settings.bot.connections - 1
-					clearTimeout @updateTimeout
 
 		client.on 'join', (channel, username) =>
 			if username == @Mikuia.settings.bot.name.toLowerCase()
@@ -578,13 +573,13 @@ class exports.Chat
 
 			@Mikuia.Events.emit 'twitch.updated'
 
-			timeout = streamList.length * 1000
-			if timeout < 15000
-				timeout = 15000
+			updateTimeout = streamList.length * 1000
+			if updateTimeout < 15000
+				updateTimeout = 15000
 
-			@updateTimeout = setTimeout () =>
+			setTimeout () =>
 				@update()
-			, timeout
+			, updateTimeout
 
 	updateChatters: (channel, callback) =>
 		await Mikuia.Twitch.getChatters channel, defer err, chatters
