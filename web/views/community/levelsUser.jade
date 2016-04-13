@@ -109,6 +109,20 @@ block content
 							a(href='/settings') Check your settings page.
 
 					.mikuia-page-card.mikuia-page-card-margin
+						.mikuia-page-category-heading Advertisement
+						span(style='display: block; text-align: center;')
+							script(type='text/javascript').
+								( function() {
+									if (window.CHITIKA === undefined) { window.CHITIKA = { 'units' : [] }; };
+									var unit = {"calltype":"async[2]","publisher":"Hatsuney","width":300,"height":250,"sid":"Chitika Default"};
+									var placement_id = window.CHITIKA.units.length;
+									window.CHITIKA.units.push(unit);
+									document.write('<div id="chitikaAdBlock-' + placement_id + '"></div>');
+								}());
+							script(type='text/javascript' src='//cdn.chitika.net/getads.js' async)
+						small.text-muted If you're very mad about this, contact me at hatsu@hatsu.tv
+
+					.mikuia-page-card.mikuia-page-card-margin
 						.mikuia-page-category-heading How does it work?
 						p.
 							Levels are a simple representation of your activity on the channel. The rules are the same for every channel.
