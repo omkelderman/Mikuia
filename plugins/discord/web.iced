@@ -45,7 +45,7 @@ Mikuia.Web.get '/auth/discord', (req, res) =>
 Mikuia.Web.get '/auth/discord/callback', (req, res, next) =>
 	token = oauth2.authCode.getToken
 		code: req.query.code
-		redirect_uri: 'http://dev.mikuia.tv/auth/discord/callback'
+		redirect_uri: Mikuia.settings.plugins.discord.callbackBasePath + '/auth/discord/callback'
 	, (err, result) =>
 		if !err
 			token = oauth2.accessToken.create result
@@ -95,7 +95,7 @@ Mikuia.Web.get '/auth/discord/continue', checkAuth, (req, res) =>
 Mikuia.Web.get '/dashboard/plugins/discord/callback', checkAuth, (req, res) =>
 	token = oauth2.authCode.getToken
 		code: req.query.code
-		redirect_uri: 'http://dev.mikuia.tv/dashboard/plugins/discord/callback'
+		redirect_uri: Mikuia.settings.plugins.discord.callbackBasePath + '/dashboard/plugins/discord/callback'
 	, (err, result) =>
 		if !err
 			token = oauth2.accessToken.create result
