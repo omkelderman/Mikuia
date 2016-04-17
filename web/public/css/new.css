@@ -43,6 +43,10 @@ h1, h2, h3, h4, h5, h6 {
 	text-align: right;
 }
 
+.linked-discord {
+	background-color: #999 !important;
+}
+
 .mikuia-alert {
 	background: -webkit-linear-gradient(left, #eee, rgba(255, 255, 255, 0));
 	height: 24px;
@@ -180,6 +184,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .mikuia-index-featured {
 	box-shadow: 0px 0px 20px #111111;
+}
+
+.mikuia-index-featured-background {
+	background-image: url('/img/mikuia.png');
+	background-position: right center;
+	background-repeat: no-repeat;
 	padding: 20px;
 }
 
