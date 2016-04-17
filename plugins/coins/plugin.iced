@@ -184,6 +184,6 @@ Mikuia.Events.on 'coins.command', (data) =>
 	if message
 		if data.settings._whisper
 			for recipient in recipients
-				Mikuia.Chat.whisper recipient, message
+				Mikuia.Chat.handleResponse recipient, data.to, message, data.settings._target
 		else
-			Mikuia.Chat.say data.to, message
+			Mikuia.Chat.handleResponse data.user.username, data.to, message, data.settings._target

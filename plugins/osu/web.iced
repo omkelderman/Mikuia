@@ -27,6 +27,13 @@ for lb, i in leaderboard
 	lb.setDisplayHtml '<b style="color: #FC74B0;">#<%value%></b>'
 	lb.setReverseOrder true
 
+checkAuth = (req, res, next) ->
+	if req.isAuthenticated()
+		return next()
+	else
+		req.session.redirectTo = req.path
+		res.redirect '/login'
+
 Mikuia.Element.register 'userPageSplashButton',
 	plugin: 'osu'
 	buttons: [
@@ -38,11 +45,11 @@ Mikuia.Element.register 'userPageSplashButton',
 		}
 	]
 
-Mikuia.Web.get '/dashboard/plugins/osu/auth', (req, res) =>
+Mikuia.Web.get '/dashboard/plugins/osu/auth', checkAuth, (req, res) =>
 	res.render '../../plugins/osu/views/auth',
 		verifyCommand: @Plugin.getSetting 'verifyCommand'
 
-Mikuia.Web.post '/dashboard/plugins/osu/auth', (req, res) =>
+Mikuia.Web.post '/dashboard/plugins/osu/auth', checkAuth, (req, res) =>
 	if req.body.authCode?
 
 		await Mikuia.Database.get 'plugin:osu:auth:code:' +  req.body.authCode, defer error, username

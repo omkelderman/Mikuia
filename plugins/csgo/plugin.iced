@@ -107,7 +107,4 @@ Mikuia.Events.on 'csgo.stats', (data) =>
 			message = Mikuia.Format.parse data.settings.format,
 				{rankId, rankName: rankNames[rankId], wins}
 
-			if data.settings._whisper
-				Mikuia.Chat.whisper data.user.username, message
-			else
-				Mikuia.Chat.say Channel.getName(), message 
+			Mikuia.Chat.handleResponse data.user.username, Channel.getName(), message, data.settings._target

@@ -66,10 +66,7 @@ Mikuia.Events.on 'wow.character', (data) =>
 						for name, value of bracket
 							formatData['pvp.' + bracketNames[bracketName] + '.' + name] = value
 
-				if data.settings._whisper
-					Mikuia.Chat.whisper data.user.username, Mikuia.Format.parse data.settings.format, formatData
-				else
-					Mikuia.Chat.say Channel.getName(), Mikuia.Format.parse data.settings.format, formatData
+				Mikuia.Chat.handleResponse data.user.username, Channel.getName(), Mikuia.Format.parse(data.settings.format, formatData), data.settings._target
 
 # setInterval () =>
 # 	await Mikuia.Streams.getAll defer err, streams

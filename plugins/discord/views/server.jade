@@ -1,0 +1,46 @@
+doctype html
+html
+	head
+		link(href='/css/new.css', rel='stylesheet', type='text/css')
+		link(href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all', rel='stylesheet', type='text/css')
+		link(href='/assets_4.1.0/global/plugins/bootstrap/css/bootstrap.min.css', rel='stylesheet', type='text/css')
+		link(href='/assets_4.1.0/global/css/components.css', rel='stylesheet', type='text/css')
+		link(href='/assets_4.1.0/admin/pages/css/error.css', rel='stylesheet', type='text/css')
+
+	body.page-404-3.linked-discord
+		.page-inner
+			img.img-responsive(src='/img/404.png')
+		.container.error-404
+			if !ownerFailure
+				h1 Success.
+				h2 You have linked a Discord server.
+				p.
+					Here's the server you've linked:
+			else
+				h1 Fail.
+				h2 You don't own this Discord server.
+				p.
+					Here's the server that you have tried to link:
+
+			.media
+				.media-left
+					img(width='36', height='36', src='https://cdn.discordapp.com/icons/' + guild.id + '/' + guild.icon + '.jpg')
+				.media-body
+					h2.media-heading
+						| #{guild.name}
+			br
+
+			if !ownerFailure
+				p#joke.
+					This page will self-destruct in 10 seconds.
+			else
+				p.
+					You need to be the server owner to link it with your Mikuia account.
+
+			a(href='/dashboard/settings#discord') Go back to settings.
+
+	script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js')
+	script(type='text/javascript').
+		setTimeout(function() {
+			$('#joke').html('The self-destruction was a joke.')
+		}, 10000)

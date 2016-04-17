@@ -32,7 +32,4 @@ Mikuia.Events.on 'twitch.followcheck', (data) =>
 				message = displayName + ' is not following this channel.'
 
 		if message
-			if data.settings._whisper
-				Mikuia.Chat.whisper data.user.username, message
-			else
-				Mikuia.Chat.say data.to, message
+			Mikuia.Chat.handleResponse data.user.username, data.to, message, data.settings._target

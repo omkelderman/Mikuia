@@ -1,0 +1,35 @@
+doctype html
+html
+	head
+		link(href='/css/new.css', rel='stylesheet', type='text/css')
+		link(href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all', rel='stylesheet', type='text/css')
+		link(href='/assets_4.1.0/global/plugins/bootstrap/css/bootstrap.min.css', rel='stylesheet', type='text/css')
+		link(href='/assets_4.1.0/global/css/components.css', rel='stylesheet', type='text/css')
+		link(href='/assets_4.1.0/admin/pages/css/error.css', rel='stylesheet', type='text/css')
+
+	body.page-404-3.linked-discord
+		.page-inner
+			img.img-responsive(src='/img/404.png')
+		.container.error-404
+			h1 Success.
+			h2 You have linked a Discord account.
+			p.
+				Here's the account you've linked:
+
+			.media
+				.media-left
+					img(width='36', height='36', src='https://cdn.discordapp.com/avatars/' + discord.id + '/' + discord.avatar + '.jpg')
+				.media-body
+					h2.media-heading
+						| #{discord.username} 
+						small ##{discord.discriminator}
+			br
+
+			p#joke.
+				This page will self-destruct in 10 seconds.
+
+	script(type='text/javascript', src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js')
+	script(type='text/javascript').
+		setTimeout(function() {
+			$('#joke').html('The self-destruction was a joke.')
+		}, 10000)

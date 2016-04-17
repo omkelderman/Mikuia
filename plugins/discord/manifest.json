@@ -1,0 +1,39 @@
+{
+	"name": "Discord",
+	"description": "Discord integrations.",
+	"baseFile": "plugin.iced",
+	"webFile": "web.iced",
+	"hidden": false,
+	"settings": {
+		"channel": {
+			"userId": {
+				"name": "Discord User ID",
+				"category": "General",
+				"description": "Your Discord User ID.",
+				"default": "",
+				"type": "disabled",
+				"link": {
+					"url": "/auth/discord",
+					"name": "Click here to login with Discord."
+				}		
+			},
+			"serverId": {
+				"name": "Discord Server ID",
+				"category": "General",
+				"description": "Your Discord Server ID.",
+				"default": "",
+				"type": "disabled",
+				"link": {
+					"url": null,
+					"name": "Click here to invite Mikuia to your server."
+				}	
+			}
+		},
+		"server": {
+			"clientId": "APPLICATION_ID",
+			"clientSecret": "APPLICATION_SECRET",
+			"callbackBasePath": "http://localhost",
+			"token": "BOT_USER_TOKEN"
+		}
+	}
+}

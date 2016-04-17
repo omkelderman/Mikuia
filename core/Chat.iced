@@ -84,7 +84,7 @@ class exports.Chat
 
 	getChatters: (channel) => @chatters[channel]
 
-	handleMessage: (user, to, message, forceWhisper) =>
+	handleMessage: (user, to, message, source) =>
 		Channel = new @Mikuia.Models.Channel to
 		Chatter = new @Mikuia.Models.Channel user.username
 		await
@@ -106,12 +106,13 @@ class exports.Chat
 		if user.subscriber
 			chatterUsername = cli.blueBright '[s] ' + chatterUsername
 
-		if not forceWhisper
-			if message.toLowerCase().indexOf(Mikuia.settings.bot.name.toLowerCase()) > -1 || message.toLowerCase().indexOf(Mikuia.settings.bot.admin) > -1
-				@Mikuia.Log.info cli.cyanBright('[' + @channelClients['#' + Channel.getName()] + ']') + ' / ' + cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.red(message))
-
 		if !isBanned
-			@Mikuia.Events.emit 'twitch.message', user, to, message, forceWhisper
+			if source == 'twitch'
+				if message.toLowerCase().indexOf(Mikuia.settings.bot.name.toLowerCase()) > -1 || message.toLowerCase().indexOf(Mikuia.settings.bot.admin) > -1
+					@Mikuia.Log.info cli.cyanBright('[' + @channelClients['#' + Channel.getName()] + ']') + ' / ' + cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.red(message))
+
+				@Mikuia.Events.emit 'twitch.message', user, to, message, source
+			@Mikuia.Events.emit 'mikuia.message', user, to, message, source
 
 		Channel.trackIncrement 'messages', 1
 
@@ -129,8 +130,16 @@ class exports.Chat
 		await Channel.queryCommand trigger, user, defer err, o
 		{command, settings, isAllowed, reasons} = o
 
-		if forceWhisper
-			settings._whisper = true
+		# if forceWhisper
+		# 	settings._whisper = true
+
+		settings._target = source
+
+		if settings._whisper
+			if settings._target == 'twitch'
+				settings._target = 'whisper'
+			else
+				settings._target = settings._target + '_private'
 
 		if not settings?._cooldown
 			settings._cooldown = 2
@@ -178,9 +187,22 @@ class exports.Chat
 					failure: reasons.length > 0 ? true : false
 					reason: reasons
 
+	handleResponse: (username, channel, message, target) =>
+		switch target
+			when 'twitch'
+				Mikuia.Chat.say channel, message
+			when 'whisper'
+				Mikuia.Chat.whisper username, message
+			else
+				Mikuia.Events.emit 'mikuia.say.custom',
+					username: username
+					channel: channel
+					message: message
+					target: target
+
 	handleWhisper: (user, message) =>
 		if channelContext[user.username]?.channel?
-			@handleMessage user, channelContext[user.username].channel, message, true
+			@handleMessage user, channelContext[user.username].channel, message, 'whisper'
 		else
 			@whisper user.username, 'Unknown channel context. Please say something on the channel you\'re active in!'
 
@@ -406,7 +428,7 @@ class exports.Chat
 
 		client.on 'chat', (channel, user, message, self) =>
 			if not self
-				@handleMessage user, channel, message, false
+				@handleMessage user, channel, message, 'twitch'
 			else
 				Mikuia.Events.emit 'mikuia.say',
 					channel: channel

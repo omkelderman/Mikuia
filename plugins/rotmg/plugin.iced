@@ -76,10 +76,13 @@ Mikuia.Events.on 'rotmg.rank', (data) =>
 						Mikuia.Log.error cli.redBright('RotMG') + ' / ' + cli.cyan(displayName) + ' / JSON parsing error: ' + error
 
 				if json && !json.error?
+					message = ""
 					if json.fame > 0
-						Mikuia.Chat.say Channel.getName(), 'Stats for ' + json.player + ': ★ ' + json.rank + ', ' + json.fame + ' Fame, rank #' + json.fame_rank + '.'
+						message = 'Stats for ' + json.player + ': ★ ' + json.rank + ', ' + json.fame + ' Fame, rank #' + json.fame_rank + '.'
 					else
-						Mikuia.Chat.say Channel.getName(), 'Stats for ' + json.player + ': ★ ' + json.rank + ', ' + json.fame + ' Fame.'
+						message = 'Stats for ' + json.player + ': ★ ' + json.rank + ', ' + json.fame + ' Fame.'
+
+					Mikuia.Chat.handleResponse data.user.username, Channel.getName(), message, data.settings._target
 
 			else
 				Mikuia.Log.error cli.redBright('RotMG') + ' / ' + cli.cyan(displayName) + ' / Failed to get JSON.'
