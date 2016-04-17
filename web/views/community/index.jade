@@ -37,23 +37,25 @@ block content
 	
 
 	if featured
-		.mikuia-index-featured(style=(featured.profile_banner != null && featured.profile_banner != 'null' ? 'background: linear-gradient(rgba(17, 17, 17, 1), rgba(0, 0, 0, 0.6)), url(\'' + featured.profile_banner + '\'); background-position: center; background-repeat: no-repeat; background-size: cover;' : undefined))
-			.container.text-white.animation-fade-in-down
-				.row
-					.col-xs-4
-						iframe(src='http://player.twitch.tv/?channel=' + featured.name, frameborder=0, scrolling='no', autoplay='false', height='225', width='369')
-			
-					.col-xs-8
-						br
-						h4.text-muted Check out an example channel!
-						h1
-							| #{featured.display_name}
-							small  playing #{featured.game}
-						p #{featured.status}
-						br
-						a.btn.btn-twitch.btn-xs(href='http://twitch.tv/' + featured.name)
-							i.fa.fa-twitch
-							|  Watch on Twitch.tv
+		- featured.profile_banner = null
+		.mikuia-index-featured(style=(featured.profile_banner != null && featured.profile_banner != 'null' ? 'background: linear-gradient(rgba(17, 17, 17, 1), rgba(0, 0, 0, 0.6)), url(\'' + featured.profile_banner + '\'); background-position: center; background-repeat: no-repeat; background-size: cover;' : 'background: linear-gradient(rgba(0, 0, 0, 1), rgba(17, 17, 17, 1))'))
+			.mikuia-index-featured-background
+				.container.text-white.animation-fade-in-down
+					.row
+						.col-xs-4
+							iframe(src='http://player.twitch.tv/?channel=' + featured.name, frameborder=0, scrolling='no', autoplay='false', height='225', width='369')
+				
+						.col-xs-8
+							br
+							h4.text-muted Check out an example channel!
+							h1
+								| #{featured.display_name}
+								small  playing #{featured.game}
+							p #{featured.status}
+							br
+							a.btn.btn-twitch.btn-xs(href='http://twitch.tv/' + featured.name)
+								i.fa.fa-twitch
+								|  Watch on Twitch.tv
 	.well
 		.container
 			.row
