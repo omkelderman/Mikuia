@@ -496,7 +496,7 @@ sendRequest = (Channel, user, username, map, message, target) =>
 
 			# Chat
 			if !err && requestChatInfo
-				Mikuia.Chat.handleResponse user.username, Channel.getName(), Mikuia.Format.parse(chatRequestFormat, data), data.settings._target
+				Mikuia.Chat.handleResponse user.username, Channel.getName(), Mikuia.Format.parse(chatRequestFormat, data), target
 
 			# osu!
 			if !err2
