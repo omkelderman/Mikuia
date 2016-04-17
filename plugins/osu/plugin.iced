@@ -130,7 +130,7 @@ checkForRequest = (user, Channel, message, target) =>
 										highestDifficultyRating = map.difficultyrating
 										highestDifficultyMap = map
 
-							sendRequest Channel, user, username, highestDifficultyMap, message, whisper
+							sendRequest Channel, user, username, highestDifficultyMap, message, target
 
 updateUserBest = (stream, callback) =>
 	await Mikuia.Database.hget 'mikuia:stream:' + stream, 'game', defer err, game
