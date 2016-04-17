@@ -73,7 +73,6 @@ Mikuia.Web.get '/auth/discord/callback', (req, res, next) =>
 					res.render '../../plugins/discord/views/linked',
 						discord: userData
 				else
-					console.log 'we need to keep up the good work'
 					if req.isAuthenticated()
 						linkDiscordAccount userData.id, req.user.username
 						res.render '../../plugins/discord/views/linked',
@@ -122,10 +121,3 @@ Mikuia.Web.get '/dashboard/plugins/discord/callback', checkAuth, (req, res) =>
 				res.send 'epic fail'
 		else
 			res.send 'fail'
-
-# 	failureRedirect: '/'
-# ), (req, res) =>
-# 	res.redirect '/auth/discord/info'
-# Mikuia.Web.get '/auth/discord/info', (req, res) =>
-# 	console.log req.user
-# 	req.send 'Hi'
