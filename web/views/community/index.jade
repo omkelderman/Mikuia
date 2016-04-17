@@ -64,11 +64,12 @@ block content
 						| Other Streams 
 						small
 							a(href='/streams') see all
-					- var i = 0
-					each miniData in sorting
-						if i < 12
-							+stream(streams[miniData[0]], displayHtml, miniData[1])
-							- i++
+			.row
+				- var i = 0
+				each miniData in sorting
+					if i < 12
+						+stream(streams[miniData[0]], displayHtml, miniData[1])
+						- i++
 				//- .col-md-2.animation-fade-in-left
 				//- 	h1 Twitter
 				//- 	a.twitter-timeline(href='https://twitter.com/MikuiaBot', data-widget-id='540548781029462017') Tweets by @MikuiaBot
