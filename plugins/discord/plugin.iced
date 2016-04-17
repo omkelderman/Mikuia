@@ -26,9 +26,13 @@ if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.t
 		if !err and twitchChannel?
 			channels[twitchChannel] = serverId
 
-			await Mikuia.Database.hget 'plugin:discord:users', userId, defer err2, twitchUser
+			Channel = new Mikuia.Models.Channel twitchChannel
 
-			if !err and twitchUser?
+			await
+				Channel.isPluginEnabled 'discord', defer err2, isPluginEnabled
+				Mikuia.Database.hget 'plugin:discord:users', userId, defer err3, twitchUser
+
+			if !err2 and isPluginEnabled and !err3 and twitchUser?
 				users[twitchUser] = userId
 
 				user =
