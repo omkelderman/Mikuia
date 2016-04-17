@@ -13,7 +13,7 @@
 				"default": "",
 				"type": "disabled",
 				"link": {
-					"url": "/auth/discord",
+					"url": "/auth/discord/?state=settings",
 					"name": "Click here to login with Discord."
 				}		
 			},

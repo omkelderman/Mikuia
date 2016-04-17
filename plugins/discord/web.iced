@@ -40,7 +40,10 @@ linkDiscordServer = (serverId, username) =>
 		Mikuia.Database.hset 'plugin:discord:servers', serverId, Channel.getName(), defer whatever
 
 Mikuia.Web.get '/auth/discord', (req, res) =>
-	res.redirect authUri
+	if req.query.state
+		res.redirect authUri + '&state=' + req.query.state
+	else
+		res.redirect authUri
 
 Mikuia.Web.get '/auth/discord/callback', (req, res, next) =>
 	token = oauth2.authCode.getToken
@@ -70,13 +73,20 @@ Mikuia.Web.get '/auth/discord/callback', (req, res, next) =>
 
 				if twitchChannels == 1
 					linkDiscordAccount userData.id, connectionData[twitchIndex].name
-					res.render '../../plugins/discord/views/linked',
-						discord: userData
+
+					if !req.query.state
+						res.render '../../plugins/discord/views/linked',
+							discord: userData
+					else
+						res.redirect '/dashboard/settings#discord'
 				else
 					if req.isAuthenticated()
 						linkDiscordAccount userData.id, req.user.username
-						res.render '../../plugins/discord/views/linked',
-							discord: userData
+						if !req.query.state
+							res.render '../../plugins/discord/views/linked',
+								discord: userData
+						else
+							res.redirect '/dashboard/settings#discord'
 					else
 						req.session.discord = userData
 						req.session.redirectTo = '/auth/discord/continue'
@@ -89,8 +99,11 @@ Mikuia.Web.get '/auth/discord/callback', (req, res, next) =>
 Mikuia.Web.get '/auth/discord/continue', checkAuth, (req, res) =>
 	if req.session.discord?
 		linkDiscordAccount req.session.discord.id, req.user.username
-	res.render '../../plugins/discord/views/linked',
-		discord: req.session.discord
+	if !req.query.state
+		res.render '../../plugins/discord/views/linked',
+			discord: req.session.discord
+	else
+		res.redirect '/dashboard/settings#discord'
 
 Mikuia.Web.get '/dashboard/plugins/discord/callback', checkAuth, (req, res) =>
 	token = oauth2.authCode.getToken
