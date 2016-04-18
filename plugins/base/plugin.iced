@@ -1,6 +1,6 @@
 channelCooldown = {}
 
-addDummy = (username, channel, tokens, target) =>
+addDummy = (username, channel, tokens, target, details) =>
 	Channel = new Mikuia.Models.Channel channel
 	isMod = checkMod channel, username
 
@@ -21,9 +21,9 @@ addDummy = (username, channel, tokens, target) =>
 			else
 				message = 'Um, something failed. Oops.'
 
-			Mikuia.Chat.handleResponse username, channel, message, target
+			Mikuia.Chat.handleResponse username, channel, message, target, details
 
-removeCommand = (username, channel, tokens, target) =>
+removeCommand = (username, channel, tokens, target, details) =>
 	Channel = new Mikuia.Models.Channel channel
 	isMod = checkMod channel, username
 
@@ -41,10 +41,10 @@ removeCommand = (username, channel, tokens, target) =>
 			else
 				message = 'I probably screwed something up... oh well.'
 
-			Mikuia.Chat.handleResponse username, channel, message, target
+			Mikuia.Chat.handleResponse username, channel, message, target, details
 			
 Mikuia.Events.on 'base.add.dummy', (data) =>
-	addDummy data.user.username, data.to, data.tokens, data.settings._target
+	addDummy data.user.username, data.to, data.tokens, data.settings._target, data.details
 
 Mikuia.Events.on 'base.dummy', (data) =>
 	args = data.tokens.slice(1, data.tokens.length).join ' '
@@ -73,7 +73,7 @@ Mikuia.Events.on 'base.dummy', (data) =>
 				message: data.message
 				username: data.user.username
 
-	Mikuia.Chat.handleResponse data.user.username, data.to, dummyMessage, data.settings._target
+	Mikuia.Chat.handleResponse data.user.username, data.to, dummyMessage, data.settings._target, data.details
 
 Mikuia.Events.on 'base.levels', (data) =>
 	Channel = new Mikuia.Models.Channel data.user.username
@@ -89,10 +89,10 @@ Mikuia.Events.on 'base.levels', (data) =>
 		level = Mikuia.Tools.getLevel experience
 		message = displayName + ': #' + (rank + 1) + ' - Lv ' + level + ' (' + experience + ' / ' + Mikuia.Tools.getExperience(level + 1) + ' XP)'
 
-		Mikuia.Chat.handleResponse data.user.username, data.to, message, data.settings._target
+		Mikuia.Chat.handleResponse data.user.username, data.to, message, data.settings._target, data.details
 
 Mikuia.Events.on 'base.remove', (data) =>
-	removeCommand data.user.username, data.to, data.tokens, data.settings._target
+	removeCommand data.user.username, data.to, data.tokens, data.settings._target, data.details
 
 Mikuia.Events.on 'base.uptime', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
@@ -124,9 +124,9 @@ Mikuia.Events.on 'base.uptime', (data) =>
 	else
 		message =  'The stream is not live.'
 
-	Mikuia.Chat.handleResponse data.user.username, data.to, message, data.settings._target
+	Mikuia.Chat.handleResponse data.user.username, data.to, message, data.settings._target, data.details
 
-Mikuia.Events.on 'mikuia.message', (from, to, message, target) =>
+Mikuia.Events.on 'mikuia.message', (from, to, message, target, details) =>
 	globalCommand = @Plugin.getSetting 'globalCommand'
 	if message.indexOf(globalCommand) == 0
 		Channel = new Mikuia.Models.Channel to
@@ -140,7 +140,7 @@ Mikuia.Events.on 'mikuia.message', (from, to, message, target) =>
 			channelCooldown[Channel.getName()] = (new Date()).getTime()
 
 			if message.trim() == globalCommand
-				Mikuia.Chat.handleResponse from.username, to, 'Hey, I\'m Mikuia, and I\'m a bot made by Hatsuney! Learn more about me at http://mikuia.tv', target
+				Mikuia.Chat.handleResponse from.username, to, 'Hey, I\'m Mikuia, and I\'m a bot made by Hatsuney! Learn more about me at http://mikuia.tv', target, details
 			else
 				tokens = message.trim().split ' '
 				trigger = tokens[1]
@@ -154,7 +154,7 @@ Mikuia.Events.on 'mikuia.message', (from, to, message, target) =>
 					
 				switch trigger
 					when 'commands'
-						Mikuia.Chat.handleResponse from.username, to, 'Commands for this channel: http://mikuia.tv/user/' + Channel.getName(), target
+						Mikuia.Chat.handleResponse from.username, to, 'Commands for this channel: http://mikuia.tv/user/' + Channel.getName(), target, details
 					when 'dummy'
 						addDummy from.username, to, tokens.slice(1), target
 					when 'emit'
@@ -197,28 +197,28 @@ Mikuia.Events.on 'mikuia.message', (from, to, message, target) =>
 									# nope for now ;P
 
 					when 'levels'
-						Mikuia.Chat.handleResponse from.username, to, 'Levels for this channel: http://mikuia.tv/levels/' + Channel.getName(), target
+						Mikuia.Chat.handleResponse from.username, to, 'Levels for this channel: http://mikuia.tv/levels/' + Channel.getName(), target, details
 					when 'mods'
 						if isMod
 							moderators = Mikuia.Chat.mods to
 							if moderators?
-								Mikuia.Chat.handleResponse from.username, to, 'This is what I know:' + JSON.stringify(moderators), target
+								Mikuia.Chat.handleResponse from.username, to, 'This is what I know:' + JSON.stringify(moderators), target, details
 					when 'rating'
 						await
 							Mikuia.Leagues.getFightCount User.getName(), defer err, fights
 							Mikuia.Leagues.getRating User.getName(), defer err, rating
 							User.getDisplayName defer err, displayName
 						if fights < 10
-							Mikuia.Chat.handleResponse from.username, to, displayName + ' > Unranked (' + fights + ' fights, ' + rating + ' elo)', target
+							Mikuia.Chat.handleResponse from.username, to, displayName + ' > Unranked (' + fights + ' fights, ' + rating + ' elo)', target, details
 						else
-							Mikuia.Chat.handleResponse from.username, to, displayName + ' > ' + Mikuia.Leagues.getLeagueFullText(rating) + ' (' + fights + ' fights, ' + rating + ' elo)', target
+							Mikuia.Chat.handleResponse from.username, to, displayName + ' > ' + Mikuia.Leagues.getLeagueFullText(rating) + ' (' + fights + ' fights, ' + rating + ' elo)', target, details
 					when 'remove'
 						removeCommand from.username, to, tokens.slice(1), target
 					when 'say'
 						if isAdmin
 							Mikuia.Chat.sayUnfiltered to, tokens.slice(2).join(' ')
 					when 'status'
-						Mikuia.Chat.handleResponse from.username, to, 'Current Mikuia status: https://p.datadoghq.com/sb/AF-ona-ccd2288b29', target
+						Mikuia.Chat.handleResponse from.username, to, 'Current Mikuia status: https://p.datadoghq.com/sb/AF-ona-ccd2288b29', target, details
 					else
 						# do nothing
 

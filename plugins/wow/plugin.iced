@@ -66,7 +66,7 @@ Mikuia.Events.on 'wow.character', (data) =>
 						for name, value of bracket
 							formatData['pvp.' + bracketNames[bracketName] + '.' + name] = value
 
-				Mikuia.Chat.handleResponse data.user.username, Channel.getName(), Mikuia.Format.parse(data.settings.format, formatData), data.settings._target
+				Mikuia.Chat.handleResponse data.user.username, Channel.getName(), Mikuia.Format.parse(data.settings.format, formatData), data.settings._target, data.details
 
 # setInterval () =>
 # 	await Mikuia.Streams.getAll defer err, streams

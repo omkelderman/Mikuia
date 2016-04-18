@@ -82,7 +82,7 @@ Mikuia.Events.on 'rotmg.rank', (data) =>
 					else
 						message = 'Stats for ' + json.player + ': ★ ' + json.rank + ', ' + json.fame + ' Fame.'
 
-					Mikuia.Chat.handleResponse data.user.username, Channel.getName(), message, data.settings._target
+					Mikuia.Chat.handleResponse data.user.username, Channel.getName(), message, data.settings._target, data.details
 
 			else
 				Mikuia.Log.error cli.redBright('RotMG') + ' / ' + cli.cyan(displayName) + ' / Failed to get JSON.'

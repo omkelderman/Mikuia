@@ -62,7 +62,7 @@ queueItem = (item, Channel, data, callback) =>
 	await Mikuia.Database.zadd 'channel:' + Channel.getName() + ':autodj:list', nextId, JSON.stringify(item), defer whatever
 	message = '#' + nextId + ': ' + item.title + ' (' + item.duration + ') added to the list.' 
 
-	Mikuia.Chat.handleResponse data.user.username, data.to, message, data.settings._target
+	Mikuia.Chat.handleResponse data.user.username, data.to, message, data.settings._target, data.details
 
 requestSoundCloudTrackData = (scLink, callback) =>
 	await request 'http://api.soundcloud.com/resolve?url=' + scLink + '&client_id=' + @Plugin.getSetting('scId'), defer error, response, body
@@ -91,7 +91,7 @@ Mikuia.Events.on 'adj.command', (data) ->
 				if isMod
 					await Mikuia.Database.del 'channel:' + Channel.getName() + ':autodj:list', defer whatever
 
-					Mikuia.Chat.handleResponse data.user.username, data.to, 'Cleared the request list.', data.settings._target
+					Mikuia.Chat.handleResponse data.user.username, data.to, 'Cleared the request list.', data.settings._target, data.details
 			when 'delete', 'remove'
 				if isMod and tokens.length > 2
 					requestId = parseInt tokens[2].replace('#', '')
@@ -99,7 +99,7 @@ Mikuia.Events.on 'adj.command', (data) ->
 					await Mikuia.Database.zremrangebyscore 'channel:' + Channel.getName() + ':autodj:list', requestId, requestId, defer err, amountRemoved
 
 					if amountRemoved > 0
-						Mikuia.Chat.handleResponse data.user.username, data.to, 'Removed request #' + requestId + '.', data.settings._target
+						Mikuia.Chat.handleResponse data.user.username, data.to, 'Removed request #' + requestId + '.', data.settings._target, data.details
 
 			else
 				parseSongRequest data

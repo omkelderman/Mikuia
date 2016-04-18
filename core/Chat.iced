@@ -84,7 +84,7 @@ class exports.Chat
 
 	getChatters: (channel) => @chatters[channel]
 
-	handleMessage: (user, to, message, source) =>
+	handleMessage: (user, to, message, source, details) =>
 		Channel = new @Mikuia.Models.Channel to
 		Chatter = new @Mikuia.Models.Channel user.username
 		await
@@ -112,7 +112,7 @@ class exports.Chat
 					@Mikuia.Log.info cli.cyanBright('[' + @channelClients['#' + Channel.getName()] + ']') + ' / ' + cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.red(message))
 
 				@Mikuia.Events.emit 'twitch.message', user, to, message, source
-			@Mikuia.Events.emit 'mikuia.message', user, to, message, source
+			@Mikuia.Events.emit 'mikuia.message', user, to, message, source, details
 
 		Channel.trackIncrement 'messages', 1
 
@@ -171,7 +171,7 @@ class exports.Chat
 							User = new Mikuia.Models.Channel user.username
 							await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
 
-						@Mikuia.Events.emit command, {user, to, message, tokens, settings}
+						@Mikuia.Events.emit command, {user, to, message, tokens, settings, details}
 						Channel.trackIncrement 'commands', 1
 					else
 						reasons.push 'disabled'
@@ -183,11 +183,12 @@ class exports.Chat
 				message: message
 				tokens: tokens
 				settings: settings
+				details: details
 				status:
 					failure: reasons.length > 0 ? true : false
 					reason: reasons
 
-	handleResponse: (username, channel, message, target) =>
+	handleResponse: (username, channel, message, target, details) =>
 		switch target
 			when 'twitch'
 				Mikuia.Chat.say channel, message
@@ -199,6 +200,7 @@ class exports.Chat
 					channel: channel
 					message: message
 					target: target
+					details: details
 
 	handleWhisper: (user, message) =>
 		if channelContext[user.username]?.channel?
@@ -451,7 +453,11 @@ class exports.Chat
 			callback false, client
 
 		client.on 'disconnected', (reason) =>
-			@Mikuia.Log.fatal cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch chat. Reason: ' + reason)
+			@Mikuia.Log.error cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch chat. Attempting to reconnect. Reason: ' + reason)
+			for channel in @clientJoins[client.id]
+				@channelClients.splice @channelClients.indexOf(channel), 1
+				@joined.splice @joined.indexOf(channel), 1
+				@clientJoins[client.id] = []
 
 		client.on 'join', (channel, username) =>
 			if username == @Mikuia.settings.bot.name.toLowerCase()

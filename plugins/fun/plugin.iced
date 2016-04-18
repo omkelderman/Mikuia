@@ -117,10 +117,10 @@ Mikuia.Events.on 'fun.1v1', (data) =>
 							Mikuia.Leagues.addFightLoss Attacker.getName(), defer err
 				
 					if data.settings._whisper
-						Mikuia.Chat.handleResponse Attacker.getName(), data.to, chatMessage, data.settings._target
-						Mikuia.Chat.handleResponse Defender.getName(), data.to, chatMessage, data.settings._target
+						Mikuia.Chat.handleResponse Attacker.getName(), data.to, chatMessage, data.settings._target, data.details
+						Mikuia.Chat.handleResponse Defender.getName(), data.to, chatMessage, data.settings._target, data.details
 					else
-						Mikuia.Chat.handleResponse null, data.to, chatMessage, data.settings._target
+						Mikuia.Chat.handleResponse null, data.to, chatMessage, data.settings._target, data.details
 
 					await
 						Mikuia.Leagues.updateRating Attacker.getName(), attackerRating, defer err
@@ -173,4 +173,4 @@ Mikuia.Events.on 'fun.roll', (data) =>
 
 	roll = Math.floor(Math.random() * limit)
 
-	Mikuia.Chat.handleResponse data.user.username, data.to, displayName + ' rolled ' + roll + '.', data.settings._target
+	Mikuia.Chat.handleResponse data.user.username, data.to, displayName + ' rolled ' + roll + '.', data.settings._target, data.details

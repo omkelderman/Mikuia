@@ -1,7 +1,6 @@
 cli = require 'cli-color'
 Discord = require 'discord.io'
 
-channels = {}
 users = {}
 
 if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.token != 'BOT_USER_TOKEN'
@@ -24,8 +23,6 @@ if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.t
 		await Mikuia.Database.hget 'plugin:discord:servers', serverId, defer err, twitchChannel
 
 		if !err and twitchChannel?
-			channels[twitchChannel] = serverId
-
 			Channel = new Mikuia.Models.Channel twitchChannel
 
 			await
@@ -40,11 +37,13 @@ if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.t
 					subscriber: false
 					color: '#ffffff'
 
-				Mikuia.Chat.handleMessage user, twitchChannel, message, 'discord'
+				Mikuia.Chat.handleMessage user, twitchChannel, message, 'discord',
+					discordChannelId: channelId
 
 	Mikuia.Events.on 'mikuia.say.custom', (data) =>
 		switch data.target
 			when 'discord'
-				discord.sendMessage
-					to: channels[data.channel]
-					message: '<@' + users[data.username] + '>: ' + data.message
+				if data.details?.discordChannelId?
+					discord.sendMessage
+						to: data.details.discordChannelId
+						message: '<@' + users[data.username] + '>: ' + data.message

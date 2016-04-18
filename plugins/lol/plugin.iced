@@ -65,7 +65,7 @@ Mikuia.Events.on 'lol.league.summary', (data) =>
 								tier: leagueNames[league.tier]
 								wins: player.wins
 
-							Mikuia.Chat.handleResponse data.user.username, Channel.getName(), message, data.settings._target
+							Mikuia.Chat.handleResponse data.user.username, Channel.getName(), message, data.settings._target, data.details
 
 Mikuia.Events.on 'lol.masteries.active.summary', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
@@ -103,7 +103,7 @@ Mikuia.Events.on 'lol.masteries.active.summary', (data) =>
 						cunningPoints: points.Cunning
 						resolvePoints: points.Resolve
 
-					Mikuia.Chat.handleResponse data.user.username, Channel.getName(), message, data.settings._target
+					Mikuia.Chat.handleResponse data.user.username, Channel.getName(), message, data.settings._target, data.details
 
 Mikuia.Events.on 'lol.runes.active.list', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
@@ -136,7 +136,7 @@ Mikuia.Events.on 'lol.runes.active.list', (data) =>
 
 					message = runeCounts.join ', '
 
-					Mikuia.Chat.handleResponse data.user.username, Channel.getName(), message, data.settings._target
+					Mikuia.Chat.handleResponse data.user.username, Channel.getName(), message, data.settings._target, data.details
 
 Mikuia.Events.on 'lol.stats.ranked.champion', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
@@ -201,4 +201,4 @@ Mikuia.Events.on 'lol.stats.ranked.champion', (data) =>
 					message = 'No stats for ' + championName + '.'
 
 	if message
-		Mikuia.Chat.handleResponse data.user.username, Channel.getName(), message, data.settings._target
+		Mikuia.Chat.handleResponse data.user.username, Channel.getName(), message, data.settings._target, data.details
