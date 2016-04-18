@@ -47,3 +47,8 @@ if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.t
 					discord.sendMessage
 						to: data.details.discordChannelId
 						message: '<@' + users[data.username] + '>: ' + data.message
+
+			when 'discord_private'
+				discord.sendMessage
+					to: users[data.username]
+					message: '**[' + data.channel + ']** ' + data.message
