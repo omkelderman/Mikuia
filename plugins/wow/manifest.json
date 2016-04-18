@@ -6,6 +6,7 @@
 	"handlers": {
 		"wow.character": {
 			"description": "Shows details about the character.",
+			"anonymous": true,
 			"settings": {
 				"format": {
 					"name": "Output Format",

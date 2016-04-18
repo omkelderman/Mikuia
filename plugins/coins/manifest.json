@@ -7,10 +7,12 @@
 	"handlers": {
 		"coins.balance": {
 			"description": "Shows user's coin balance.",
+			"anonymous": false,
 			"hidden": true
 		},
 		"coins.command": {
 			"description": "Multi-purpose coin command.",
+			"anonymous": false,
 			"settings": {
 				"disablePayments": {
 					"name": "Disable Payments",

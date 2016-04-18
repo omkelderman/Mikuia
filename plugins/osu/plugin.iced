@@ -72,18 +72,18 @@ banchoSay = (name, message) =>
 checkForRequest = (user, Channel, message, target, details) =>
 	continueCheck = true
 	await Channel.getSetting 'osu', 'requestSubMode', defer err, requestSubMode
-	if !err && requestSubMode
+	if !err && requestSubMode && user?
 		if not user.subscriber
 			continueCheck = false
 
 	await Channel.getSetting 'osu', 'requestUserLimit', defer err, requestUserLimit
-	if !err && requestUserLimit
+	if !err && requestUserLimit && user?
 		if limits[Channel.getName()]?.users?[user.username]?
 			if (new Date()).getTime() < limits[Channel.getName()].users[user.username] + (requestUserLimit * 1000)
 				continueCheck = false
 
 	await Channel.getSetting 'osu', 'requestIgnoreMyself', defer err, requestIgnoreMyself
-	if !err && requestIgnoreMyself
+	if !err && requestIgnoreMyself && user?
 		if user.username == Channel.getName()
 			continueCheck = false
 
@@ -457,8 +457,11 @@ sendRequest = (Channel, user, username, map, message, target, details) =>
 				when '-1' then approvedText = 'WIP'
 				when '-2' then approvedText = 'Graveyard'
 
-			Requester = new Mikuia.Models.Channel user.username
-			await Requester.getDisplayName defer err, requesterDisplayName
+			if user?
+				Requester = new Mikuia.Models.Channel user.username
+				await Requester.getDisplayName defer err, requesterDisplayName
+			else
+				requesterDisplayName = '<Anonymous>'
 
 			data =
 				requester: requesterDisplayName
@@ -492,7 +495,9 @@ sendRequest = (Channel, user, username, map, message, target, details) =>
 					users: {}
 
 			limits[Channel.getName()].maps[map.beatmapset_id] = (new Date()).getTime()
-			limits[Channel.getName()].users[user.username] = (new Date()).getTime()
+
+			if user?
+				limits[Channel.getName()].users[user.username] = (new Date()).getTime()
 
 			# Chat
 			if !err && requestChatInfo

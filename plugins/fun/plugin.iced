@@ -158,8 +158,11 @@ Mikuia.Events.on 'fun.1v1', (data) =>
 					challenges[Channel.getName()][Attacker.getName()][Defender.getName()] = true
 
 Mikuia.Events.on 'fun.roll', (data) =>
-	Channel = new Mikuia.Models.Channel data.user.username
-	await Channel.getDisplayName defer err, displayName
+	if user?
+		Channel = new Mikuia.Models.Channel data.user.username
+		await Channel.getDisplayName defer err, displayName
+	else
+		displayName = null
 
 	if data.settings?.limit? && !isNaN data.settings.limit
 		limit = data.settings.limit
@@ -173,4 +176,9 @@ Mikuia.Events.on 'fun.roll', (data) =>
 
 	roll = Math.floor(Math.random() * limit)
 
-	Mikuia.Chat.handleResponse data.user.username, data.to, displayName + ' rolled ' + roll + '.', data.settings._target, data.details
+	if displayName?
+		message = displayName + ' rolled ' + roll + '.'
+	else
+		message = 'Rolled ' + roll + '.'
+
+	Mikuia.Chat.handleResponse data.user.username, data.to, message, data.settings._target, data.details

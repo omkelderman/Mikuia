@@ -6,6 +6,7 @@
 	"handlers": {
 		"fun.1v1": {
 			"description": "Allows viewers to challenge others to 1v1.",
+			"anonymous": false,
 			"settings": {
 				"timeoutLength": {
 					"name": "Timeout Length",
@@ -17,6 +18,7 @@
 		},
 		"fun.roll": {
 			"description": "Rolls a dice.",
+			"anonymous": true,
 			"settings": {
 				"limit": {
 					"name": "Limit",

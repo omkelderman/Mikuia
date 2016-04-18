@@ -90,35 +90,41 @@ class exports.Channel extends Mikuia.Model
 		callback commandError || settingsError, {command, settings, isAllowed, reasons}
 
 	isCommandAllowed: (settings, user, callback) ->
-		chatter = new exports.Channel user.username
+		if user?
+			chatter = new exports.Channel user.username
+			
 		isAllowed = true
 		reasons = []
 
-		if settings?._minLevel and parseInt(settings._minLevel) > 0
+		if !user? && ((settings?._minLevel && parseInt(settings._minLevel) > 0) || settings?._onlyMods || settings?._onlySubs || settings?._onlyBroadcaster || (settings?._coinCost && parseInt(settings_.coinCost) > 0))
+			isAllowed = false
+			reasons.push 'anonymous'
+
+		if user? and settings?._minLevel and parseInt(settings._minLevel) > 0
 			await chatter.getLevel @getName(), defer whateverError, userLevel
 			if userLevel < parseInt(settings._minLevel)
 				isAllowed = false
 				reasons.push 'level'
 
-		if settings?._onlyMods and not chatter.isModOf @getName()
+		if user? and settings?._onlyMods and not chatter.isModOf @getName()
 			isAllowed = false
 			reasons.push 'mod'
 
-		if settings?._onlySubs and not user.subscriber
+		if user? and settings?._onlySubs and not user.subscriber
 			isAllowed = false
 			reasons.push 'subscriber'
 
-		if settings?._onlyBroadcaster and user.username isnt @getName()
+		if user? and settings?._onlyBroadcaster and user.username isnt @getName()
 			isAllowed = false
 			reasons.push 'broadcaster'
 
-		if settings?._coinCost and parseInt(settings._coinCost) > 0
+		if user? and settings?._coinCost and parseInt(settings._coinCost) > 0
 			await Mikuia.Database.zscore 'channel:' + @getName() + ':coins', user.username, defer error, balance
 			if !balance? or parseInt(balance) < parseInt(settings._coinCost)
 				isAllowed = false
 				reasons.push 'coins'
 
-		if user.username == @getName()
+		if user? and user.username == @getName()
 			isAllowed = true
 			reasons = []
 

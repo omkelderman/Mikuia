@@ -2,46 +2,42 @@ channelCooldown = {}
 
 addDummy = (username, channel, tokens, target, details) =>
 	Channel = new Mikuia.Models.Channel channel
-	isMod = checkMod channel, username
 
-	if isMod
-		if tokens.length == 1 || tokens.length == 2
-			Mikuia.Chat.handleResponse username, channel, 'You failed.', target
-		else if tokens.length > 2
-			command = tokens[1]
-			message = ''
-			text = tokens.slice(2, tokens.length).join ' '
+	if tokens.length == 1 || tokens.length == 2
+		Mikuia.Chat.handleResponse username, channel, 'You failed.', target
+	else if tokens.length > 2
+		command = tokens[1]
+		message = ''
+		text = tokens.slice(2, tokens.length).join ' '
 
-			await
-				Channel.addCommand command, 'base.dummy', defer err, data
-				Channel.setCommandSetting command, 'message', text, defer err2, data
+		await
+			Channel.addCommand command, 'base.dummy', defer err, data
+			Channel.setCommandSetting command, 'message', text, defer err2, data
 
-			if not err and not err2
-				message = 'Command "' + command + '" probably added.'
-			else
-				message = 'Um, something failed. Oops.'
+		if not err and not err2
+			message = 'Command "' + command + '" probably added.'
+		else
+			message = 'Um, something failed. Oops.'
 
-			Mikuia.Chat.handleResponse username, channel, message, target, details
+		Mikuia.Chat.handleResponse username, channel, message, target, details
 
 removeCommand = (username, channel, tokens, target, details) =>
 	Channel = new Mikuia.Models.Channel channel
-	isMod = checkMod channel, username
 
-	if isMod
-		if tokens.length == 1 || tokens.length > 2
-			Mikuia.Chat.handleResponse username, channel, 'Fail.', target
-		else if tokens.length == 2
-			command = tokens[1]
-			message = ''
+	if tokens.length == 1 || tokens.length > 2
+		Mikuia.Chat.handleResponse username, channel, 'Fail.', target
+	else if tokens.length == 2
+		command = tokens[1]
+		message = ''
 
-			await Channel.removeCommand command, defer err, data
+		await Channel.removeCommand command, defer err, data
 
-			if not err
-				message = 'Command "' + command + '" probably removed.'
-			else
-				message = 'I probably screwed something up... oh well.'
+		if not err
+			message = 'Command "' + command + '" probably removed.'
+		else
+			message = 'I probably screwed something up... oh well.'
 
-			Mikuia.Chat.handleResponse username, channel, message, target, details
+		Mikuia.Chat.handleResponse username, channel, message, target, details
 			
 Mikuia.Events.on 'base.add.dummy', (data) =>
 	addDummy data.user.username, data.to, data.tokens, data.settings._target, data.details
@@ -50,11 +46,15 @@ Mikuia.Events.on 'base.dummy', (data) =>
 	args = data.tokens.slice(1, data.tokens.length).join ' '
 
 	Channel = new Mikuia.Models.Channel data.to
-	Viewer = new Mikuia.Models.Channel data.user.username
 	await
 		Channel.getSetting 'base', 'dummyCustomFormat', defer err, dummyCustomFormat
 		Channel.getSetting 'base', 'dummyCustomMessage', defer err, dummyCustomMessage
-		Viewer.getDisplayName defer err, viewerDisplayName
+
+	if user?
+		Viewer = new Mikuia.Models.Channel data.user.username
+		await Viewer.getDisplayName defer err, viewerDisplayName
+	else
+		viewerDisplayName = '<Anonymous>'
 
 	dummyMessage = Mikuia.Format.parse data.settings.message,
 		args: args
@@ -128,6 +128,8 @@ Mikuia.Events.on 'base.uptime', (data) =>
 
 Mikuia.Events.on 'mikuia.message', (from, to, message, target, details) =>
 	globalCommand = @Plugin.getSetting 'globalCommand'
+	username = if from? then from.username else null
+
 	if message.indexOf(globalCommand) == 0
 		Channel = new Mikuia.Models.Channel to
 		canContinue = true
@@ -140,23 +142,30 @@ Mikuia.Events.on 'mikuia.message', (from, to, message, target, details) =>
 			channelCooldown[Channel.getName()] = (new Date()).getTime()
 
 			if message.trim() == globalCommand
-				Mikuia.Chat.handleResponse from.username, to, 'Hey, I\'m Mikuia, and I\'m a bot made by Hatsuney! Learn more about me at http://mikuia.tv', target, details
+				Mikuia.Chat.handleResponse username, to, 'Hey, I\'m Mikuia, and I\'m a bot made by Hatsuney! Learn more about me at http://mikuia.tv', target, details
 			else
 				tokens = message.trim().split ' '
 				trigger = tokens[1]
 
-				User = new Mikuia.Models.Channel from.username
-				isAdmin = User.isAdmin()
-				isMod = checkMod to, from.username
+				if from?
+					User = new Mikuia.Models.Channel from.username
+					isAdmin = User.isAdmin()
+					isMod = checkMod to, from.username
+				else
+					isAdmin = false
+					isMod = false
 
 				if isAdmin
 					isMod = true
 					
 				switch trigger
 					when 'commands'
-						Mikuia.Chat.handleResponse from.username, to, 'Commands for this channel: http://mikuia.tv/user/' + Channel.getName(), target, details
+						Mikuia.Chat.handleResponse username, to, 'Commands for this channel: http://mikuia.tv/user/' + Channel.getName(), target, details
+
 					when 'dummy'
-						addDummy from.username, to, tokens.slice(1), target
+						if isMod
+							addDummy username, to, tokens.slice(1), target
+
 					when 'emit'
 						if isAdmin
 							type = tokens[2]
@@ -197,32 +206,43 @@ Mikuia.Events.on 'mikuia.message', (from, to, message, target, details) =>
 									# nope for now ;P
 
 					when 'levels'
-						Mikuia.Chat.handleResponse from.username, to, 'Levels for this channel: http://mikuia.tv/levels/' + Channel.getName(), target, details
+						Mikuia.Chat.handleResponse username, to, 'Levels for this channel: http://mikuia.tv/levels/' + Channel.getName(), target, details
+
 					when 'mods'
 						if isMod
 							moderators = Mikuia.Chat.mods to
 							if moderators?
 								Mikuia.Chat.handleResponse from.username, to, 'This is what I know:' + JSON.stringify(moderators), target, details
+
 					when 'rating'
-						await
-							Mikuia.Leagues.getFightCount User.getName(), defer err, fights
-							Mikuia.Leagues.getRating User.getName(), defer err, rating
-							User.getDisplayName defer err, displayName
-						if fights < 10
-							Mikuia.Chat.handleResponse from.username, to, displayName + ' > Unranked (' + fights + ' fights, ' + rating + ' elo)', target, details
-						else
-							Mikuia.Chat.handleResponse from.username, to, displayName + ' > ' + Mikuia.Leagues.getLeagueFullText(rating) + ' (' + fights + ' fights, ' + rating + ' elo)', target, details
+						if from?
+							await
+								Mikuia.Leagues.getFightCount User.getName(), defer err, fights
+								Mikuia.Leagues.getRating User.getName(), defer err, rating
+								User.getDisplayName defer err, displayName
+
+							if fights < 10
+								Mikuia.Chat.handleResponse from.username, to, displayName + ' > Unranked (' + fights + ' fights, ' + rating + ' elo)', target, details
+							else
+								Mikuia.Chat.handleResponse from.username, to, displayName + ' > ' + Mikuia.Leagues.getLeagueFullText(rating) + ' (' + fights + ' fights, ' + rating + ' elo)', target, details
+
 					when 'remove'
-						removeCommand from.username, to, tokens.slice(1), target
+						if isMod
+							removeCommand from.username, to, tokens.slice(1), target
+
 					when 'say'
 						if isAdmin
 							Mikuia.Chat.sayUnfiltered to, tokens.slice(2).join(' ')
+
 					when 'status'
-						Mikuia.Chat.handleResponse from.username, to, 'Current Mikuia status: https://p.datadoghq.com/sb/AF-ona-ccd2288b29', target, details
+						Mikuia.Chat.handleResponse username, to, 'Current Mikuia status: https://p.datadoghq.com/sb/AF-ona-ccd2288b29', target, details
 					else
 						# do nothing
 
 checkMod = (channel, username) ->
+	if !username?
+		return false
+		
 	if channel == '#' + username
 		return true
 	else

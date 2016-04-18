@@ -9,6 +9,7 @@
 	"handlers": {
 		"dota2.stats": {
 			"description": "Shows Dota 2 profile stats.",
+			"anonymous": true,
 			"settings": {
 			"format": {
 					"name": "Output Format",

@@ -6,6 +6,7 @@
 	"handlers": {
 		"twitch.followcheck": {
 			"description": "Checks the status of a follow relationship.",
+			"anonymous": false,
 			"settings": {
 				"format": {
 					"name": "Message Format",

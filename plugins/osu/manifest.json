@@ -6,13 +6,16 @@
 	"hidden": false,
 	"handlers": {
 		"osu.np": {
-			"description": "[NOT WORKING] Shows currently playing song."
+			"description": "[NOT WORKING] Shows currently playing song.",
+			"anonymous": true
 		},
 		"osu.request": {
-			"description": "Allows requesting songs."
+			"description": "Allows requesting songs.",
+			"anonymous": true
 		},
 		"osu.stats": {
 			"description": "Shows osu! stats, duh.",
+			"anonymous": true,
 			"settings": {
 				"username": {
 					"name": "Username",

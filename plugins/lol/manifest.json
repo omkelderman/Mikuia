@@ -6,6 +6,7 @@
 	"handlers": {
 		"lol.league.summary": {
 			"description": "Provides info about current leagues and rank.",
+			"anonymous": true,
 			"settings": {
 				"format": {
 					"name": "Message Format",
@@ -24,6 +25,7 @@
 		},
 		"lol.masteries.active.summary": {
 			"description": "Shows a summary of the currently used mastery page.",
+			"anonymous": true,
 			"settings": {
 				"format": {
 					"name": "Message Format",
@@ -40,10 +42,12 @@
 			}
 		},
 		"lol.runes.active.list": {
-			"description": "Shows a list of currently used runes."
+			"description": "Shows a list of currently used runes.",
+			"anonymous": true
 		},
 		"lol.stats.ranked.champion": {
 			"description": "Shows ranked stats for a particular champion.",
+			"anonymous": true,
 			"settings": {
 				"format": {
 					"name": "Message Format",

@@ -5,10 +5,12 @@
 	"hidden": true,
 	"handlers": {
 		"base.add.dummy": {
-			"description": "Adds/edits a dummy command."
+			"description": "Adds/edits a dummy command.",
+			"anonymous": false
 		},
 		"base.dummy": {
 			"description": "Shows a text message.",
+			"anonymous": true,
 			"settings": {
 				"message": {
 					"name": "Message",
@@ -26,13 +28,16 @@
 			}
 		},
 		"base.levels": {
-			"description": "Shows user's level."
+			"description": "Shows user's level.",
+			"anonymous": false
 		},
 		"base.remove": {
-			"description": "Removes a command."
+			"description": "Removes a command.",
+			"anonymous": false
 		},
 		"base.uptime": {
-			"description": "Shows the current stream uptime."
+			"description": "Shows the current stream uptime.",
+			"anonymous": true
 		}
 	},
 	"settings": {

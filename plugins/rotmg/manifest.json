@@ -6,6 +6,7 @@
 	"handlers": {
 		"rotmg.rank": {
 			"description": "Shows the rank and some basic stats of a player.",
+			"anonymous": true,
 			"settings": {
 				"username": {
 					"name": "Username",

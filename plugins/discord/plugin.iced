@@ -29,16 +29,23 @@ if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.t
 				Channel.isPluginEnabled 'discord', defer err2, isPluginEnabled
 				Mikuia.Database.hget 'plugin:discord:users', userId, defer err3, twitchUser
 
-			if !err2 and isPluginEnabled and !err3 and twitchUser?
-				users[twitchUser] = userId
+			if !err2 and isPluginEnabled
 
-				user =
-					username: twitchUser
-					subscriber: false
-					color: '#ffffff'
+				if twitchUser?
+					users[twitchUser] = userId
 
-				Mikuia.Chat.handleMessage user, twitchChannel, message, 'discord',
-					discordChannelId: channelId
+					user =
+						username: twitchUser
+						subscriber: false
+						color: '#ffffff'
+
+					Mikuia.Chat.handleMessage user, twitchChannel, message, 'discord',
+						discordChannelId: channelId
+
+				else
+					Mikuia.Chat.handleMessage null, twitchChannel, message, 'discord',
+						anonymous: true
+						discordChannelId: channelId
 
 	Mikuia.Events.on 'mikuia.say.custom', (data) =>
 		switch data.target

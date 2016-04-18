@@ -86,28 +86,33 @@ class exports.Chat
 
 	handleMessage: (user, to, message, source, details) =>
 		Channel = new @Mikuia.Models.Channel to
-		Chatter = new @Mikuia.Models.Channel user.username
-		await
-			Channel.getDisplayName defer err, displayName
-			Chatter.isBanned defer err, isBanned
+		await Channel.getDisplayName defer err, displayName
 
-		channelContext[user.username] =
-			channel: Channel.getName()
-			user: user
+		if user?
+			Chatter = new @Mikuia.Models.Channel user.username
+			await Chatter.isBanned defer err, isBanned
 
-		chatterUsername = cli.yellowBright user.username
+			channelContext[user.username] =
+				channel: Channel.getName()
+				user: user
 
-		if Chatter.isAdmin()
-			chatterUsername = cli.redBright user.username
+			chatterUsername = cli.yellowBright user.username
 
-		if Chatter.isModOf Channel.getName()
-			chatterUsername = cli.greenBright '[m] ' + chatterUsername
+			if Chatter.isAdmin()
+				chatterUsername = cli.redBright user.username
 
-		if user.subscriber
-			chatterUsername = cli.blueBright '[s] ' + chatterUsername
+			if Chatter.isModOf Channel.getName()
+				chatterUsername = cli.greenBright '[m] ' + chatterUsername
+
+			if user.subscriber
+				chatterUsername = cli.blueBright '[s] ' + chatterUsername
+
+		else
+			chatterUsername = '<anonymous>'
+			isBanned = false
 
 		if !isBanned
-			if source == 'twitch'
+			if user? and source == 'twitch'
 				if message.toLowerCase().indexOf(Mikuia.settings.bot.name.toLowerCase()) > -1 || message.toLowerCase().indexOf(Mikuia.settings.bot.admin) > -1
 					@Mikuia.Log.info cli.cyanBright('[' + @channelClients['#' + Channel.getName()] + ']') + ' / ' + cli.bgBlackBright(cli.cyan(displayName) + ' / ' + chatterUsername + ': ' + cli.red(message))
 
@@ -119,13 +124,14 @@ class exports.Chat
 		tokens = message.split ' '
 		trigger = tokens[0]
 
-		inChatters = false
-		for categoryName, category of @getChatters Channel.getName()
-			if category.indexOf(user.username) > -1
-				inChatters = true
-		if !inChatters
-			@chatters[Channel.getName()] ?= { viewers: [] }
-			@chatters[Channel.getName()].viewers.push user.username
+		if user?
+			inChatters = false
+			for categoryName, category of @getChatters Channel.getName()
+				if category.indexOf(user.username) > -1
+					inChatters = true
+			if !inChatters
+				@chatters[Channel.getName()] ?= { viewers: [] }
+				@chatters[Channel.getName()].viewers.push user.username
 
 		await Channel.queryCommand trigger, user, defer err, o
 		{command, settings, isAllowed, reasons} = o
@@ -166,13 +172,22 @@ class exports.Chat
 				if handler?.plugin?
 					await Channel.isPluginEnabled handler.plugin, defer err, enabled
 
+					if !handler.anonymous?
+						handler.anonymous = false
+
 					if enabled
-						if settings?._coinCost and settings._coinCost > 0
+						if user? and settings?._coinCost and settings._coinCost > 0
 							User = new Mikuia.Models.Channel user.username
 							await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
 
-						@Mikuia.Events.emit command, {user, to, message, tokens, settings, details}
-						Channel.trackIncrement 'commands', 1
+						if user? or (!user? and handler.anonymous)
+
+							if !user?
+								user =
+									username: null
+
+							@Mikuia.Events.emit command, {user, to, message, tokens, settings, details}
+							Channel.trackIncrement 'commands', 1
 					else
 						reasons.push 'disabled'
 
@@ -193,7 +208,8 @@ class exports.Chat
 			when 'twitch'
 				Mikuia.Chat.say channel, message
 			when 'whisper'
-				Mikuia.Chat.whisper username, message
+				if username?
+					Mikuia.Chat.whisper username, message
 			else
 				Mikuia.Events.emit 'mikuia.say.custom',
 					username: username
