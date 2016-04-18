@@ -32,20 +32,14 @@ if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.t
 			if !err2 and isPluginEnabled
 
 				if twitchUser?
-					users[twitchUser] = userId
-
 					user =
 						username: twitchUser
-						subscriber: false
-						color: '#ffffff'
-
-					Mikuia.Chat.handleMessage user, twitchChannel, message, 'discord',
-						discordChannelId: channelId
-
 				else
-					Mikuia.Chat.handleMessage null, twitchChannel, message, 'discord',
-						anonymous: true
-						discordChannelId: channelId
+					user = null
+
+				Mikuia.Chat.handleMessage user, twitchChannel, message, 'discord',
+					discordChannelId: channelId
+					discordUserId: userId
 
 	Mikuia.Events.on 'mikuia.say.custom', (data) =>
 		switch data.target
@@ -53,9 +47,22 @@ if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.t
 				if data.details?.discordChannelId?
 					discord.sendMessage
 						to: data.details.discordChannelId
-						message: '<@' + users[data.username] + '>: ' + data.message
+						message: '<@' + data.details.discordUserId + '>: ' + data.message
 
 			when 'discord_private'
 				discord.sendMessage
-					to: users[data.username]
+					to: data.details.discordUserId
 					message: '**[' + data.channel + ']** ' + data.message
+
+	Mikuia.Events.on 'mikuia.command.failure', (data) =>
+		switch data.source
+			when 'discord'
+				if data.details?.discordChannelId? and data.details?.discordUserId
+					discord.sendMessage
+						to: data.details.discordChannelId
+						message: '<@' + data.details.discordUserId + '>: You need to link your account on ' + Mikuia.settings.plugins.discord.callbackBasePath + '/auth/discord to use this command.'
+
+			when 'discord_private'
+				discord.sendMessage
+					to: data.details.discordUserId
+					message: '<@' + data.details.discordUserId + '>: You need to link your account on ' + Mikuia.settings.plugins.discord.callbackBasePath + '/auth/discord to use this command.'

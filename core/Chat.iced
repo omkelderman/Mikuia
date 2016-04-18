@@ -181,13 +181,15 @@ class exports.Chat
 							await Mikuia.Database.zincrby "channel:#{Channel.getName()}:coins", -settings._coinCost, user.username, defer error, whatever
 
 						if user? or (!user? and handler.anonymous)
-
 							if !user?
 								user =
 									username: null
 
-							@Mikuia.Events.emit command, {user, to, message, tokens, settings, details}
+							Mikuia.Events.emit command, {user, to, message, tokens, settings, details}
 							Channel.trackIncrement 'commands', 1
+						else
+							Mikuia.Events.emit 'mikuia.command.failure', {user, to, message, source, tokens, settings, details}
+
 					else
 						reasons.push 'disabled'
 
