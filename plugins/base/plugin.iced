@@ -50,7 +50,7 @@ Mikuia.Events.on 'base.dummy', (data) =>
 		Channel.getSetting 'base', 'dummyCustomFormat', defer err, dummyCustomFormat
 		Channel.getSetting 'base', 'dummyCustomMessage', defer err, dummyCustomMessage
 
-	if user?
+	if data.user?
 		Viewer = new Mikuia.Models.Channel data.user.username
 		await Viewer.getDisplayName defer err, viewerDisplayName
 	else
@@ -61,7 +61,7 @@ Mikuia.Events.on 'base.dummy', (data) =>
 		color: data.user.color
 		displayName: viewerDisplayName
 		message: data.message
-		username: data.user.username
+		username: if data.user? then data.user.username else ''
 
 	if data.settings._target == 'twitch'
 		if dummyCustomFormat

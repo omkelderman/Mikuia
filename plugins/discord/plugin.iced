@@ -34,6 +34,8 @@ if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.t
 				if twitchUser?
 					user =
 						username: twitchUser
+						color: '#ffffff'
+						subscriber: false
 				else
 					user = null
 
