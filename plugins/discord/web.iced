@@ -61,11 +61,11 @@ Mikuia.Web.get '/auth/discord/callback', (req, res, next) =>
 					access_token: token.token.access_token
 				, defer err3, connectionData
 			
-			if !err2 and !err3
+			if !err2
 				twitchChannels = 0
 				twitchIndex = null
 
-				if connectionData?
+				if !err3 and connectionData?
 					for connection, i in connectionData
 						if connection.type == 'twitch'
 							twitchChannels++
