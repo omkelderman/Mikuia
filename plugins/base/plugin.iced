@@ -50,7 +50,7 @@ Mikuia.Events.on 'base.dummy', (data) =>
 		Channel.getSetting 'base', 'dummyCustomFormat', defer err, dummyCustomFormat
 		Channel.getSetting 'base', 'dummyCustomMessage', defer err, dummyCustomMessage
 
-	if data.user?
+	if data.user.username?
 		Viewer = new Mikuia.Models.Channel data.user.username
 		await Viewer.getDisplayName defer err, viewerDisplayName
 	else
