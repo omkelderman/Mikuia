@@ -61,7 +61,7 @@ if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.t
 					message: '**[' + data.channel + ']** ' + data.message
 
 	Mikuia.Events.on 'mikuia.command.failure', (data) =>
-		switch data.source
+		switch data.settings._target
 			when 'discord'
 				if data.details?.discordChannelId? and data.details?.discordUserId
 					discord.sendMessage

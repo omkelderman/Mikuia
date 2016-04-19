@@ -190,7 +190,7 @@ class exports.Chat
 							Mikuia.Events.emit command, {user, to, message, tokens, settings, details}
 							Channel.trackIncrement 'commands', 1
 						else
-							Mikuia.Events.emit 'mikuia.command.failure', {user, to, message, settings._target, tokens, settings, details}
+							Mikuia.Events.emit 'mikuia.command.failure', {user, to, message, tokens, settings, details}
 
 					else
 						reasons.push 'disabled'
