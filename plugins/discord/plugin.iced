@@ -71,4 +71,4 @@ if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.t
 			when 'discord_private'
 				discord.sendMessage
 					to: data.details.discordUserId
-					message: '<@' + data.details.discordUserId + '>: You need to link your account on ' + Mikuia.settings.plugins.discord.callbackBasePath + '/auth/discord to use this command.'
+					message: '**[' + data.channel + ']** You need to link your account on ' + Mikuia.settings.plugins.discord.callbackBasePath + '/auth/discord to use this command.'
