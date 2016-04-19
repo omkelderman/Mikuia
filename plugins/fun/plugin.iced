@@ -158,7 +158,7 @@ Mikuia.Events.on 'fun.1v1', (data) =>
 					challenges[Channel.getName()][Attacker.getName()][Defender.getName()] = true
 
 Mikuia.Events.on 'fun.roll', (data) =>
-	if user?
+	if data.user?
 		Channel = new Mikuia.Models.Channel data.user.username
 		await Channel.getDisplayName defer err, displayName
 	else
