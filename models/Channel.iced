@@ -96,7 +96,7 @@ class exports.Channel extends Mikuia.Model
 		isAllowed = true
 		reasons = []
 
-		if !user? && ((settings?._minLevel && parseInt(settings._minLevel) > 0) || settings?._onlyMods || settings?._onlySubs || settings?._onlyBroadcaster || (settings?._coinCost && parseInt(settings_.coinCost) > 0))
+		if !user? && ((settings?._minLevel && parseInt(settings._minLevel) > 0) || settings?._onlyMods || settings?._onlySubs || settings?._onlyBroadcaster || (settings?._coinCost && parseInt(settings._coinCost) > 0))
 			isAllowed = false
 			reasons.push 'anonymous'
 
