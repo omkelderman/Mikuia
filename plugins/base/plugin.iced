@@ -54,7 +54,7 @@ Mikuia.Events.on 'base.dummy', (data) =>
 		Viewer = new Mikuia.Models.Channel data.user.username
 		await Viewer.getDisplayName defer err, viewerDisplayName
 	else
-		viewerDisplayName = '<Anonymous>'
+		viewerDisplayName = '<anonymous>'
 
 	dummyMessage = Mikuia.Format.parse data.settings.message,
 		args: args

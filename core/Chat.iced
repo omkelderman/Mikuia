@@ -183,6 +183,8 @@ class exports.Chat
 						if user? or (!user? and handler.anonymous)
 							if !user?
 								user =
+									color: '#ffffff'
+									displayName: '<anonymous>'
 									username: null
 
 							Mikuia.Events.emit command, {user, to, message, tokens, settings, details}
