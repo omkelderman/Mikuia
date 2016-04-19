@@ -166,7 +166,7 @@ class exports.Chat
 		if isBanned then reasons.push 'banned'
 
 		if command?
-			if not reasons.length
+			if not reasons.length or (reasons.length == 1 and reasons[0] == 'anonymous')
 				handler = @Mikuia.Plugin.getHandler command
 
 				if handler?.plugin?
