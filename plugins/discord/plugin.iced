@@ -17,6 +17,10 @@ if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.t
 	discord.on 'ready', (rawEvent) ->
 		Mikuia.Log.info cli.blueBright('Discord') + ' / ' + cli.whiteBright('Connected to Discord.')
 
+		discord.setPresence
+			idle_since: null
+			game: 'discord.mikuia.tv'
+
 	discord.on 'message', (user, userId, channelId, message, rawEvent) =>
 		serverId = discord.serverFromChannel channelId
 
