@@ -4,7 +4,7 @@ addDummy = (username, channel, tokens, target, details) =>
 	Channel = new Mikuia.Models.Channel channel
 
 	if tokens.length == 1 || tokens.length == 2
-		Mikuia.Chat.handleResponse username, channel, 'You failed.', target
+		Mikuia.Chat.handleResponse username, channel, 'You failed.', target, details
 	else if tokens.length > 2
 		command = tokens[1]
 		message = ''
@@ -25,7 +25,7 @@ removeCommand = (username, channel, tokens, target, details) =>
 	Channel = new Mikuia.Models.Channel channel
 
 	if tokens.length == 1 || tokens.length > 2
-		Mikuia.Chat.handleResponse username, channel, 'Fail.', target
+		Mikuia.Chat.handleResponse username, channel, 'Fail.', target, details
 	else if tokens.length == 2
 		command = tokens[1]
 		message = ''
@@ -164,7 +164,7 @@ Mikuia.Events.on 'mikuia.message', (from, to, message, target, details) =>
 
 					when 'dummy'
 						if isMod
-							addDummy username, to, tokens.slice(1), target
+							addDummy username, to, tokens.slice(1), target, details
 
 					when 'emit'
 						if isAdmin
@@ -228,7 +228,7 @@ Mikuia.Events.on 'mikuia.message', (from, to, message, target, details) =>
 
 					when 'remove'
 						if isMod
-							removeCommand from.username, to, tokens.slice(1), target
+							removeCommand from.username, to, tokens.slice(1), target, details
 
 					when 'say'
 						if isAdmin
