@@ -474,10 +474,11 @@ class exports.Chat
 
 		client.on 'disconnected', (reason) =>
 			@Mikuia.Log.error cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch chat. Attempting to reconnect. Reason: ' + reason)
-			for channel in @clientJoins[client.id]
-				@channelClients.splice @channelClients.indexOf(channel), 1
-				@joined.splice @joined.indexOf(channel), 1
-				@clientJoins[client.id] = []
+			if @clientJoins[client.id]?
+				for channel in @clientJoins[client.id]
+					@channelClients.splice @channelClients.indexOf(channel), 1
+					@joined.splice @joined.indexOf(channel), 1
+					@clientJoins[client.id] = []
 
 		client.on 'join', (channel, username) =>
 			if username == @Mikuia.settings.bot.name.toLowerCase()
