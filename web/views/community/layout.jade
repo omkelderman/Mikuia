@@ -41,7 +41,7 @@ html
 							a(href='/supporter', class=(path == '/supporter' ? 'active' : undefined), name='supporter') Supporter
 							a(href='/leagues', class=(path.indexOf('/leagues') == 0 ? 'active' : undefined), name='leagues') Leagues
 							a(href='https://p.datadoghq.com/sb/AF-ona-ccd2288b29', name='status') Status
-							a(href='#', name='community') Community
+							a(href='/contribute', name='contribute') Contribute
 							a.mikuia-search(href='#') Search
 						.mikuia-navbar-title
 							span
@@ -73,11 +73,8 @@ html
 								a(href='/supporter') Buy Supporter
 							span(name='status')
 								a(href='https://p.datadoghq.com/sb/AF-ona-ccd2288b29') Check Status
-							span(name='community')
-								a(href='https://discord.gg/0t3jc6KW0MJnHNcM') Discord
-								a(href='http://community.mikuia.tv') Forums
-								a(href='https://github.com/Mikuia/Mikuia') GitHub
-								a(href='https://twitter.com/MikuiaBot') Twitter
+							span(name='contribute')
+								a(href='/contribute') Contribute
 						.mikuia-navbar-search
 							form#search-bar(role='search', style='display: none;')
 								.form-group
@@ -116,7 +113,7 @@ html
 					.col-md-3.align-right
 						small.text-muted
 							b Art by 
-							a(href='http://pixiv.me/cillia') cillia 
+							a(href='http://howlingneko.deviantart.com') HowlingNeko 
 							|  <3
 					.col-md-3.align-right
 						small.text-muted
