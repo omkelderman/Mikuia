@@ -181,6 +181,7 @@ Mikuia.Events.on 'lol.stats.ranked.champion', (data) =>
 		if not err and summonerData?[name]?.id?
 			await client.getRankedStatsForSummoner summonerData[name].id,
 				region: region
+				season: 'SEASON2016'
 			, defer err, stats
 
 			if not err and stats?.champions?
