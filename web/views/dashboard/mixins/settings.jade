@@ -137,9 +137,9 @@ mixin setting(setting, settingName, userSettings)
 			when 'number'
 				.form-group.form-md-line-input
 					if userSettings && userSettings[settingName]
-						input.form-control(type='number', id=settingName, name=settingName, placeholder=setting.default, value=userSettings[settingName])
+						input.form-control(type='number', id=settingName, name=settingName, placeholder=setting.default, step=(setting.step ? setting.step : 1), value=userSettings[settingName])
 					else
-						input.form-control(type='number', id=settingName, name=settingName, placeholder=setting.default)
+						input.form-control(type='number', id=settingName, name=settingName, placeholder=setting.default, step=(setting.step ? setting.step : 1))
 					label(for=settingName)=setting.name
 					span.help-block=setting.description
 					.form-control-focus
