@@ -367,6 +367,35 @@ sendRequest = (Channel, user, username, map, message, target, details) =>
 				if (new Date()).getTime() < limits[Channel.getName()].maps[map.beatmapset_id] + (requestMapLimit * 1000)
 					continueRequest = false
 
+		await
+			Channel.getSetting 'osu', 'requestMinStars', defer err, requestMinStars
+			Channel.getSetting 'osu', 'requestMaxStars', defer err2, requestMaxStars
+		
+		if !err && !err2
+			requestMinStars = parseFloat requestMinStars
+			requestMaxStars = parseFloat requestMaxStars
+
+			if requestMinStars > parseFloat(map.difficultyrating)
+				continueRequest = false
+
+			if requestMaxStars < parseFloat(map.difficultyrating)
+				continueRequest = false
+
+		await Channel.getSetting 'osu', 'requestMinStatus', defer err, requestMinStatus
+		if !err
+
+			# 1 is Ranked, 2 is Approved - fuck you too, osu!
+			sensibleMappings =
+				"-2": 0
+				"-1": 1
+				"0": 2
+				"1": 5
+				"2": 4
+				"3": 3
+
+			if sensibleMappings[map.approved] < parseInt(requestMinStatus)
+				continueRequest = false
+
 		if continueRequest
 			await
 				Channel.getSetting 'osu', 'chatRequestFormat', defer err, chatRequestFormat

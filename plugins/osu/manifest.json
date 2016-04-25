@@ -116,6 +116,37 @@
 				"default": true,
 				"type": "boolean"
 			},
+			"requestMinStars": {
+				"name": "Minimum Stars",
+				"category": "Requests",
+				"description": "Minimum star rating for a request.",
+				"default": 0,
+				"type": "number",
+				"step": 0.01
+			},
+			"requestMaxStars": {
+				"name": "Maximum Stars",
+				"category": "Requests",
+				"description": "Maximum star rating for a request.",
+				"default": 10,
+				"type": "number",
+				"step": 0.01
+			},
+			"requestMinStatus": {
+				"name": "Minimal Approval Status",
+				"category": "Requests",
+				"description": "Minimal approval status for a request.",
+				"default": 0,
+				"type": "select",
+				"options": {
+					"0": "Graveyard",
+					"1": "WIP",
+					"2": "Pending",
+					"3": "Qualified",
+					"4": "Approved",
+					"5": "Ranked"
+				}
+			},
 			"requestMapLimit": {
 				"name": "Map Request Limit",
 				"category": "Requests",
