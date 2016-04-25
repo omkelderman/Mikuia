@@ -67,6 +67,10 @@ banchoSay = (name, message) =>
 				if match?
 					message = message.replace match[0], insertStars match[0].length
 					fs.appendFileSync 'logs/osu/' + name + '.txt', 'Mikuia: ' + cleanMessage + '\n'
+
+		if Mikuia.settings.bot.debug
+			Mikuia.Log.info cli.magentaBright('osu!') + cli.whiteBright(' / ') + cli.yellowBright('=> ' + name + ': ') + cli.whiteBright(message)
+
 		@bancho.say name, message
 
 checkForRequest = (user, Channel, message, target, details) =>
@@ -371,6 +375,12 @@ sendRequest = (Channel, user, username, map, message, target, details) =>
 
 			modValue = 0
 			modString = ''
+
+			if message.toLowerCase().indexOf('+v') > -1
+				modString += '+Video'
+
+			if message.toLowerCase().indexOf('+sb') > -1
+				modString += '+Storyboard'
 
 			if message.toLowerCase().indexOf('+dt') > -1
 				modValue += 64
