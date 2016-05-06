@@ -476,7 +476,7 @@ class exports.Chat
 			@Mikuia.Log.error cli.cyanBright('[' + client.id + ']') + ' / ' + cli.magenta('Twitch') + ' / ' + cli.whiteBright('Disconnected from Twitch chat. Attempting to reconnect. Reason: ' + reason)
 			if @clientJoins[client.id]?
 				for channel in @clientJoins[client.id]
-					@channelClients.splice @channelClients.indexOf(channel), 1
+					delete @channelClients[channel]
 					@joined.splice @joined.indexOf(channel), 1
 					@clientJoins[client.id] = []
 
