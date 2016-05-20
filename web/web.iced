@@ -50,6 +50,9 @@ twitchStrategy.authorizationParams = => { force_verify: true }
 
 passport.use twitchStrategy
 
+if opbeat?
+	app.use opbeat.middleware.express()
+
 if Mikuia.settings.sentry.enable
 	raven = require 'raven'
 	app.use raven.middleware.express Mikuia.settings.sentry.dsn
