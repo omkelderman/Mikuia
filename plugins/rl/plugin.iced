@@ -40,8 +40,6 @@ playlistNames = {
 	'13': 'standard'
 }
 
-console.log Mikuia.settings.plugins.rl.token
-
 Mikuia.Events.on 'rl.player', (data) =>
 	Channel = new Mikuia.Models.Channel data.to
 	await
@@ -52,37 +50,28 @@ Mikuia.Events.on 'rl.player', (data) =>
 		await
 			Channel.getSetting 'rl', 'platform', defer err, platform
 			Channel.getSetting 'rl', 'name', defer err, name
-			Channel.getSetting 'rl', 'season', defer err, season
-
-		console.log platform
-		console.log name
 
 		await client.getPlayer name, parseInt(platform), defer status, player
 		if status == 200
-			if player.rankedSeasons[season]?
+			if player.rankedSeasons[data.settings.season]?
 				console.log player
 				console.log player.rankedSeasons['1']
 
 				stats = player.stats
 
 				for playlistId, playlistName of playlistNames
-					if player.rankedSeasons[season][playlistId].rankPoints?
-						stats[playlistName + 'RankPoints'] = player.rankedSeasons[season][playlistId].rankPoints
-						if season == '2'
-							stats[playlistName + 'Matches'] = player.rankedSeasons[season][playlistId].matchesPlayed
-							stats[playlistName + 'Tier'] = player.rankedSeasons[season][playlistId].tier
-							stats[playlistName + 'Division'] = player.rankedSeasons[season][playlistId].division
-							stats[playlistName + 'TierName'] = tierNames[player.rankedSeasons[season][playlistId].tier]
-							stats[playlistName + 'DivisionName'] = divisionNames[player.rankedSeasons[season][playlistId].division]
+					if player.rankedSeasons[data.settings.season][playlistId].rankPoints?
+						stats[playlistName + 'RankPoints'] = player.rankedSeasons[data.settings.season][playlistId].rankPoints
+						if data.settings.season == '2'
+							stats[playlistName + 'Matches'] = player.rankedSeasons[data.settings.season][playlistId].matchesPlayed
+							stats[playlistName + 'Tier'] = player.rankedSeasons[data.settings.season][playlistId].tier
+							stats[playlistName + 'Division'] = player.rankedSeasons[data.settings.season][playlistId].division
+							stats[playlistName + 'TierName'] = tierNames[player.rankedSeasons[data.settings.season][playlistId].tier]
+							stats[playlistName + 'DivisionName'] = divisionNames[player.rankedSeasons[data.settings.season][playlistId].division]
+					else
+						player.rankedSeasons[data.settings.season][playlistId].rankPoints = 0
 
-				message = Mikuia.Format.parse data.settings.format,
-					wins: stats.wins
-					goals: stats.goals
-					mvps: stats.mvps
-					saves: stats.saves
-					shots: stats.shots
-					assists: stats.assists
-
+				message = Mikuia.Format.parse data.settings.format, stats
 				Mikuia.Chat.handleResponse data.user.username, Channel.getName(), message, data.settings._target, data.details
 		else
 			console.log 'fail'
