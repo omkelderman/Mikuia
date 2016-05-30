@@ -1,0 +1,64 @@
+{
+	"name": "Rocket League",
+	"description": "Plugin for Rocket League (using RocketLeagueStats API)",
+	"baseFile": "plugin.iced",
+	"hidden": false,
+	"handlers": {
+		"rl.player": {
+			"description": "Shows the stats of a player.",
+			"anonymous": true,
+			"settings": {
+				"format": {
+					"name": "Output Format",
+					"description": "Format of the command output.",
+					"default": "{{wins}} wins!",
+					"type": "format",
+					"variables": {
+						"wins": "Wins",
+						"goals": "Goals",
+						"mvps": "MVPs",
+						"saves": "Saves",
+						"shots": "Shots",
+						"assists": "Assists"
+					}
+				},
+				"season": {
+					"name": "Season",
+					"description": "Season for the ranked stats.",
+					"default": "2",
+					"type": "select",
+					"options": {
+						"1": "Season 1",
+						"2": "Season 2"
+					}
+				}
+			}
+		}
+	},
+	"settings": {
+		"channel": {
+			"platform": {
+				"name": "Platform",
+				"category": "Account",
+				"description": "The platform to check.",
+				"default": "",
+				"type": "select",
+				"options": {
+					"1": "Steam",
+					"2": "PlayStation Network",
+					"3": "Xbox Live"
+				}
+			},
+			"name": {
+				"name": "Player Name",
+				"category": "Account",
+				"description": "SteamID64/customURL, PSN name or Xbox Live gamertag.",
+				"default": "",
+				"type": "text"
+			}
+		},
+		"server": {
+			"token": "RLS_API_KEY"
+		}
+	}
+}
