@@ -28,7 +28,6 @@ bot.on 'logOnResponse', (response) ->
 	console.log response
 	if response.eresult == Steam.EResult.OK
 		friends.setPersonaState Steam.EPersonaState.Online
-		friends.setPersonaName Mikuia.settings.bot.name
 
 		Mikuia.Events.emit 'steam.connected'
 
