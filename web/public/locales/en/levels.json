@@ -14,6 +14,8 @@
 	"randomChannels": "Random Channels",
 	"randomize": "Randomize",
 	"user": {
+		"failure": "That user does not exist.",
+		"failureDescription": "Can't check the levels of a person that does not exist!<br />You can try creating a person and then try again.<br />Please be careful.",
 		"title": "{{username}}'s Levels"
 	}
 }

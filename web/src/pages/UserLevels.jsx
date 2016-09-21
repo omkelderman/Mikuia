@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import React from 'react'
 import $ from 'jquery'
 import {Col, Grid, Row} from 'react-bootstrap'
+import {translate, Interpolate} from 'react-i18next'
 
 import Card from '../components/community/Card'
 import CardBlock from '../components/community/CardBlock'
@@ -122,6 +123,7 @@ var UserLevels = React.createClass({
 	},
 
 	render: function() {
+		const {t} = this.props
 		return (
 			<Grid>
 				<Choose>
@@ -129,7 +131,9 @@ var UserLevels = React.createClass({
 						<div className="mikuia-page-padding">
 							<Row>
 								<Col md={8}>
-									<h1 className="mikuia-page-header-text text-white">{this.state.user.displayName}'s Levels</h1>
+									<h1 className="mikuia-page-header-text text-white">
+										<Interpolate i18nKey='levels:user.title' username={this.state.user.displayName} />
+									</h1>
 								</Col>
 							</Row>
 
@@ -138,15 +142,15 @@ var UserLevels = React.createClass({
 									<For each="user" index="i" of={this.state.shownLevels}>
 										<Card ranking key={user.username}>
 											<CardBlock flexBasis={250}>
-												<CardBlockUser username={user.username} link={"/levels/" + user.username} postfix=" Level" />
+												<CardBlockUser username={user.username} link={"/levels/" + user.username} />
 											</CardBlock>
 
-											<CardBlock flexBasis={150} alignRight title="Experience" value={Tools.commas(user.experience)} />
-											<CardBlockSource flexBasis={150} alignRight title="Rank" url={"/api/user/" + this.props.params.username + "/levels/" + user.username} value="rank" prefix="#" link={"/levels/" + user.username}/>
-											<CardBlock flexBasis={70} alignRight title="Level">
+											<CardBlock flexBasis={150} alignRight title={t('levels:leaderboard.experience')} value={Tools.commas(user.experience)} />
+											<CardBlockSource flexBasis={150} alignRight title={t('levels:leaderboard.rank')} url={"/api/user/" + this.props.params.username + "/levels/" + user.username} value="rank" prefix="#" link={"/levels/" + user.username}/>
+											<CardBlock flexBasis={70} alignRight title={t('levels:leaderboard.level')}>
 												<LevelCircle experience={user.experience} />
 											</CardBlock>
-											<CardBlock flexBasis={100} alignRight title="Progress" value={Tools.getLevelProgress(user.experience) + "%"} />
+											<CardBlock flexBasis={100} alignRight title={t('levels:leaderboard.progress')} value={Tools.getLevelProgress(user.experience) + "%"} />
 										</Card>
 									</For>
 									<If condition={this.state.loading}>
@@ -162,15 +166,9 @@ var UserLevels = React.createClass({
 					</When>
 					<Otherwise>
 						<ErrorPage>
-							<h3>That user does not exist.</h3>
+							<h3>{t('levels:user.failure')}</h3>
 							<br />
-							<p>
-								Can't check the levels of a person that does not exist!
-								<br />
-								You can try creating a person and then try again.
-								<br />
-								Please be careful.
-							</p>
+							<p><Interpolate i18nKey='levels:user.failureDescription' useDangerouslySetInnerHTML={true} /></p>
 						</ErrorPage>
 					</Otherwise>
 				</Choose>
@@ -180,4 +178,4 @@ var UserLevels = React.createClass({
 
 })
 
-export default UserLevels
+export default translate('levels', {wait: true})(UserLevels)
