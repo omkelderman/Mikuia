@@ -103,3 +103,4 @@ module.exports = (req, res) ->
 			totalExperience: totalExperience
 			totalRank: totalRank + 1
 			userCount: userCount
+0Looking

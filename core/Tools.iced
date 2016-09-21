@@ -41,7 +41,7 @@ class exports.Tools
 		data = _.shuffle data.slice 0
 		while array.length < size
 			randomEntry = data[Math.round(Math.random() * data.length)]
-			if randomEntry?
+			if randomEntry? and array.indexOf(randomEntry) == -1
 				array.push randomEntry
 		return array
 
