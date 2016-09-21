@@ -24,7 +24,7 @@ var NotFoundPage = React.createClass({
 		return (
 			<div>
 				<ErrorPage>
-					<h3>{t('common:error.routeNotFound')</h3>
+					<h3>{t('common:error.routeNotFound')}</h3>
 					<br />
 					<p>
 						<Interpolate i18nKey='common:error.routeNotFoundDescription' useDangerouslySetInnerHTML={true} />
