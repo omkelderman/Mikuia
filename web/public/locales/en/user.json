@@ -1,0 +1,18 @@
+{
+	"error": {
+		"title": "That user does not exist.",
+		"description": "I don't know what happened to them.<br />Maybe they never existed in the first place?<br />Sorry for not being able to help you."
+	},
+	"nav": {
+		"activity": "Activity",
+		"commands": "Commands",
+		"statistics": "Statistics"
+	},
+	"profile": {
+		"level": "Level",
+		"channelsWatched": "channel watched",
+		"channelsWatched_plural": "channels watched",
+		"uniqueViewers": "unique viewer",
+		"uniqueViewers_plural": "unique viewers"
+	}
+}

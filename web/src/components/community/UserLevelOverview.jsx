@@ -1,5 +1,6 @@
 import React from 'react'
 import $ from 'jquery'
+import {translate} from 'react-i18next'
 
 import {LinkContainer} from 'react-router-bootstrap'
 
@@ -38,6 +39,7 @@ var UserLevelOverview = React.createClass({
 	},
 
 	render: function() {
+		const {t} = this.props
 		return (
 			<div>
 				<If condition={!this.state.loading && this.state.levels.length > 0}>
@@ -45,7 +47,7 @@ var UserLevelOverview = React.createClass({
 						<span>
 							<i className="fa fa-star"></i>&nbsp; 
 							<a>
-								{Tools.commas(this.state.levels.length)} channels watched
+								{Tools.commas(this.state.levels.length)} {t('user:profile.channelsWatched', {count: this.state.levels.length})}
 							</a>
 						</span>
 					</LinkContainer>
@@ -69,4 +71,4 @@ var UserLevelOverview = React.createClass({
 
 })
 
-export default UserLevelOverview
+export default translate('user', {wait: true})(UserLevelOverview)

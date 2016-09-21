@@ -1,5 +1,6 @@
 import React from 'react'
 import $ from 'jquery'
+import {translate} from 'react-i18next'
 
 import {LinkContainer} from 'react-router-bootstrap'
 
@@ -40,6 +41,7 @@ var ChannelLevelOverview = React.createClass({
 	},
 
 	render: function() {
+		const {t} = this.props
 		return (
 			<div>
 				<If condition={!this.state.loading && this.state.total > 0}>
@@ -47,7 +49,7 @@ var ChannelLevelOverview = React.createClass({
 						<span>
 							<i className="fa fa-user"></i>&nbsp; 
 							<a>
-								{Tools.commas(this.state.total)} unique viewers
+								{Tools.commas(this.state.total)} {t('user:profile.uniqueViewers', {count: this.state.total})}
 							</a>
 						</span>
 					</LinkContainer>
@@ -71,4 +73,4 @@ var ChannelLevelOverview = React.createClass({
 
 })
 
-export default ChannelLevelOverview
+export default translate('user', {wait: true})(ChannelLevelOverview)

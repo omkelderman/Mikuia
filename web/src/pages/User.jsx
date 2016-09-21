@@ -1,6 +1,7 @@
 import classNames from 'classnames'
 import React from 'react'
 import $ from 'jquery'
+import {translate, Interpolate} from 'react-i18next'
 
 import {AutoAffix} from 'react-overlays'
 import {Col, Grid, Row, Tab, Tabs} from 'react-bootstrap'
@@ -78,6 +79,7 @@ var User = React.createClass({
 	},
 
 	render: function() {
+		const {t} = this.props
 		return (
 			<div>
 				<Choose>
@@ -97,9 +99,9 @@ var User = React.createClass({
 														</ul>
 													</If>
 													<ul className="mikuia-profile-nav-tabs">
-														<li className={classNames({"active": this.state.activeTab == "activity", "disabled": true})}><i className="fa fa-th-list"></i>&nbsp; Activity</li>
-														<li onClick={() => this.changeTab("commands")} className={classNames({"active": this.state.activeTab == "commands"})}><i className="fa fa-wrench"></i>&nbsp; Commands</li>
-														<li className={classNames({"active": this.state.activeTab == "statistics", "disabled": true})}><i className="fa fa-bar-chart"></i>&nbsp; Statistics</li>
+														<li className={classNames({"active": this.state.activeTab == "activity", "disabled": true})}><i className="fa fa-th-list"></i>&nbsp; {t('user:nav.activity')}</li>
+														<li onClick={() => this.changeTab("commands")} className={classNames({"active": this.state.activeTab == "commands"})}><i className="fa fa-wrench"></i>&nbsp; {t('user:nav.commands')}</li>
+														<li className={classNames({"active": this.state.activeTab == "statistics", "disabled": true})}><i className="fa fa-bar-chart"></i>&nbsp; {t('user:nav.statistics')}</li>
 													</ul>
 												</Col>
 											</Row>
@@ -114,7 +116,7 @@ var User = React.createClass({
 											<img className="mikuia-profile-avatar" src={this.state.user.logo} width="220" height="220" />
 											<h2>{this.state.user.displayName}</h2>
 
-											Level <LevelCircle experience={this.state.user.experience} />
+											{t('user:profile.level')} <LevelCircle experience={this.state.user.experience} />
 											<br />
 											<br />
 											<If condition={this.state.user.bio && this.state.user.bio != 'null' && this.state.user.bio != 'undefined'}>
@@ -160,14 +162,10 @@ var User = React.createClass({
 					</When>
 					<Otherwise>
 						<ErrorPage>
-							<h3>That user does not exist.</h3>
+							<h3>{t('user:error.title')}</h3>
 							<br />
 							<p>
-								I don't know what happened to them.
-								<br />
-								Maybe they never existed in the first place?
-								<br />
-								Sorry for not being able to help you.
+								<Interpolate i18nKey='user:error.description' useDangerouslySetInnerHTML={true} />
 							</p>
 						</ErrorPage>
 
@@ -179,4 +177,4 @@ var User = React.createClass({
 
 })
 
-export default User
+export default translate('user', {wait: true})(User)
