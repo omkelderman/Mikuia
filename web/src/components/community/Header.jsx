@@ -1,5 +1,6 @@
 import classNames from 'classnames'
 import React from 'react'
+import { translate } from 'react-i18next'
 
 import {Col, Grid, Nav, Navbar, NavItem, Row} from 'react-bootstrap'
 import {LinkContainer} from 'react-router-bootstrap'
@@ -13,6 +14,7 @@ var Header = React.createClass({
 	},
 
 	render: function() {
+		const {t} = this.props
 		return (
 			<span id="header">
 				<Choose>
@@ -37,26 +39,25 @@ var Header = React.createClass({
 						<div className="mikuia-navbar-lines-left">
 							<div className="mikuia-navbar-links">
 								<LinkContainer to="/home">
-									<a>Home</a>
+									<a>{t('header:link.home')}</a>
 								</LinkContainer>
 								<LinkContainer to="/streams">
-									<a>Streams</a>
+									<a>{t('header:link.streams')}</a>
 								</LinkContainer>
 								<LinkContainer to="/levels">
-									<a>Levels</a>
+									<a>{t('header:link.levels')}</a>
 								</LinkContainer>
 								<LinkContainer to="#">
-									<a>Guides</a>
+									<a>{t('header:link.guides')}</a>
 								</LinkContainer>
 								<LinkContainer to="/supporter">
-									<a>Supporter</a>
+									<a>{t('header:link.supporter')}</a>
 								</LinkContainer>
 								<LinkContainer to="/leagues">
-									<a>Leagues</a>
+									<a>{t('header:link.leagues')}</a>
 								</LinkContainer>
-								<a href="https://p.datadoghq.com/sb/AF-ona-ccd2288b29">Status</a>
+								<a href="https://p.datadoghq.com/sb/AF-ona-ccd2288b29">{t('header:link.status')}</a>
 							</div>
-
 							<div className="mikuia-navbar-title">
 								<span>
 									<span>Mikuia.tv</span>
@@ -110,4 +111,4 @@ var Header = React.createClass({
 	}
 })
 
-export default Header
+export default translate('header', {wait: true})(Header)
