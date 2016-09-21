@@ -1,6 +1,7 @@
 import React from 'react'
 import {LinkContainer} from 'react-router-bootstrap'
 import {Button, Col, Row} from 'react-bootstrap'
+import {translate, Interpolate} from 'react-i18next'
 
 import ErrorPage from '../components/community/ErrorPage'
 
@@ -19,15 +20,14 @@ var NotFoundPage = React.createClass({
 	},
 
 	render: function() {
+		const {t} = this.props
 		return (
 			<div>
 				<ErrorPage>
-					<h3>Route not found.</h3>
+					<h3>{t('common:error.routeNotFound')</h3>
 					<br />
 					<p>
-						I'm not sure what you're looking for, but it doesn't exist.
-						<br />
-						Seriously, don't do that again.
+						<Interpolate i18nKey='common:error.routeNotFoundDescription' useDangerouslySetInnerHTML={true} />
 					</p>
 				</ErrorPage>
 			</div>
@@ -36,4 +36,4 @@ var NotFoundPage = React.createClass({
 
 })
 
-export default NotFoundPage
+export default translate('common', {wait: true})(NotFoundPage)
