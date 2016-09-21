@@ -122,7 +122,7 @@ app.use passport.session()
 # fs.mkdirs 'web/public/img/avatars'
 
 routeList =
-	api: '/web/routes/api'
+	api: 'web/routes/api'
 	community: 'web/routes/community'
 	dashboard: 'web/routes/dashboard'
 
