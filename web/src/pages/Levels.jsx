@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import React from 'react'
 import $ from 'jquery'
 import {Button, Col, Grid, OverlayTrigger, Row, Tooltip} from 'react-bootstrap'
+import {translate} from 'react-i18next'
 
 import Card from '../components/community/Card'
 import CardBlock from '../components/community/CardBlock'
@@ -41,6 +42,7 @@ var Levels = React.createClass({
 	},
 
 	render: function() {
+		const {t} = this.props
 		return (
 			<div>
 				<Grid>
@@ -48,11 +50,11 @@ var Levels = React.createClass({
 						<Col md={9}>
 
 							<h1 className="mikuia-page-header-text">
-								Random Channels
+								{t('levels:randomChannels')}
 
 								<div className="pull-right">
 									<OverlayTrigger placement="top" overlay={
-										<Tooltip id="tooltip-randomize">Randomize</Tooltip>
+										<Tooltip id="tooltip-randomize">{t('levels:randomize')}</Tooltip>
 									}>
 										<Button bsStyle="default" disabled={this.state.loading} onClick={this.poll}><i className={classNames({"fa fa-refresh": true, "fa-spin": this.state.loading})}></i></Button>
 									</OverlayTrigger>
@@ -64,19 +66,19 @@ var Levels = React.createClass({
 								<For each="channel" of={this.state.channels}>
 									<Card key={channel.username}>
 										<CardBlock flexBasis={300}>
-											<CardBlockUser username={channel.username} link={"/levels/" + channel.username} postfix=" Levels" />
+											<CardBlockUser username={channel.username} link={"/levels/" + channel.username} />
 										</CardBlock>
 
-										<CardBlock flexBasis={125} alignRight title="Unique Viewers" value={channel.users.toString()} />
-										<CardBlock flexBasis={125} alignRight title="Your Rank" value="-" />
-										<CardBlock flexBasis={125} alignRight title="Your Level" value="-" />
-										<CardBlock flexBasis={125} alignRight title="Progress" value="-" />
+										<CardBlock flexBasis={125} alignRight title={t('levels:leaderboard.uniqueViewers')} value={channel.users.toString()} />
+										<CardBlock flexBasis={125} alignRight title={t('levels:leaderboard.yourRank')} value="-" />
+										<CardBlock flexBasis={125} alignRight title={t('levels:leaderboard.yourLevel')} value="-" />
+										<CardBlock flexBasis={125} alignRight title={t('levels:leaderboard.progress')} value="-" />
 
 									</Card>
 								</For>
 							</div>
 							<If condition={this.state.channels.length == 0}>
-								<span className="text-muted"><i className="fa fa-spinner fa-spin"></i> Loading...</span>
+								<span className="text-muted"><i className="fa fa-spinner fa-spin"></i> {t('common:loading3dots')}</span>
 							</If>
 						</Col>
 					</Row>
@@ -87,4 +89,4 @@ var Levels = React.createClass({
 
 })
 
-export default Levels
+export default translate('levels', {wait: true})(Levels)

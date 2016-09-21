@@ -1,0 +1,19 @@
+{
+	"channel": {
+		"title": "{{username}} Levels"
+	},
+	"leaderboard": {
+		"experience": "Experience",
+		"level": "Level",
+		"progress": "Progress",
+		"rank": "Rank",
+		"uniqueViewers": "Unique Viewers",
+		"yourLevel": "Your Level",
+		"yourRank": "Your Rank"
+	},
+	"randomChannels": "Random Channels",
+	"randomize": "Randomize",
+	"user": {
+		"title": "{{username}}'s Levels"
+	}
+}

@@ -2,6 +2,7 @@ import classNames from 'classnames'
 import React from 'react'
 import $ from 'jquery'
 import {Col, Grid, Row} from 'react-bootstrap'
+import {translate, Interpolate} from 'react-i18next'
 
 import Card from '../components/community/Card'
 import CardBlock from '../components/community/CardBlock'
@@ -99,12 +100,15 @@ var LevelsChannel = React.createClass({
 	},
 
 	render: function() {
+		const {t} = this.props
 		return (
 			<Grid>
 				<div className="mikuia-page-padding">
 					<Row>
 						<Col md={8}>
-							<h1 className="mikuia-page-header-text text-white">{this.state.user.displayName} Levels</h1>
+							<h1 className="mikuia-page-header-text text-white">
+								<Interpolate i18nKey="levels:channel.title" username={this.state.user.displayName} />
+							</h1>
 						</Col>
 					</Row>
 
@@ -112,17 +116,17 @@ var LevelsChannel = React.createClass({
 						<Col md={8} className="mikuia-page-card">
 							<For each="user" index="i" of={this.state.users}>
 								<Card ranking key={user.username}>
-									<CardBlock ranking flexBasis={80} title="Rank" value={"#" + (i + 1)} />
+									<CardBlock ranking flexBasis={80} title={t('levels:leaderboard.rank')} value={"#" + (i + 1)} />
 
 									<CardBlock flexBasis={300}>
 										<CardBlockUser username={user.username} />
 									</CardBlock>
 
-									<CardBlock flexBasis={150} alignRight title="Experience" value={Tools.commas(user.experience)} />
-									<CardBlock flexBasis={50} alignRight title="Level">
+									<CardBlock flexBasis={150} alignRight title={t('levels:leaderboard.experience')} value={Tools.commas(user.experience)} />
+									<CardBlock flexBasis={50} alignRight title={t('levels:leaderboard.level')}>
 										<LevelCircle experience={user.experience} />
 									</CardBlock>
-									<CardBlock flexBasis={70} alignRight title="Progress" value={Tools.getLevelProgress(user.experience) + "%"} />
+									<CardBlock flexBasis={70} alignRight title={t('levels:leaderboard.progress')} value={Tools.getLevelProgress(user.experience) + "%"} />
 								</Card>
 							</For>
 							<If condition={this.state.loading}>
@@ -141,4 +145,4 @@ var LevelsChannel = React.createClass({
 
 })
 
-export default LevelsChannel
+export default translate('levels', {wait: true})(LevelsChannel)
