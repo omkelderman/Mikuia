@@ -42,7 +42,7 @@ var Header = React.createClass({
 									<a>{t('header:link.home')}</a>
 								</LinkContainer>
 								<LinkContainer to="/streams">
-									<a>{t('header:link.streams')}</a>
+									<a>{t('header:link.channels')}</a>
 								</LinkContainer>
 								<LinkContainer to="/levels">
 									<a>{t('header:link.levels')}</a>
@@ -70,13 +70,13 @@ var Header = React.createClass({
 							<Authenticated>
 								<div className="mikuia-navbar-links">
 									<LinkContainer to={"/user/" + this.context.user.username}>
-										<a>Profile</a>
+										<a>{t('header:user.profile')}</a>
 									</LinkContainer>
 									<LinkContainer to="/settings">
-										<a>Settings</a>
+										<a>{t('header:user.settings')}</a>
 									</LinkContainer>
-									<a href="/dashboard">Dashboard</a>
-									<a href="/logout">Logout</a>
+									<a href="/dashboard">{t('header:user.dashboard')}</a>
+									<a href="/logout">{t('header:user.logout')}</a>
 								</div>
 								<div className="mikuia-navbar-title">
 									<span>
@@ -89,7 +89,7 @@ var Header = React.createClass({
 							
 							<NotAuthenticated>
 								<div className="mikuia-navbar-links mikuia-navbar-login-link">
-									<a href="/auth/twitch"><i className="fa fa-twitch" /> Login with Twitch</a>
+									<a href="/auth/twitch"><i className="fa fa-twitch" /> {t('header:login.twitch')}</a>
 								</div>
 							</NotAuthenticated>
 

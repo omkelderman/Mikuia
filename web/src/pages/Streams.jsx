@@ -1,17 +1,19 @@
 import React from 'react'
 import {Col, Grid, Row} from 'react-bootstrap'
+import {translate} from 'react-i18next'
 
 import StreamGrid from '../components/community/StreamGrid'
 
 var Streams = React.createClass({
 
 	render: function() {
+		const {t} = this.props
 		return (
 			<div>
 				<Grid>
 					<Row>
 						<Col md={12}>
-							<h1 className="mikuia-page-header-text">Streams</h1>
+							<h1 className="mikuia-page-header-text">{t('streams:title')}</h1>
 						</Col>
 					</Row>
 					<Row>
@@ -24,4 +26,4 @@ var Streams = React.createClass({
 
 })
 
-export default Streams
+export default translate('streams', {wait: true})(Streams)

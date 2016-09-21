@@ -1,9 +1,12 @@
 import classNames from 'classnames'
 import React from 'react'
 import $ from 'jquery'
+import { Interpolate } from 'react-i18next'
 
 import {Link} from 'react-router'
 import {Button, Col, Grid, Media, Row} from 'react-bootstrap'
+
+import i18n from '../../i18n'
 
 var Stream = React.createClass({
 
@@ -32,7 +35,7 @@ var Stream = React.createClass({
 			self.setState({
 				error: true,
 				stream: {
-					status: 'Error loading stream.'
+					status: i18n.t('streams:stream.error')
 				}
 			})
 		})
@@ -56,9 +59,11 @@ var Stream = React.createClass({
 							<div className="mikuia-stream-details-user">
 								<img className="mikuia-stream-details-user-avatar" src={this.state.stream.logo} width="16" height="16" />
 								<div className="mikuia-stream-details-user-name">
-									<span className="text-white">{this.state.stream.display_name}</span>
+									<span className="text-white">{this.state.stream.display_name} </span>
 									<If condition={this.state.stream.game}>
-										<small> playing {this.state.stream.game}</small>
+										<small>
+											<Interpolate i18nKey='streams:stream.playing' game={this.state.stream.game} />
+										</small>
 									</If>
 								</div>
 							</div>
