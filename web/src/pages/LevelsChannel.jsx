@@ -3,12 +3,14 @@ import React from 'react'
 import $ from 'jquery'
 import {Col, Grid, Row} from 'react-bootstrap'
 import {translate, Interpolate} from 'react-i18next'
+import {LinkContainer} from 'react-router-bootstrap'
 
 import Card from '../components/community/Card'
 import CardBlock from '../components/community/CardBlock'
 import CardBlockUser from '../components/community/CardBlockUser'
 import LevelCircle from '../components/community/LevelCircle'
 
+import {Authenticated, NotAuthenticated} from '../components/Auth'
 import Tools from '../tools'
 
 var LevelsChannel = React.createClass({
@@ -110,6 +112,14 @@ var LevelsChannel = React.createClass({
 								<Interpolate i18nKey="levels:channel.title" username={this.state.user.displayName} />
 							</h1>
 						</Col>
+						<Col md={4}>
+							<Authenticated>
+								<h1 className="mikuia-page-header-text text-white">{t('levels:sidebar.yourStats')}</h1>
+							</Authenticated>
+							<NotAuthenticated>
+								<h1 className="mikuia-page-header-text text-white">{t('levels:sidebar.tips.title')}</h1>
+							</NotAuthenticated>
+						</Col>
 					</Row>
 
 					<Row>
@@ -136,6 +146,64 @@ var LevelsChannel = React.createClass({
 									</CardBlock>
 								</Card>
 							</If>
+						</Col>
+						<Col md={4}>
+							<Authenticated>
+								<div className="mikuia-page-card mikuia-page-card-margin-3x">
+									<Card>
+										<CardBlock title={t('levels:leaderboard.rank')} value="#84" />
+										<CardBlock title={t('levels:leaderboard.experience')} value="8,126" />
+										<CardBlock title={t('levels:leaderboard.level')} value="19" />
+										<CardBlock title={t('levels:leaderboard.progress')} value="64%" />
+									</Card>
+								</div>
+								<h1 className="mikuia-page-header-text">{t('levels:sidebar.tips.title')}</h1>
+							</Authenticated>
+							<NotAuthenticated>
+								<div className="mikuia-page-card mikuia-page-card-margin">
+									<div className="mikuia-page-category-heading">{t('levels:sidebar.tips.outdatedInfo.title')}</div>
+									<p>{t('levels:sidebar.tips.outdatedInfo.description')}</p>
+								</div>
+							</NotAuthenticated>
+
+							<div className="mikuia-page-card mikuia-page-card-special mikuia-page-card-margin">
+								<a href="https://patreon.com/hatsuney">
+									<h3 className="mikuia-page-category-heading">{t('levels:sidebar.tips.patreon.title')}</h3>
+									<p><Interpolate i18nKey='levels:sidebar.tips.patreon.description' useDangerouslySetInnerHTML={true} /></p>
+								</a>
+							</div>
+
+							<div className="mikuia-page-card mikuia-page-card-margin">
+								<div className="mikuia-page-category-heading">{t('levels:sidebar.tips.bots.title')}</div>
+								<p>
+									{t('levels:sidebar.tips.bots.description')}
+									<br />
+									<a href="https://discord.gg/0t3jc6KW0MJnHNcM">{t('levels:sidebar.tips.bots.link')}</a>
+									<br />
+									<small className="text-muted">{t('levels:sidebar.tips.bots.disclaimer')}</small>
+								</p>
+							</div>
+
+							<div className="mikuia-page-card mikuia-page-card-margin">
+								<div className="mikuia-page-category-heading">{t('levels:sidebar.tips.accounts.title')}</div>
+								<p>
+									{t('levels:sidebar.tips.accounts.description')}
+									<br />
+									<LinkContainer to="/settings">
+										<a>{t('levels:sidebar.tips.accounts.link')}</a>
+									</LinkContainer>
+								</p>
+							</div>
+
+							<div className="mikuia-page-card mikuia-page-card-margin">
+								<div className="mikuia-page-category-heading">{t('levels:sidebar.tips.levels.title')}</div>
+								<p>{t('levels:sidebar.tips.levels.description')}</p>
+								<b>{t('levels:sidebar.tips.levels.descriptionTitle')}</b>
+								<ul><Interpolate i18nKey='levels:sidebar.tips.levels.list' useDangerouslySetInnerHTML={true} /></ul>
+							</div>
+
+
+
 						</Col>
 					</Row>
 				</div>
