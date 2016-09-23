@@ -135,12 +135,14 @@ var LevelsChannel = React.createClass({
 							</h1>
 						</Col>
 						<Col md={4}>
-							<Authenticated>
-								<h1 className="mikuia-page-header-text text-white">{t('levels:sidebar.yourStats')}</h1>
-							</Authenticated>
-							<NotAuthenticated>
-								<h1 className="mikuia-page-header-text text-white">{t('levels:sidebar.tips.title')}</h1>
-							</NotAuthenticated>
+							<Choose>
+								<When condition={this.context.auth && this.context.user.username != this.props.params.username}>
+									<h1 className="mikuia-page-header-text text-white">{t('levels:sidebar.yourStats')}</h1>
+								</When>
+								<Otherwise>
+									<h1 className="mikuia-page-header-text text-white">{t('levels:sidebar.tips.title')}</h1>
+								</Otherwise>
+							</Choose>
 						</Col>
 					</Row>
 
@@ -171,17 +173,19 @@ var LevelsChannel = React.createClass({
 						</Col>
 						<Col md={4}>
 							<Authenticated>
-								<div className="mikuia-page-card mikuia-page-card-margin-3x">
-									<Card>
-										<CardBlock title={t('levels:leaderboard.rank')} value={"#" + Tools.commas(this.state.stats.rank)} />
-										<CardBlock title={t('levels:leaderboard.experience')} value={Tools.commas(this.state.stats.experience)} />
-										<CardBlock title={t('levels:leaderboard.level')}>
-											<LevelCircle experience={this.state.stats.experience} />
-										</CardBlock>
-										<CardBlock title={t('levels:leaderboard.progress')} value={Tools.getLevelProgress(this.state.stats.experience) + "%"} />
-									</Card>
-								</div>
-								<h1 className="mikuia-page-header-text">{t('levels:sidebar.tips.title')}</h1>
+								<If condition={this.context.user.username != this.props.params.username}>
+									<div className="mikuia-page-card mikuia-page-card-margin-3x">
+										<Card>
+											<CardBlock title={t('levels:leaderboard.rank')} value={"#" + Tools.commas(this.state.stats.rank)} />
+											<CardBlock title={t('levels:leaderboard.experience')} value={Tools.commas(this.state.stats.experience)} />
+											<CardBlock title={t('levels:leaderboard.level')}>
+												<LevelCircle experience={this.state.stats.experience} />
+											</CardBlock>
+											<CardBlock title={t('levels:leaderboard.progress')} value={Tools.getLevelProgress(this.state.stats.experience) + "%"} />
+										</Card>
+									</div>
+									<h1 className="mikuia-page-header-text">{t('levels:sidebar.tips.title')}</h1>
+								</If>
 							</Authenticated>
 							<NotAuthenticated>
 								<div className="mikuia-page-card mikuia-page-card-margin">
@@ -225,8 +229,6 @@ var LevelsChannel = React.createClass({
 								<b>{t('levels:sidebar.tips.levels.descriptionTitle')}</b>
 								<ul><Interpolate i18nKey='levels:sidebar.tips.levels.list' useDangerouslySetInnerHTML={true} /></ul>
 							</div>
-
-
 
 						</Col>
 					</Row>
