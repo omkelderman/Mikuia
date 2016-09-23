@@ -14,6 +14,10 @@ import {Authenticated, NotAuthenticated} from '../components/Auth'
 import Tools from '../tools'
 
 var LevelsChannel = React.createClass({
+	contextTypes: {
+		auth: React.PropTypes.bool,
+		user: React.PropTypes.object
+	},
 
 	componentDidMount: function() {
 		var self = this
@@ -50,6 +54,7 @@ var LevelsChannel = React.createClass({
 				displayName: this.props.params.username,
 				logo: ''
 			},
+			stats: {},
 			offset: 0,
 			error: false,
 			loading: true
@@ -98,7 +103,24 @@ var LevelsChannel = React.createClass({
 			})
 		})
 
+		this.pollStats()
 		this.loadLevels(0)
+	},
+
+	pollStats: function() {
+		var self = this
+		console.log('pollStats, auth: ' + this.context.auth)
+		if(this.context.auth) {
+			$.get('/api/user/' + this.context.user.username + '/levels/' + this.props.params.username).success(function(data) {
+				self.setState({
+					stats: data
+				})
+			})
+		} else if(this.context.auth == null) {
+			setTimeout(function() {
+				self.pollStats()
+			}, 100)
+		}
 	},
 
 	render: function() {
@@ -151,10 +173,12 @@ var LevelsChannel = React.createClass({
 							<Authenticated>
 								<div className="mikuia-page-card mikuia-page-card-margin-3x">
 									<Card>
-										<CardBlock title={t('levels:leaderboard.rank')} value="#84" />
-										<CardBlock title={t('levels:leaderboard.experience')} value="8,126" />
-										<CardBlock title={t('levels:leaderboard.level')} value="19" />
-										<CardBlock title={t('levels:leaderboard.progress')} value="64%" />
+										<CardBlock title={t('levels:leaderboard.rank')} value={"#" + Tools.commas(this.state.stats.rank)} />
+										<CardBlock title={t('levels:leaderboard.experience')} value={Tools.commas(this.state.stats.experience)} />
+										<CardBlock title={t('levels:leaderboard.level')}>
+											<LevelCircle experience={this.state.stats.experience} />
+										</CardBlock>
+										<CardBlock title={t('levels:leaderboard.progress')} value={Tools.getLevelProgress(this.state.stats.experience) + "%"} />
 									</Card>
 								</div>
 								<h1 className="mikuia-page-header-text">{t('levels:sidebar.tips.title')}</h1>

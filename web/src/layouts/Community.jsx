@@ -36,7 +36,7 @@ var Community = React.createClass({
 
 	getInitialState: function() {
 		return {
-			auth: false,
+			auth: null,
 			header: {
 				background: null,
 				color: '#7a62d3',
