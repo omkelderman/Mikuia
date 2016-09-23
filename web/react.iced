@@ -77,49 +77,47 @@ app.use session
 app.use passport.initialize()
 app.use passport.session()
 # app.use express.vhost 'api.dev.mikuia.tv', require('./api').app
-# app.use (req, res, next) ->
-# 	res.locals.Mikuia = Mikuia
-# 	res.locals.moment = moment
-# 	res.locals.path = req.path
-# 	res.locals.user = req.user
+app.use (req, res, next) ->
+	res.locals.Mikuia = Mikuia
+	res.locals.moment = moment
+	res.locals.path = req.path
+	res.locals.user = req.user
 
-# 	isBanned = false
-# 	pages = []
-# 	tracker = {}
-# 	if req.user
-# 		Channel = new Mikuia.Models.Channel req.user.username
-# 		await Channel.isBanned defer err, isBanned
+	isBanned = false
+	pages = []
+	tracker = {}
+	if req.user
+		Channel = new Mikuia.Models.Channel req.user.username
+		await Channel.isBanned defer err, isBanned
 
-# 		if !isBanned and req.path.indexOf('/dashboard') == 0
-# 			await Channel.isLive defer err, isLive
+		if !isBanned and req.path.indexOf('/dashboard') == 0
+			await Channel.isLive defer err, isLive
 
-# 			if isLive
-# 				await
-# 					Channel.trackGet 'viewers', defer err, tracker.viewers
-# 					Channel.trackGet 'chatters', defer err, tracker.chatters
-# 			await Channel.trackGet 'commands', defer err, tracker.commands
-# 			await Channel.trackGet 'followers', defer err, tracker.followers
-# 			await Channel.trackGet 'messages', defer err, tracker.messages
-# 			await Channel.trackGet 'views', defer err, tracker.views
+			if isLive
+				await
+					Channel.trackGet 'viewers', defer err, tracker.viewers
+					Channel.trackGet 'chatters', defer err, tracker.chatters
+			await Channel.trackGet 'commands', defer err, tracker.commands
+			await Channel.trackGet 'followers', defer err, tracker.followers
+			await Channel.trackGet 'messages', defer err, tracker.messages
+			await Channel.trackGet 'views', defer err, tracker.views
 
-# 			pagePlugins = Mikuia.Element.getAll 'dashboardPagePlugin'
-# 			for pagePlugin in pagePlugins || []
-# 				await Channel.isPluginEnabled pagePlugin.plugin, defer err, enabled
-# 				if !err && enabled
-# 					for pagePath, {name, icon} of pagePlugin.pages
-# 						pages.push {
-# 							name, icon,
-# 							path: '/dashboard/plugins/' + pagePlugin.plugin + pagePath
-# 						}
+			pagePlugins = Mikuia.Element.getAll 'dashboardPagePlugin'
+			for pagePlugin in pagePlugins || []
+				await Channel.isPluginEnabled pagePlugin.plugin, defer err, enabled
+				if !err && enabled
+					for pagePath, {name, icon} of pagePlugin.pages
+						pages.push {
+							name, icon,
+							path: '/dashboard/plugins/' + pagePlugin.plugin + pagePath
+						}
 
-# 	if !isBanned
-# 		res.locals.pages = pages
-# 		res.locals.tracker = tracker
-# 		next()
-# 	else
-# 		res.send 'This account ("' + req.user.username + '") has been permanently banned from using Mikuia.'
-
-# fs.mkdirs 'web/public/img/avatars'
+	if !isBanned
+		res.locals.pages = pages
+		res.locals.tracker = tracker
+		next()
+	else
+		res.send 'This account ("' + req.user.username + '") has been permanently banned from using Mikuia.'
 
 routeList =
 	api: 'web/routes/api'
@@ -135,22 +133,22 @@ for routeName, routeDir of routeList
 
 # routes.login = require './routes/login'
 
-# app.get '/dashboard', checkAuth, routes.dashboard.index
-# app.get '/dashboard/commands', checkAuth, routes.dashboard.commands.commands
-# app.get '/dashboard/commands/settings/:name', checkAuth, routes.dashboard.commands.settings
-# app.get '/dashboard/plugins', checkAuth, routes.dashboard.plugins.plugins
-# app.get '/dashboard/settings', checkAuth, routes.dashboard.settings.settings
+app.get '/dashboard', checkAuth, routes.dashboard.index
+app.get '/dashboard/commands', checkAuth, routes.dashboard.commands.commands
+app.get '/dashboard/commands/settings/:name', checkAuth, routes.dashboard.commands.settings
+app.get '/dashboard/plugins', checkAuth, routes.dashboard.plugins.plugins
+app.get '/dashboard/settings', checkAuth, routes.dashboard.settings.settings
 # app.get '/login', routes.login
 app.get '/logout', (req, res) ->
 	req.logout()
 	res.redirect '/'
 
-# app.post '/dashboard/commands/add', checkAuth, routes.dashboard.commands.add
-# app.post '/dashboard/commands/remove', checkAuth, routes.dashboard.commands.remove
-# app.post '/dashboard/commands/save/:name', checkAuth, routes.dashboard.commands.save
-# app.post '/dashboard/plugins/toggle', checkAuth, routes.dashboard.plugins.pluginToggle
-# app.post '/dashboard/settings/save/:name', checkAuth, routes.dashboard.settings.save
-# app.post '/dashboard/settings/toggle', checkAuth, routes.dashboard.settings.toggle
+app.post '/dashboard/commands/add', checkAuth, routes.dashboard.commands.add
+app.post '/dashboard/commands/remove', checkAuth, routes.dashboard.commands.remove
+app.post '/dashboard/commands/save/:name', checkAuth, routes.dashboard.commands.save
+app.post '/dashboard/plugins/toggle', checkAuth, routes.dashboard.plugins.pluginToggle
+app.post '/dashboard/settings/save/:name', checkAuth, routes.dashboard.settings.save
+app.post '/dashboard/settings/toggle', checkAuth, routes.dashboard.settings.toggle
 
 app.get '/api/levels', routes.api.levels.global
 app.get '/api/levels/:username', routes.api.levels.channel
