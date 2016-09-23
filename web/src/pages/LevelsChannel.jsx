@@ -109,7 +109,6 @@ var LevelsChannel = React.createClass({
 
 	pollStats: function() {
 		var self = this
-		console.log('pollStats, auth: ' + this.context.auth)
 		if(this.context.auth) {
 			$.get('/api/user/' + this.context.user.username + '/levels/' + this.props.params.username).success(function(data) {
 				self.setState({
