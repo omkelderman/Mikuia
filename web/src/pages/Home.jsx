@@ -11,6 +11,7 @@ var Home = React.createClass({
 		this.props.resetHeaderOptions(function() {
 			self.props.setHeaderOption('extended', false)
 			self.props.setHeaderOption('splash', true)
+			self.props.setHeaderOption('title', ['Mikuia.tv'])
 		})
 	},
 

@@ -43,7 +43,8 @@ var Community = React.createClass({
 				color: '#7a62d3',
 				error: false,
 				extended: false,
-				splash: false
+				splash: false,
+				title: []
 			},
 			user: {}
 		}

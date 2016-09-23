@@ -61,7 +61,14 @@ var Header = React.createClass({
 							</div>
 							<div className="mikuia-navbar-title">
 								<span>
-									<span>Mikuia.tv</span>
+									<span>{this.props.options.title.map((item, i, arr) => {
+										let divider = i < arr.length - 1 && <i className="fa fa-angle-right" />
+										return (
+											<span>
+												<span key={i}>{item}</span>{divider}
+											</span>
+										)
+									})}</span>
 								</span>
 							</div>
 						</div>

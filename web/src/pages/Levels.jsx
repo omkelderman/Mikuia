@@ -11,6 +11,7 @@ import CardBlockUser from '../components/community/CardBlockUser'
 var Levels = React.createClass({
 
 	componentDidMount: function() {
+		this.props.setHeaderOption('title', ['Levels'])
 		this.poll()
 	},
 

@@ -6,6 +6,10 @@ import StreamGrid from '../components/community/StreamGrid'
 
 var Streams = React.createClass({
 
+	componentDidMount: function() {
+		this.props.setHeaderOption('title', ['Channels'])
+	},
+
 	render: function() {
 		const {t} = this.props
 		return (

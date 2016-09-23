@@ -25,6 +25,7 @@ var LevelsChannel = React.createClass({
 		this.props.resetHeaderOptions(function() {
 			self.props.setHeaderOption('extended', true)
 			self.props.setHeaderOption('splash', false)
+			self.props.setHeaderOption('title', ['Levels', self.state.user.displayName])
 		})
 
 		this.poll()
@@ -99,6 +100,7 @@ var LevelsChannel = React.createClass({
 				user: data.user
 			})
 			self.props.setHeaderOption('background', data.user.profileBanner)
+			self.props.setHeaderOption('title', ['Levels', data.user.displayName])
 
 		}).fail(function() {
 			self.props.setHeaderOption('error', true)
