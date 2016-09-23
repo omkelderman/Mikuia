@@ -40,7 +40,7 @@ var UserCommandList = React.createClass({
 			<div>
 				<If condition={!this.state.loading}>
 					<For each="command" of={this.state.commands}>
-						<UserCommand data={command} />
+						<UserCommand key={command.name} data={command} />
 					</For>
 				</If>
 				<If condition={this.state.loading}>
