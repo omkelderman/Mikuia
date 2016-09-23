@@ -42,10 +42,11 @@ var ChannelLevelOverview = React.createClass({
 
 	render: function() {
 		const {t} = this.props
+		var self = this
 		return (
 			<div>
 				<If condition={!this.state.loading && this.state.total > 0}>
-					<LinkContainer to={"/levels/" + this.props.username}>
+					<LinkContainer to={'/levels/' + this.props.username}>
 						<span>
 							<i className="fa fa-user"></i>&nbsp; 
 							<a>
@@ -59,7 +60,7 @@ var ChannelLevelOverview = React.createClass({
 					<div className="mikuia-level-badge-container">
 						{this.state.users.map(function(user, i) {
 							if(i < 6) {
-								return <LevelBadge username={user.username} experience={user.experience} />
+								return <LevelBadge username={user.username} experience={user.experience}  to={'/levels/' + self.props.username} />
 							}
 						})}
 					</div>

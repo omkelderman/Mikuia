@@ -40,6 +40,7 @@ var UserLevelOverview = React.createClass({
 
 	render: function() {
 		const {t} = this.props
+		var self = this
 		return (
 			<div>
 				<If condition={!this.state.loading && this.state.levels.length > 0}>
@@ -57,7 +58,7 @@ var UserLevelOverview = React.createClass({
 					<div className="mikuia-level-badge-container">
 						{this.state.levels.map(function(level, i) {
 							if(i < 6) {
-								return <LevelBadge username={level.username} experience={level.experience} />
+								return <LevelBadge username={level.username} experience={level.experience} to={'/user/' + self.props.username + '/levels'} />
 							}
 						})}
 					</div>
