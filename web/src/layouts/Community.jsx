@@ -5,6 +5,7 @@ import $ from 'jquery'
 import {Col, Grid, Nav, Navbar, NavItem, Row} from 'react-bootstrap'
 import {LinkContainer} from 'react-router-bootstrap'
 
+import Footer from '../components/community/Footer'
 import Header from '../components/community/Header'
 
 var Community = React.createClass({
@@ -64,6 +65,8 @@ var Community = React.createClass({
 					resetHeaderOptions: this.resetHeaderOptions,
 					setHeaderOption: this.setHeaderOption
 				})}
+
+				<Footer />
 			</div>
 		)
 	},
