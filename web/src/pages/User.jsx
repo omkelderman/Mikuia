@@ -28,7 +28,7 @@ var User = React.createClass({
 		this.props.resetHeaderOptions(function() {
 			self.props.setHeaderOption('extended', true)
 			self.props.setHeaderOption('splash', false)
-			self.props.setHeaderOption('title', ['Profile', self.state.user.displayName])
+			self.props.setHeaderOption('title', [self.props.t('header:user.profile'), self.state.user.displayName])
 		})
 
 		this.poll()
@@ -72,7 +72,7 @@ var User = React.createClass({
 				user: data.user
 			})
 			self.props.setHeaderOption('background', data.user.profileBanner)
-			self.props.setHeaderOption('title', ['Profile', data.user.displayName])
+			self.props.setHeaderOption('title', [self.props.t('header:user.profile'), data.user.displayName])
 		}).fail(function() {
 			self.props.setHeaderOption('error', true)
 			self.setState({

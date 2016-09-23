@@ -12,7 +12,7 @@ var NotFoundPage = React.createClass({
 		this.props.resetHeaderOptions(function() {
 			self.props.setHeaderOption('extended', true)
 			self.props.setHeaderOption('error', true)
-			self.props.setHeaderOption('title', ['Error'])
+			self.props.setHeaderOption('title', [self.props.t('header:details.error')])
 		})
 	},
 

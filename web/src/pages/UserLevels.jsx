@@ -33,7 +33,7 @@ var UserLevels = React.createClass({
 		this.props.resetHeaderOptions(function() {
 			self.props.setHeaderOption('extended', true)
 			self.props.setHeaderOption('splash', false)
-			self.props.setHeaderOption('title', ['Profile', self.state.user.displayName, 'Levels'])
+			self.props.setHeaderOption('title', [self.props.t('header:user.profile'), self.state.user.displayName, 'Levels'])
 		})
 
 		this.poll()
@@ -111,7 +111,7 @@ var UserLevels = React.createClass({
 				user: data.user
 			})
 			self.props.setHeaderOption('background', data.user.profileBanner)
-			self.props.setHeaderOption('title', ['Profile', self.state.user.displayName, 'Levels'])
+			self.props.setHeaderOption('title', [self.props.t('header:user.profile'), self.state.user.displayName, self.props.t('header:link.levels')])
 
 		}).fail(function() {
 			self.props.setHeaderOption('error', true)

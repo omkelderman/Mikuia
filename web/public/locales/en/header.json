@@ -1,4 +1,7 @@
 {
+	"details": {
+		"error": "Error"
+	},
 	"link": {
 		"home": "Home",
 		"channels": "Channels",
