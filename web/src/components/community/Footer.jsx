@@ -11,11 +11,6 @@ var Footer = React.createClass({
 		return (
 			<div className="mikuia-footer" id="footer">
 				<Grid>
-					<Col md={12}>
-						<hr />
-					</Col>
-				</Grid>
-				<Grid>
 					<Col md={3}>
 						<small className="text-muted">
 							<Interpolate i18nKey='footer:author' author={<a href="http://twitch.tv/Hatsuney">Hatsuney</a>} />
