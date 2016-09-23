@@ -55,7 +55,9 @@ var LevelsChannel = React.createClass({
 				displayName: this.props.params.username,
 				logo: ''
 			},
-			stats: {},
+			stats: {
+				experience: null
+			},
 			offset: 0,
 			error: false,
 			loading: true
@@ -140,7 +142,7 @@ var LevelsChannel = React.createClass({
 								</Col>
 								<Col md={4}>
 									<Choose>
-										<When condition={this.context.auth && this.context.user.username != this.props.params.username}>
+										<When condition={this.context.auth && this.context.user.username != this.props.params.username && this.state.stats.experience}>
 											<h1 className="mikuia-page-header-text text-white">{t('levels:sidebar.yourStats')}</h1>
 										</When>
 										<Otherwise>
@@ -177,7 +179,7 @@ var LevelsChannel = React.createClass({
 								</Col>
 								<Col md={4}>
 									<Authenticated>
-										<If condition={this.context.user.username != this.props.params.username}>
+										<If condition={this.context.user.username != this.props.params.username && this.state.stats.experience}>
 											<div className="mikuia-page-card mikuia-page-card-margin-3x">
 												<Card>
 													<CardBlock title={t('levels:leaderboard.rank')} value={"#" + Tools.commas(this.state.stats.rank)} />
