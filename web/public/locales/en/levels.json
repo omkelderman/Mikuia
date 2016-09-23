@@ -1,5 +1,7 @@
 {
 	"channel": {
+		"failure": "That user does not exist.",
+		"failureDescription": "You have attempted to check the top levels of a channel that does not exist.<br />This is illegal in 74% of known planetary systems.<br />Be glad that we're letting you off with just a warning.",
 		"title": "{{username}} Levels"
 	},
 	"leaderboard": {
