@@ -13,6 +13,8 @@ import LevelCircle from '../components/community/LevelCircle'
 import UserCommandList from '../components/community/UserCommandList'
 import UserLevelOverview from '../components/community/UserLevelOverview'
 
+import Tools from '../tools'
+
 var User = React.createClass({
 
 	changeTab: function(tab) {
@@ -116,7 +118,7 @@ var User = React.createClass({
 											<img className="mikuia-profile-avatar" src={this.state.user.logo} width="220" height="220" />
 											<h2>{this.state.user.displayName}</h2>
 
-											{t('user:profile.level')} <LevelCircle experience={this.state.user.experience} />
+											{t('user:profile.level')} <LevelCircle experience={this.state.user.experience} /> <small className="text-muted">(#{Tools.commas(this.state.user.rank)})</small>
 											<br />
 											<br />
 											<If condition={this.state.user.bio && this.state.user.bio != 'null' && this.state.user.bio != 'undefined'}>

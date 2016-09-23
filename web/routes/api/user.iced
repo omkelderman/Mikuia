@@ -8,7 +8,9 @@ module.exports = (req, res) ->
 		else
 
 			await Channel.getAll defer err, user
-			await Channel.getDisplayName defer err, user.displayName
+			await
+				Channel.getDisplayName defer err, user.displayName
+				Mikuia.Database.zrevrank 'mikuia:experience', Channel.getName(), defer err, user.rank
 				# Channel.getLogo defer err, user.logo
 				# Channel.getProfileBanner defer err, user.profileBanner
 
@@ -23,6 +25,7 @@ module.exports = (req, res) ->
 					bio: user.bio
 					level: parseInt user.level
 					experience: parseInt user.experience
+					rank: parseInt(user.rank) + 1
 	else
 		if req.user
 			console.log req.user
