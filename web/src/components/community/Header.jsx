@@ -13,6 +13,10 @@ var Header = React.createClass({
 		user: React.PropTypes.object
 	},
 
+	getBasePath: function() {
+		return this.props.pathName.split('/')[1]
+	},
+
 	render: function() {
 		const {t} = this.props
 		return (
@@ -39,22 +43,19 @@ var Header = React.createClass({
 						<div className="mikuia-navbar-lines-left">
 							<div className="mikuia-navbar-links">
 								<LinkContainer to="/home">
-									<a>{t('header:link.home')}</a>
+									<a className={classNames({active: this.getBasePath() == 'home'})}>{t('header:link.home')}</a>
 								</LinkContainer>
 								<LinkContainer to="/streams">
-									<a>{t('header:link.channels')}</a>
+									<a className={classNames({active: this.getBasePath() == 'streams'})}>{t('header:link.channels')}</a>
 								</LinkContainer>
 								<LinkContainer to="/levels">
-									<a>{t('header:link.levels')}</a>
+									<a className={classNames({active: this.getBasePath() == 'levels'})}>{t('header:link.levels')}</a>
 								</LinkContainer>
-								<LinkContainer to="#">
-									<a>{t('header:link.guides')}</a>
-								</LinkContainer>
-								<LinkContainer to="/supporter">
-									<a>{t('header:link.supporter')}</a>
+								<LinkContainer to="/guides">
+									<a className={classNames({active: this.getBasePath() == 'guides'})}>{t('header:link.guides')}</a>
 								</LinkContainer>
 								<LinkContainer to="/leagues">
-									<a>{t('header:link.leagues')}</a>
+									<a className={classNames({active: this.getBasePath() == 'leagues'})}>{t('header:link.leagues')}</a>
 								</LinkContainer>
 								<a href="https://p.datadoghq.com/sb/AF-ona-ccd2288b29">{t('header:link.status')}</a>
 							</div>
@@ -70,10 +71,10 @@ var Header = React.createClass({
 							<Authenticated>
 								<div className="mikuia-navbar-links">
 									<LinkContainer to={"/user/" + this.context.user.username}>
-										<a>{t('header:user.profile')}</a>
+										<a className={classNames({active: this.getBasePath() == 'user' && this.props.pathName.split('/')[2] == this.context.user.username})}>{t('header:user.profile')}</a>
 									</LinkContainer>
 									<LinkContainer to="/settings">
-										<a>{t('header:user.settings')}</a>
+										<a className={classNames({active: this.getBasePath() == 'settings'})}>{t('header:user.settings')}</a>
 									</LinkContainer>
 									<a href="/dashboard">{t('header:user.dashboard')}</a>
 									<a href="/logout">{t('header:user.logout')}</a>
