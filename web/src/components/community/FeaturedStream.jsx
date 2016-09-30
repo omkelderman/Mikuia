@@ -40,10 +40,15 @@ var FeaturedStream = React.createClass({
 
 	render: function() {
 		const {t} = this.props
+		var backgroundStyle = 'linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8))'
+		if(this.state.stream.profile_banner) {
+			backgroundStyle += ', url("' + this.state.stream.profile_banner +'")'
+		}
+
 		return (
 			<div>
 				<If condition={this.state.error == false}>
-					<div className="mikuia-index-featured" style={{background: 'linear-gradient(rgba(0, 0, 0, 1), rgba(17, 17, 17, 1))'}}>
+					<div className="mikuia-index-featured" style={{background: backgroundStyle}}>
 						<div className="mikuia-index-featured-background">
 							<div className="container text-white">
 								<Row>
