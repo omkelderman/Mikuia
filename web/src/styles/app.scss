@@ -1,7 +1,7 @@
 @import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 @import '../../../node_modules/font-awesome/css/font-awesome.min.css';
 
-@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700|Roboto:400,300,500|Hind+Vadodara:400,500,300);
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700|Roboto:400,300,500&subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese);
 
 a {
 	color: #7a62d3;
@@ -29,13 +29,13 @@ html {
 }
 
 html, body {
-	font-family: 'Hind Vadodara';
+	font-family: 'Roboto';
 	font-weight: 300;
 	line-height: 1.25;
 }
 
 h1, h2, h3, h4, h5, h6 {
-	font-family: 'Hind Vadodara';
+	font-family: 'Roboto';
 	font-weight: 300;
 }
 
