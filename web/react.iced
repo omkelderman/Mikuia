@@ -162,6 +162,7 @@ app.get '/api/user/:username', routes.api.user
 app.get '/api/user/:username/commands', routes.api.userCommands
 app.get '/api/user/:username/levels', routes.api.userLevels
 app.get '/api/user/:username/levels/:channel', routes.api.userLevels
+app.get '/api/user/:username/stats/levels', routes.api.stats.userLevels
 
 # app.get '/', routes.community.index
 # app.get '/about', routes.community.about

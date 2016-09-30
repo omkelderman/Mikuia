@@ -1,16 +1,23 @@
 import classNames from 'classnames'
 import React from 'react'
 import $ from 'jquery'
+import {LinkContainer} from 'react-router-bootstrap'
 import {Button, Col, Grid, OverlayTrigger, Row, Tooltip} from 'react-bootstrap'
 import {translate} from 'react-i18next'
 
 import Card from '../components/community/Card'
 import CardBlock from '../components/community/CardBlock'
 import CardBlockUser from '../components/community/CardBlockUser'
+import LevelCircle from '../components/community/LevelCircle'
 
+import {Authenticated, NotAuthenticated} from '../components/Auth'
 import Tools from '../tools'
 
 var Levels = React.createClass({
+	contextTypes: {
+		auth: React.PropTypes.bool,
+		user: React.PropTypes.object
+	},
 
 	componentDidMount: function() {
 		this.props.setHeaderOption('title', [this.props.t('header:link.levels')])
@@ -21,7 +28,8 @@ var Levels = React.createClass({
 		return {
 			channels: [],
 			error: false,
-			loading: true
+			loading: true,
+			stats: {}
 		}
 	},
 
@@ -42,6 +50,22 @@ var Levels = React.createClass({
 				channels: []
 			})
 		})
+		this.pollStats()
+	},
+
+	pollStats: function() {
+		var self = this
+		if(this.context.auth) {
+			$.get('/api/user/' + this.context.user.username + '/stats/levels').success(function(data) {
+				self.setState({
+					stats: data
+				})
+			})
+		} else if(this.context.auth == null) {
+			setTimeout(function() {
+				self.pollStats()
+			}, 100)
+		}
 	},
 
 	render: function() {
@@ -50,7 +74,7 @@ var Levels = React.createClass({
 			<div>
 				<Grid>
 					<Row>
-						<Col md={9}>
+						<Col md={8}>
 
 							<h1 className="mikuia-page-header-text">
 								{t('levels:randomChannels')}
@@ -63,8 +87,19 @@ var Levels = React.createClass({
 									</OverlayTrigger>
 								</div>
 							</h1>
-
-							<br />
+						</Col>
+						<Col md={4}>
+							<Authenticated>
+								<If condition={this.state.stats}>
+									<h1 className="mikuia-page-header-text">
+										Your Stats
+									</h1>
+								</If>
+							</Authenticated>
+						</Col>
+					</Row>
+					<Row>
+						<Col md={8}>
 							<div className={classNames({"mikuia-loading": this.state.loading})}>
 								<For each="channel" of={this.state.channels}>
 									<Card key={channel.username}>
@@ -83,6 +118,21 @@ var Levels = React.createClass({
 							<If condition={this.state.channels.length == 0}>
 								<span className="text-muted"><i className="fa fa-spinner fa-spin"></i> {t('common:loading3dots')}</span>
 							</If>
+						</Col>
+						<Col md={4}>
+							<Authenticated>
+								<If condition={this.state.stats}>
+									<Card>
+										<CardBlock title={t('levels:leaderboard.rank')} value={"#" + Tools.commas(this.state.stats.rank)} />
+										<CardBlock title={t('levels:leaderboard.experience')} value={Tools.commas(this.state.stats.experience)} />
+										<CardBlock title={t('levels:leaderboard.level')}>
+											<LevelCircle experience={this.state.stats.experience} />
+										</CardBlock>
+										<CardBlock title={t('levels:leaderboard.progress')} value={Tools.getLevelProgress(this.state.stats.experience) + "%"} />
+									</Card>
+									<LinkContainer to={"/user/" + this.context.user.username + "/levels"}><a className="pull-right">See more >></a></LinkContainer>
+								</If>
+							</Authenticated>
 						</Col>
 					</Row>
 				</Grid>
