@@ -3,6 +3,7 @@ import React from 'react'
 import $ from 'jquery'
 import {Col, Grid, Row} from 'react-bootstrap'
 import {translate, Interpolate} from 'react-i18next'
+import {LinkContainer} from 'react-router-bootstrap'
 
 import Card from '../components/community/Card'
 import CardBlock from '../components/community/CardBlock'
@@ -134,7 +135,7 @@ var UserLevels = React.createClass({
 							<Row>
 								<Col md={8}>
 									<h1 className="mikuia-page-header-text text-white">
-										<Interpolate i18nKey='levels:user.title' username={this.state.user.displayName} />
+										<Interpolate i18nKey='levels:user.title' username={<LinkContainer to={"/user/" + this.props.params.username}><a>{this.state.user.displayName}</a></LinkContainer>} />
 									</h1>
 								</Col>
 							</Row>
