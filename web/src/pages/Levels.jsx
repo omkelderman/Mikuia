@@ -123,12 +123,11 @@ var Levels = React.createClass({
 							<Authenticated>
 								<If condition={this.state.stats}>
 									<Card>
-										<CardBlock title={t('levels:leaderboard.rank')} value={"#" + Tools.commas(this.state.stats.rank)} />
+										<CardBlock title={t('levels:global.rank')} value={"#" + Tools.commas(this.state.stats.rank)} />
 										<CardBlock title={t('levels:leaderboard.experience')} value={Tools.commas(this.state.stats.experience)} />
-										<CardBlock title={t('levels:leaderboard.level')}>
+										<CardBlock alignRight title={t('levels:global.level')}>
 											<LevelCircle experience={this.state.stats.experience} />
 										</CardBlock>
-										<CardBlock title={t('levels:leaderboard.progress')} value={Tools.getLevelProgress(this.state.stats.experience) + "%"} />
 									</Card>
 									<LinkContainer to={"/user/" + this.context.user.username + "/levels"}><a className="pull-right">See more >></a></LinkContainer>
 								</If>

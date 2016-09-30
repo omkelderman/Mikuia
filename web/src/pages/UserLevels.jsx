@@ -68,7 +68,8 @@ var UserLevels = React.createClass({
 			},
 			offset: 0,
 			error: false,
-			loading: true
+			loading: true,
+			stats: {}
 		}
 	},
 
@@ -123,6 +124,16 @@ var UserLevels = React.createClass({
 		})
 
 		this.loadLevels(0)
+		this.pollStats()
+	},
+
+	pollStats: function() {
+		var self = this
+		$.get('/api/user/' + this.props.params.username + '/stats/levels').success(function(data) {
+			self.setState({
+				stats: data
+			})
+		})
 	},
 
 	render: function() {
@@ -136,6 +147,11 @@ var UserLevels = React.createClass({
 								<Col md={8}>
 									<h1 className="mikuia-page-header-text text-white">
 										<Interpolate i18nKey='levels:user.title' username={<LinkContainer to={"/user/" + this.props.params.username}><a>{this.state.user.displayName}</a></LinkContainer>} />
+									</h1>
+								</Col>
+								<Col md={4}>
+									<h1 className="mikuia-page-header-text text-white">
+										{t('levels:global.stats')}
 									</h1>
 								</Col>
 							</Row>
@@ -163,6 +179,19 @@ var UserLevels = React.createClass({
 											</CardBlock>
 										</Card>
 									</If>
+								</Col>
+								<Col md={4}>
+									<div className="mikuia-page-card">
+										<If condition={this.state.stats}>
+											<Card>
+												<CardBlock title={t('levels:global.rank')} value={"#" + Tools.commas(this.state.stats.rank)} />
+												<CardBlock title={t('levels:leaderboard.experience')} value={Tools.commas(this.state.stats.experience)} />
+												<CardBlock alignRight title={t('levels:global.level')}>
+													<LevelCircle experience={this.state.stats.experience} />
+												</CardBlock>
+											</Card>
+										</If>
+									</div>
 								</Col>
 							</Row>
 						</div>
