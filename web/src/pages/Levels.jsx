@@ -8,6 +8,8 @@ import Card from '../components/community/Card'
 import CardBlock from '../components/community/CardBlock'
 import CardBlockUser from '../components/community/CardBlockUser'
 
+import Tools from '../tools'
+
 var Levels = React.createClass({
 
 	componentDidMount: function() {
@@ -70,7 +72,7 @@ var Levels = React.createClass({
 											<CardBlockUser username={channel.username} link={"/levels/" + channel.username} />
 										</CardBlock>
 
-										<CardBlock flexBasis={125} alignRight title={t('levels:leaderboard.uniqueViewers')} value={channel.users.toString()} />
+										<CardBlock flexBasis={125} alignRight title={t('levels:leaderboard.uniqueViewers')} value={Tools.commas(channel.users)} />
 										<CardBlock flexBasis={125} alignRight title={t('levels:leaderboard.yourRank')} value="-" />
 										<CardBlock flexBasis={125} alignRight title={t('levels:leaderboard.yourLevel')} value="-" />
 										<CardBlock flexBasis={125} alignRight title={t('levels:leaderboard.progress')} value="-" />
