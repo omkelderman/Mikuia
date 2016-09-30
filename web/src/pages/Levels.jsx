@@ -92,7 +92,7 @@ var Levels = React.createClass({
 							<Authenticated>
 								<If condition={this.state.stats}>
 									<h1 className="mikuia-page-header-text">
-										Your Stats
+										{t('levels:sidebar.yourStats')}
 									</h1>
 								</If>
 							</Authenticated>
@@ -129,7 +129,7 @@ var Levels = React.createClass({
 											<LevelCircle experience={this.state.stats.experience} />
 										</CardBlock>
 									</Card>
-									<LinkContainer to={"/user/" + this.context.user.username + "/levels"}><a className="pull-right">See more >></a></LinkContainer>
+									<LinkContainer to={"/user/" + this.context.user.username + "/levels"}><a className="pull-right">{t('common:seeMoreArrows')}</a></LinkContainer>
 								</If>
 							</Authenticated>
 						</Col>
