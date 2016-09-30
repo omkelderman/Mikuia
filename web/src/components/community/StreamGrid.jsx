@@ -53,11 +53,13 @@ var StreamGrid = React.createClass({
 						<Stream key={username} username={username} />
 					</For>
 				</div>
-				<Col md={12}>
-					<div className="pull-right">
-						<Pagination prev next first last ellipsis boundaryLinks bsStyle="mikuia" items={Math.ceil(this.state.total / 16)} maxButtons={5} activePage={Math.floor(this.state.offset / 16) + 1} onSelect={this.handleSelect} />
-					</div>
-				</Col>
+				<If condition={this.props.pagination}>
+					<Col md={12}>
+						<div className="pull-right">
+							<Pagination prev next first last ellipsis boundaryLinks bsStyle="mikuia" items={Math.ceil(this.state.total / 16)} maxButtons={5} activePage={Math.floor(this.state.offset / 16) + 1} onSelect={this.handleSelect} />
+						</div>
+					</Col>
+				</If>
 			</div>
 		)
 	},

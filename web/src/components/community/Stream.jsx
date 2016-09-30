@@ -1,12 +1,10 @@
 import classNames from 'classnames'
 import React from 'react'
 import $ from 'jquery'
-import { Interpolate } from 'react-i18next'
+import { translate, Interpolate } from 'react-i18next'
 
 import {Link} from 'react-router'
 import {Button, Col, Grid, Media, Row} from 'react-bootstrap'
-
-import i18n from '../../i18n'
 
 var Stream = React.createClass({
 
@@ -35,7 +33,7 @@ var Stream = React.createClass({
 			self.setState({
 				error: true,
 				stream: {
-					status: i18n.t('streams:stream.error')
+					status: self.props.t('streams:stream.error')
 				}
 			})
 		})
@@ -76,4 +74,4 @@ var Stream = React.createClass({
 
 })
 
-export default Stream
+export default translate('streams', {wait: true})(Stream)

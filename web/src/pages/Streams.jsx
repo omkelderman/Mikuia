@@ -21,7 +21,7 @@ var Streams = React.createClass({
 						</Col>
 					</Row>
 					<Row>
-						<StreamGrid source="/api/streams" />
+						<StreamGrid source="/api/streams" pagination={true} />
 					</Row>
 				</Grid>
 			</div>

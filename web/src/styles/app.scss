@@ -51,6 +51,10 @@ h6 {
 	font-size: 13px;
 }
 
+iframe {
+	border: none;
+}
+
 pre {
 	background-color: transparent;
 	border: none;
@@ -75,6 +79,11 @@ pre code {
 
 .align-right {
 	text-align: right;
+}
+
+.btn-twitch {
+	background-color: #6441A5;
+	color: white;
 }
 
 .level {

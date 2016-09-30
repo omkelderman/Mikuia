@@ -154,7 +154,8 @@ app.get '/api/levels', routes.api.levels.global
 app.get '/api/levels/:username', routes.api.levels.channel
 
 app.get '/api/stream/:username', routes.api.stream
-app.get '/api/streams', routes.api.streams
+app.get '/api/streams', routes.api.streams.list
+app.get '/api/streams/featured', routes.api.streams.featured
 
 app.get '/api/user', routes.api.user
 app.get '/api/user/:username', routes.api.user
