@@ -14,6 +14,7 @@ module.exports =
 		featuredStream = null
 		if stream
 			Channel = new Mikuia.Models.Channel stream
+
 			await
 				Mikuia.Streams.get stream, defer err, featuredStream
 				Channel.getBio defer err, bio
@@ -21,7 +22,7 @@ module.exports =
 
 			if featuredStream?
 				featuredStream.bio = bio
-				featuredStream.name = featuredStream.display_name
+				featuredStream.name = stream
 
 				if isSupporter
 					featuredStream.display_name = '❤ ' + featuredStream.display_name
