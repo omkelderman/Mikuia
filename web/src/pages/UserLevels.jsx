@@ -146,7 +146,7 @@ var UserLevels = React.createClass({
 							<Row>
 								<Col md={8}>
 									<h1 className="mikuia-page-header-text text-white">
-										<Interpolate i18nKey='levels:user.title' username={<LinkContainer to={"/user/" + this.props.params.username}><a>{this.state.user.displayName}</a></LinkContainer>} />
+										<Interpolate i18nKey='levels:user.title' username={<LinkContainer to={"/user/" + this.props.params.username}><a className="mikuia-page-header-link">{this.state.user.displayName}</a></LinkContainer>} />
 									</h1>
 								</Col>
 								<Col md={4}>
