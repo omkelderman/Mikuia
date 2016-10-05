@@ -1,4 +1,4 @@
 files:
   - 
     source: '/web/public/locales/en/*.json'
-    translation: '/web/public/locales/%locale_with_underscore%/%original_file_name%'
+    translation: '/web/public/locales/%locale%/%original_file_name%'
