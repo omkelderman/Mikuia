@@ -214,7 +214,7 @@ var LevelsChannel = React.createClass({
 										<p>
 											{t('levels:sidebar.tips.bots.description')}
 											<br />
-											<a href="https://discord.gg/0t3jc6KW0MJnHNcM">{t('levels:sidebar.tips.bots.link')}</a>
+											<a href="http://discord.mikuia.tv">{t('levels:sidebar.tips.bots.link')}</a>
 											<br />
 											<small className="text-muted">{t('levels:sidebar.tips.bots.disclaimer')}</small>
 										</p>
