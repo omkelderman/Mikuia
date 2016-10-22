@@ -273,7 +273,7 @@ class exports.Channel extends Mikuia.Model
 
 	# Levels
 
-	addExperience: (channel, experience, activity, callback) =>
+	addExperience: (channel, experience, activity, type, callback) =>
 		await @isBot defer err, isBot
 		if not isBot
 			await @getLevel channel, defer err, level
@@ -292,6 +292,20 @@ class exports.Channel extends Mikuia.Model
 
 					otherChannel.getSetting 'base', 'announceLevels', defer err, announceLevels
 					otherChannel.getSetting 'base', 'announceLimit', defer err2, announceLimit
+
+				payload =
+					timestamp: Math.floor((new Date()).getTime() / 1000)
+					channel: channel
+					experience: experience
+					levelUp: false
+					newLevel: null
+					type: type
+
+				if newLevel > level
+					payload.levelUp = true
+					payload.newLevel = newLevel
+
+				await Mikuia.Database.lpush 'channel:' + @getName() + ':experience:history', JSON.stringify(payload), defer whatever
 
 				if not err and newLevel > level
 					if announceLevels and not err2 and newLevel % announceLimit == 0 and activity > 0
