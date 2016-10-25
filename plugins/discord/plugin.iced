@@ -8,7 +8,7 @@ if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.t
 		token: Mikuia.settings.plugins.discord.token
 		autorun: true
 
-	discord.on 'disconnected', =>
+	discord.on 'disconnect', =>
 		discord.connect()
 
 	discord.on 'err', (error) ->
