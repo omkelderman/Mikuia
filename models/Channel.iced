@@ -214,7 +214,7 @@ class exports.Channel extends Mikuia.Model
 			@getCustomDisplayName defer err2, customName
 			@isSupporter defer err3, isSupporter
 
-		if !err2 and data?
+		if !err2 and customName?
 			callback err2, customName
 		else if @isAdmin()
 			callback err, '✜ ' + cleanName
