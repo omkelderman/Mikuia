@@ -22,30 +22,33 @@ if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.t
 			game: 'discord.mikuia.tv'
 
 	discord.on 'message', (user, userId, channelId, message, rawEvent) =>
-		serverId = discord.serverFromChannel channelId
+		channel = discord.channels[channelId]
 
-		await Mikuia.Database.hget 'plugin:discord:servers', serverId, defer err, twitchChannel
+		if channel?.guild_id?
+			serverId = channel.guild_id
 
-		if !err and twitchChannel?
-			Channel = new Mikuia.Models.Channel twitchChannel
+			await Mikuia.Database.hget 'plugin:discord:servers', serverId, defer err, twitchChannel
 
-			await
-				Channel.isPluginEnabled 'discord', defer err2, isPluginEnabled
-				Mikuia.Database.hget 'plugin:discord:users', userId, defer err3, twitchUser
+			if !err and twitchChannel?
+				Channel = new Mikuia.Models.Channel twitchChannel
 
-			if !err2 and isPluginEnabled
+				await
+					Channel.isPluginEnabled 'discord', defer err2, isPluginEnabled
+					Mikuia.Database.hget 'plugin:discord:users', userId, defer err3, twitchUser
 
-				if twitchUser?
-					user =
-						username: twitchUser
-						color: '#ffffff'
-						subscriber: false
-				else
-					user = null
+				if !err2 and isPluginEnabled
 
-				Mikuia.Chat.handleMessage user, twitchChannel, message, 'discord',
-					discordChannelId: channelId
-					discordUserId: userId
+					if twitchUser?
+						user =
+							username: twitchUser
+							color: '#ffffff'
+							subscriber: false
+					else
+						user = null
+
+					Mikuia.Chat.handleMessage user, twitchChannel, message, 'discord',
+						discordChannelId: channelId
+						discordUserId: userId
 
 	Mikuia.Events.on 'mikuia.say.custom', (data) =>
 		switch data.target
