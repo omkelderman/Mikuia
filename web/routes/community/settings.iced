@@ -4,7 +4,7 @@ module.exports =
 	index: (req, res) ->
 		Channel = new Mikuia.Models.Channel req.user.username
 		await
-			Channel.getDisplayName defer err, displayName
+			Channel.getCleanDisplayName defer err, displayName
 			Channel.getProfileBanner defer err, profileBanner
 			Mikuia.Database.smembers 'channel:' + Channel.getName() + ':requests:move', defer err, moveRequests
 
