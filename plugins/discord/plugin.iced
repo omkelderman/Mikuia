@@ -4,7 +4,7 @@ Discord = require 'discord.io'
 users = {}
 
 if Mikuia.settings.plugins.discord?.token? and Mikuia.settings.plugins.discord.token != 'BOT_USER_TOKEN'
-	discord = new Discord
+	discord = new Discord.Client
 		token: Mikuia.settings.plugins.discord.token
 		autorun: true
 
