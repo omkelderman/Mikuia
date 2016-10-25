@@ -197,6 +197,9 @@ class exports.Channel extends Mikuia.Model
 	getBio: (callback) ->
 		@getInfo 'bio', callback
 
+	getCustomDisplayName: (callback) ->
+		@getInfo 'custom_display_name', callback
+
 	getCleanDisplayName: (callback) ->
 		await @getInfo 'display_name', defer err, data
 
@@ -207,15 +210,18 @@ class exports.Channel extends Mikuia.Model
 
 	getDisplayName: (callback) ->
 		await
-			@getCleanDisplayName defer err, data
-			@isSupporter defer err2, isSupporter
+			@getCleanDisplayName defer err, cleanName
+			@getCustomDisplayName defer err2, customName
+			@isSupporter defer err3, isSupporter
 
-		if @isAdmin()
-			callback err, '✜ ' + data
+		if !err2 and data?
+			callback err2, customName
+		else if @isAdmin()
+			callback err, '✜ ' + cleanName
 		else if isSupporter
-			callback err, '❤ ' + data
+			callback err, '❤ ' + cleanName
 		else
-			callback err, data
+			callback err, cleanName
 
 	getEmail: (callback) ->
 		@getInfo 'email', callback
