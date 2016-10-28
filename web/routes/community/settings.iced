@@ -19,9 +19,13 @@ module.exports =
 			Channel = new Mikuia.Models.Channel req.body.username
 
 			if Channel.getName() != req.user.username
-				await Mikuia.Database.sadd 'channel:' + Channel.getName() + ':requests:move', req.user.username, defer whatever
+				await Channel.isLevelDisabled defer err, levelDisabled
+				if not err and !levelDisabled
+					await Mikuia.Database.sadd 'channel:' + Channel.getName() + ':requests:move', req.user.username, defer whatever
 
-				res.send 'ok'
+					res.send 'ok'
+				else
+					res.send 'fail'
 			else
 				res.send 'fail'
 		else
