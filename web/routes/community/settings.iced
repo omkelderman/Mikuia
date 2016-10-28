@@ -48,17 +48,17 @@ module.exports =
 					Viewer = new Mikuia.Models.Channel username
 
 					await
-						Viewer.addExperience Target.getName(), xpAmount, 100, defer whatever
-						Viewer.addExperience Source.getName(), xpAmount * -1, 100, defer whatever
+						Viewer.addExperience Target.getName(), xpAmount, 100, 'move_channel_' + Source.getName(), defer whatever
+						Viewer.addExperience Source.getName(), xpAmount * -1, 100, 'move_channel_' + Target.getName(), defer whatever
 
 				for userLevelData in experience
 					username = userLevelData[0]
 					xpAmount = parseInt userLevelData[1]
 
 					if Target.getName() != username
-						await Target.addExperience username, xpAmount, 100, defer whatever
+						await Target.addExperience username, xpAmount, 100, 'move_user_' + Source.getName(), defer whatever
 
-					await Source.addExperience username, xpAmount * -1, 100, defer whatever
+					await Source.addExperience username, xpAmount * -1, 100, 'move_user_' + Target.getName(), defer whatever
 
 			res.send 'ok'
 		else
