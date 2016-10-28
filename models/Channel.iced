@@ -369,13 +369,14 @@ class exports.Channel extends Mikuia.Model
 
 		await
 			@getAllExperience defer err, experience
+			@isBanned defer err, isBanned
 			@isBot defer err, isBot
 
-		if isBot
+		if isBot or isBanned
 			await @_del 'experience', defer err
 
 		for data in experience
-			if isBot
+			if isBot or isBanned
 				data[1] = 0
 
 			totalExperience += parseInt data[1]
