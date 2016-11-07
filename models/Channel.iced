@@ -311,7 +311,7 @@ class exports.Channel extends Mikuia.Model
 					payload.levelUp = true
 					payload.newLevel = newLevel
 
-				await Mikuia.Database.lpush 'channel:' + @getName() + ':experience:history', JSON.stringify(payload), defer whatever
+				# await Mikuia.Database.lpush 'channel:' + @getName() + ':experience:history', JSON.stringify(payload), defer whatever
 
 				if not err and newLevel > level
 					if announceLevels and not err2 and newLevel % announceLimit == 0 and activity > 0
