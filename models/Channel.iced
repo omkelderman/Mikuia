@@ -243,6 +243,7 @@ class exports.Channel extends Mikuia.Model
 		@setInfo 'display_name', name, callback
 
 	setEmail: (email, callback) ->
+		await Mikuia.Database.hset 'mikuia:emails', email, @getName(), defer whatever
 		@setInfo 'email', email, callback
 
 	setLogo: (logo, callback) ->
