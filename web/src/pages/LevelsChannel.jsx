@@ -141,8 +141,34 @@ var LevelsChannel = React.createClass({
 									<h1 className="mikuia-page-header-text text-white">
 										<Interpolate i18nKey="levels:channel.title" username={<LinkContainer to={"/user/" + this.props.params.username}><a className="mikuia-page-header-link">{this.state.user.displayName}</a></LinkContainer>} />
 									</h1>
+
+									<div className="mikuia-page-card">
+										<For each="user" index="i" of={this.state.users}>
+											<Card ranking key={user.username}>
+												<CardBlock ranking flexBasis={80} title={t('levels:leaderboard.rank')} value={"#" + (i + 1)} />
+
+												<CardBlock flexBasis={300}>
+													<CardBlockUser username={user.username} />
+												</CardBlock>
+
+												<CardBlock flexBasis={150} alignRight title={t('levels:leaderboard.experience')} value={Tools.commas(user.experience)} />
+												<CardBlock flexBasis={50} alignRight title={t('levels:leaderboard.level')}>
+													<LevelCircle experience={user.experience} />
+												</CardBlock>
+												<CardBlock flexBasis={70} alignRight title={t('levels:leaderboard.progress')} value={Tools.getLevelProgress(user.experience) + "%"} />
+											</Card>
+										</For>
+										<If condition={this.state.loading}>
+											<Card>
+												<CardBlock flexBasis={20}>
+													<i className="fa fa-spinner fa-spin" />
+												</CardBlock>
+											</Card>
+										</If>
+									</div>
+
 								</Col>
-								<Col md={4}>
+								<Col md={4} className="hidden-xs hidden-sm">
 									<Choose>
 										<When condition={this.context.auth && this.context.user.username != this.props.params.username && this.state.stats.experience}>
 											<h1 className="mikuia-page-header-text text-white">{t('levels:sidebar.yourStats')}</h1>
@@ -151,35 +177,7 @@ var LevelsChannel = React.createClass({
 											<h1 className="mikuia-page-header-text text-white">{t('levels:sidebar.tips.title')}</h1>
 										</Otherwise>
 									</Choose>
-								</Col>
-							</Row>
 
-							<Row>
-								<Col md={8} className="mikuia-page-card">
-									<For each="user" index="i" of={this.state.users}>
-										<Card ranking key={user.username}>
-											<CardBlock ranking flexBasis={80} title={t('levels:leaderboard.rank')} value={"#" + (i + 1)} />
-
-											<CardBlock flexBasis={300}>
-												<CardBlockUser username={user.username} />
-											</CardBlock>
-
-											<CardBlock flexBasis={150} alignRight title={t('levels:leaderboard.experience')} value={Tools.commas(user.experience)} />
-											<CardBlock flexBasis={50} alignRight title={t('levels:leaderboard.level')}>
-												<LevelCircle experience={user.experience} />
-											</CardBlock>
-											<CardBlock flexBasis={70} alignRight title={t('levels:leaderboard.progress')} value={Tools.getLevelProgress(user.experience) + "%"} />
-										</Card>
-									</For>
-									<If condition={this.state.loading}>
-										<Card>
-											<CardBlock flexBasis={20}>
-												<i className="fa fa-spinner fa-spin" />
-											</CardBlock>
-										</Card>
-									</If>
-								</Col>
-								<Col md={4}>
 									<Authenticated>
 										<If condition={this.context.user.username != this.props.params.username && this.state.stats.experience}>
 											<div className="mikuia-page-card mikuia-page-card-margin-3x">
