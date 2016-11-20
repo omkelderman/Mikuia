@@ -18,6 +18,12 @@ var Header = React.createClass({
 		return this.props.pathName.split('/')[1]
 	},
 
+	getLanguageFlagPath: function() {
+		var lng = localStorage.getItem('lang').split('-')[0] || 'en'
+
+		return '/img/flags/' + lng + '.png'
+	},
+
 	render: function() {
 		const {t} = this.props
 		return (
@@ -61,12 +67,12 @@ var Header = React.createClass({
 								<a href="https://p.datadoghq.com/sb/AF-ona-ccd2288b29">{t('header:link.status')}</a>
 								<Dropdown className="mikuia-navbar-dropdown" id="dropdown-language">
 									<LinkDropdownToggle bsRole="toggle">
-										<img src="/img/flags/fr.png" />  <span className="caret"></span>
+										<img src={this.getLanguageFlagPath()} />  <span className="caret"></span>
 									</LinkDropdownToggle>
 									<Dropdown.Menu>
+										<MenuItem onClick={() => {localStorage.setItem('lang', 'de-DE'); window.location.reload()}}><img src="/img/flags/de.png" /> Deutsch</MenuItem>
 										<MenuItem onClick={() => {localStorage.setItem('lang', 'en'); window.location.reload()}}><img src="/img/flags/en.png" /> English</MenuItem>
-										<MenuItem onClick={() => {localStorage.setItem('lang', 'de-DE'); window.location.reload()}}><img src="/img/flags/fr.png" /> French</MenuItem>
-										<MenuItem onClick={() => {localStorage.setItem('lang', 'fr-FR'); window.location.reload()}}><img src="/img/flags/de.png" /> German</MenuItem>
+										<MenuItem onClick={() => {localStorage.setItem('lang', 'fr-FR'); window.location.reload()}}><img src="/img/flags/fr.png" /> Français</MenuItem>
 									</Dropdown.Menu>
 								</Dropdown>
 								
