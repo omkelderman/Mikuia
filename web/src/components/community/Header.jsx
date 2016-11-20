@@ -2,10 +2,11 @@ import classNames from 'classnames'
 import React from 'react'
 import { translate } from 'react-i18next'
 
-import {Col, Grid, Nav, Navbar, NavItem, Row} from 'react-bootstrap'
+import {Col, Dropdown, Grid, MenuItem, Nav, Navbar, NavItem, Row} from 'react-bootstrap'
 import {LinkContainer} from 'react-router-bootstrap'
 
 import {Authenticated, NotAuthenticated} from '../Auth'
+import LinkDropdownToggle from './LinkDropdownToggle'
 
 var Header = React.createClass({
 	contextTypes: {
@@ -58,6 +59,17 @@ var Header = React.createClass({
 									<a className={classNames({active: this.getBasePath() == 'leagues'})}>{t('header:link.leagues')}</a>
 								</LinkContainer>
 								<a href="https://p.datadoghq.com/sb/AF-ona-ccd2288b29">{t('header:link.status')}</a>
+								<Dropdown className="mikuia-navbar-dropdown" id="dropdown-language">
+									<LinkDropdownToggle bsRole="toggle">
+										<img src="/img/flags/fr.png" />  <span className="caret"></span>
+									</LinkDropdownToggle>
+									<Dropdown.Menu>
+										<MenuItem onClick={() => {localStorage.setItem('lang', 'en'); window.location.reload()}}><img src="/img/flags/en.png" /> English</MenuItem>
+										<MenuItem onClick={() => {localStorage.setItem('lang', 'de-DE'); window.location.reload()}}><img src="/img/flags/fr.png" /> French</MenuItem>
+										<MenuItem onClick={() => {localStorage.setItem('lang', 'fr-FR'); window.location.reload()}}><img src="/img/flags/de.png" /> German</MenuItem>
+									</Dropdown.Menu>
+								</Dropdown>
+								
 							</div>
 							<div className="mikuia-navbar-title">
 								<span>

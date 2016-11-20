@@ -465,6 +465,14 @@ pre code {
 	width: 100%;
 }
 
+.mikuia-navbar-dropdown {
+	bottom: 2px;
+}
+
+.mikuia-navbar-dropdown > ul > li > a > img {
+	padding-bottom: 2px;
+}
+
 .mikuia-navbar-extended {
 	background: rgba(0, 0, 0, 0.0);
 	border: none;
