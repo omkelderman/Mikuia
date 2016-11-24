@@ -11,10 +11,11 @@ import './styles/app.scss'
 import CommunityLayout from './layouts/Community'
 
 import HomePage from './pages/Home'
-import StreamsPage from './pages/Streams'
+import GuidePage from './pages/Guide'
 import LevelsPage from './pages/Levels'
 import LevelsChannelPage from './pages/LevelsChannel'
 import NotFoundPage from './pages/NotFoundPage'
+import StreamsPage from './pages/Streams'
 import UserPage from './pages/User'
 import UserLevelsPage from './pages/UserLevels'
 import UserLevelHistoryPage from './pages/UserLevelHistory'
@@ -24,9 +25,10 @@ ReactDOM.render(
 		<Router history={browserHistory} render={applyRouterMiddleware(useScroll())}>
 			<Route path="/" component={CommunityLayout}>
 				<Route path="home" component={HomePage} />
-				<Route path="streams" component={StreamsPage} />
+				<Route path="guide" component={GuidePage} />
 				<Route path="levels/:username" component={LevelsChannelPage} />
 				<Route path="levels" component={LevelsPage} />
+				<Route path="streams" component={StreamsPage} />
 				<Route path="user/:username" component={UserPage} />
 				<Route path="user/:username/levels" component={UserLevelsPage} />
 				<Route path="user/:username/levels/history" component={UserLevelHistoryPage} />

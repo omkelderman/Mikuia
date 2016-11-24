@@ -58,8 +58,8 @@ var Header = React.createClass({
 								<LinkContainer to="/levels">
 									<a className={classNames({active: this.getBasePath() == 'levels'})}>{t('header:link.levels')}</a>
 								</LinkContainer>
-								<LinkContainer to="/guides">
-									<a className={classNames({active: this.getBasePath() == 'guides'})}>{t('header:link.guides')}</a>
+								<LinkContainer to="/guide">
+									<a className={classNames({active: this.getBasePath() == 'guide'})}>{t('header:link.guide')}</a>
 								</LinkContainer>
 								<LinkContainer to="/leagues">
 									<a className={classNames({active: this.getBasePath() == 'leagues'})}>{t('header:link.leagues')}</a>
