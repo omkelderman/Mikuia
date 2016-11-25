@@ -58,7 +58,7 @@ var FeaturedStream = React.createClass({
 									<Col xs={8}>
 										<br />
 										<h4 className="text-muted">{t('home:featured.example')}</h4>
-										<h1>{this.state.stream.display_name} <small><Interpolate i18nKey='streams:stream.playing' game={"osu!"} /></small></h1>
+										<h1>{this.state.stream.display_name} <small><Interpolate i18nKey='streams:stream.playing' game={this.state.stream.game} /></small></h1>
 										<p>{this.state.stream.status}</p>
 										<br />
 										<a href={"http://twitch.tv/" + this.state.stream.name} className="btn btn-twitch btn-xs">
