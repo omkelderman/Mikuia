@@ -61,9 +61,6 @@ var Header = React.createClass({
 								<LinkContainer to="/guide">
 									<a className={classNames({active: this.getBasePath() == 'guide'})}>{t('header:link.guide')}</a>
 								</LinkContainer>
-								<LinkContainer to="/leagues">
-									<a className={classNames({active: this.getBasePath() == 'leagues'})}>{t('header:link.leagues')}</a>
-								</LinkContainer>
 								<a href="https://p.datadoghq.com/sb/AF-ona-ccd2288b29">{t('header:link.status')}</a>
 								<Dropdown className="mikuia-navbar-dropdown" id="dropdown-language">
 									<LinkDropdownToggle bsRole="toggle">
