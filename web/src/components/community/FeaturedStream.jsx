@@ -53,7 +53,7 @@ var FeaturedStream = React.createClass({
 							<div className="container text-white">
 								<Row>
 									<Col xs={4}>
-										<iframe src="http://player.twitch.tv/?channel=choilicious" frameBorder={0} scrolling={"no"} autoPlay={false} height={225} width={369} />
+										<iframe src={"http://player.twitch.tv/?channel=" + this.state.stream.name} frameBorder={0} scrolling={"no"} autoPlay={false} height={225} width={369} />
 									</Col>
 									<Col xs={8}>
 										<br />
