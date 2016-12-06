@@ -440,7 +440,7 @@ class exports.Chat
 				debug: @Mikuia.settings.bot.debug
 			connection:
 				cluster: 'aws'
-				reconnect: true
+				reconnect: false
 			identity:
 				username: @Mikuia.settings.bot.name
 				password: @Mikuia.settings.bot.oauth
