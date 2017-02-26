@@ -1,0 +1,15 @@
+{
+  "name": "Mikuia",
+  "version": "0.1.0",
+  "author": "Hatsuney",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mikuia/Mikuia.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^7.0.5",
+    "typescript": "^2.1.5"
+  }
+}
