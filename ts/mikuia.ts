@@ -8,7 +8,6 @@ export class Mikuia {
 	private db: redis.RedisClient;
 	private twitchChat: TwitchChat;
 
-	public log = new Log();
 	public settings: Settings;
 
 	initDatabase() {
