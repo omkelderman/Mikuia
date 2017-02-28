@@ -1,5 +1,14 @@
 export interface Settings {
-	bot: {
-		oauth: string;
+	redis: {
+		port: number,
+		host: string,
+		db: number,
+		options: any
+	},
+	services: {
+		twitch: {
+			username: string,
+			oauth: string
+		}
 	}
 }

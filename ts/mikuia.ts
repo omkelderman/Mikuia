@@ -1,7 +1,29 @@
+import * as redis from 'redis';
+
+import {Log} from './lib/log';
 import {Settings} from './lib/settings';
+import {TwitchChat} from './lib/services/twitchChat'
 
 export class Mikuia {
-	private settings: Settings;
+	private db: redis.RedisClient;
+	private twitchChat: TwitchChat;
+
+	public log = new Log();
+	public settings: Settings;
+
+	initDatabase() {
+		this.db = redis.createClient(this.settings.redis.port, this.settings.redis.host, this.settings.redis.options);
+
+		this.db.on('ready', () => {
+			Log.success('Redis', 'Connected to Redis.')
+			this.db.select(this.settings.redis.db);
+		})
+
+		this.db.on('error', (error) => {
+			Log.fatal('Redis', 'Something broke.')
+			console.log(error);
+		})
+	}
 
 	loadSettings() {
 		try {
@@ -13,5 +35,9 @@ export class Mikuia {
 
 	start() {
 		this.loadSettings();
+		this.initDatabase();
+
+		this.twitchChat = new TwitchChat(this);
+		this.twitchChat.connect();
 	}
 }

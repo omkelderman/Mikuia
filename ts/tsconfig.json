@@ -1,8 +1,8 @@
 {
-    "compilerOptions": {
-        "allowJs": true,
-        "moduleResolution": "node",
-        "target": "es6"
-    },
-    "compileOnSave": true
+	"compilerOptions": {
+		"allowJs": true,
+		"moduleResolution": "node",
+		"target": "es2017"
+	},
+	"compileOnSave": true
 }
