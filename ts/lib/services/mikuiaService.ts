@@ -1,5 +1,10 @@
+import * as redis from 'redis';
+
+import {Channel} from '../channel';
 import {Settings} from '../settings';
 
 export interface MikuiaService {
-	async connect();
+	connect();
+	join(channel: Channel);
+	start();
 }

@@ -1,5 +1,5 @@
 {
-	"name": "Mikuia",
+	"name": "mikuia",
 	"version": "0.1.0",
 	"author": "Hatsuney",
 	"license": "MIT",
@@ -8,12 +8,16 @@
 		"url": "https://github.com/Mikuia/Mikuia.git"
 	},
 	"dependencies": {
+		"bluebird": "^3.4.7",
 		"cli-color": "^1.2.0",
 		"moment": "^2.17.1",
 		"redis": "^2.6.5",
+		"request": "^2.80.0",
+		"rolling-rate-limiter": "^0.1.4",
 		"tmi.js": "^1.1.2"
 	},
 	"devDependencies": {
+		"@types/bluebird": "^3.0.37",
 		"@types/cli-color": "^0.3.29",
 		"@types/node": "^7.0.5",
 		"@types/redis": "^0.12.36",

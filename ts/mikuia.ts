@@ -1,27 +1,38 @@
+import * as bluebird from 'bluebird';
 import * as redis from 'redis';
 
-import {Log} from './lib/log';
+bluebird.promisifyAll(redis);
+
+import {Log} from './lib/log';	
+import {Models} from './lib/models';
 import {Settings} from './lib/settings';
-import {TwitchChat} from './lib/services/twitchChat'
+import {TwitchService} from './lib/services/twitchService'
 
 export class Mikuia {
 	private db: redis.RedisClient;
-	private twitchChat: TwitchChat;
+	private models: Models;
+	private settings: Settings;
+	private twitchService: TwitchService;
 
-	public settings: Settings;
+	async initDatabase() {
+		return new Promise((resolve) => {
+			this.db = redis.createClient(this.settings.redis.port, this.settings.redis.host, this.settings.redis.options);
 
-	initDatabase() {
-		this.db = redis.createClient(this.settings.redis.port, this.settings.redis.host, this.settings.redis.options);
+			this.db.on('ready', () => {
+				Log.success('Redis', 'Connected to Redis.')
+				this.db.select(this.settings.redis.db);
+				resolve();
+			})
 
-		this.db.on('ready', () => {
-			Log.success('Redis', 'Connected to Redis.')
-			this.db.select(this.settings.redis.db);
+			this.db.on('error', (error) => {
+				Log.fatal('Redis', 'Something broke.')
+				console.log(error);
+			})
 		})
+	}
 
-		this.db.on('error', (error) => {
-			Log.fatal('Redis', 'Something broke.')
-			console.log(error);
-		})
+	initModels() {
+		this.models = new Models(this.db);
 	}
 
 	loadSettings() {
@@ -32,11 +43,14 @@ export class Mikuia {
 		}
 	}
 
-	start() {
+	async start() {
 		this.loadSettings();
-		this.initDatabase();
+		
+		await this.initDatabase();
+		this.initModels();
 
-		this.twitchChat = new TwitchChat(this);
-		this.twitchChat.connect();
+		this.twitchService = new TwitchService(this.settings, this.db);
+		await this.twitchService.connect();
+		this.twitchService.start();
 	}
 }
