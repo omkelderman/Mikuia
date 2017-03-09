@@ -49,7 +49,7 @@ export class Mikuia {
 		await this.initDatabase();
 		this.initModels();
 
-		this.twitchService = new TwitchService(this.settings, this.db);
+		this.twitchService = new TwitchService(this.settings, this.db, this.models);
 		await this.twitchService.connect();
 		this.twitchService.start();
 	}

@@ -8,15 +8,9 @@ import {Channel} from '../channel';
 import {Log} from '../log';
 import {MikuiaService} from './mikuiaService';
 import {Mikuia} from '../../mikuia';
+import {Models} from '../models';
 import {Settings} from '../settings'
 import {Tools} from '../tools';
-
-declare module 'redis' {
-	export interface RedisClient extends NodeJS.EventEmitter {
-		smembersAsync(...args: any[]): Promise<any>;
-		zrangebyscoreAsync(...args: any[]): Promise<any>;
-	}
-}
 
 export class TwitchService implements MikuiaService {
 	private channelsJoined = [];
@@ -31,7 +25,7 @@ export class TwitchService implements MikuiaService {
 
 	private updatingChannels = false;
 
-	constructor(private settings: Settings, private db: redis.RedisClient) {}
+	constructor(private settings: Settings, private db: redis.RedisClient, private models: Models) {}
 
 	async connect() {
 		for(let id of [...Array(this.settings.services.twitch.connections).keys()]) {
@@ -39,10 +33,14 @@ export class TwitchService implements MikuiaService {
 		}
 	}
 
-	join(channel: Channel) {
+	getChannel(name: string) {
+		return this.models.getChannel(name, 'twitch');
+	}
+
+	async join(channel: Channel) {
 		if(channel.type == 'twitch') {
 			if(!(channel.id in this.channelsJoined)) {
-				var limitEntries: any = this.db.zrangebyscoreAsync('service:twitch:limiter:join', '-inf', '+inf');
+				var limitEntries = await this.db.zrangebyscoreAsync('service:twitch:limiter:join', '-inf', '+inf');
 				var currentTime = (new Date).getTime() * 1000;
 				var remainingRequests = 49;
 
@@ -55,7 +53,10 @@ export class TwitchService implements MikuiaService {
 				if(remainingRequests > 0) {
 					this.joinLimiter('', (err, timeLeft) => {
 						if(!timeLeft) {
-							this.connections[0].join(channel.name);
+							this.connections[0].join(channel.name).catch((err) => {
+								Log.error('Twitch', 'Failed to join channel: #' + channel.name + '.');
+								console.log(err);
+							})
 						}
 					})
 				}
@@ -70,10 +71,10 @@ export class TwitchService implements MikuiaService {
 			var client = new tmi.client({
 				options: {
 					clientId: this.settings.services.twitch.clientId,
-					debug: true
+					debug: false
 				},
 				connection: {
-					reconnect: false
+					reconnect: true
 				},
 				identity: {
 					username: this.settings.services.twitch.username,
@@ -90,12 +91,19 @@ export class TwitchService implements MikuiaService {
 			})
 
 			client.on('disconnected', (reason: string) => {
-				Log.error('Twitch', logHeader + ' Disconnected. Reason: ' + reason);
+				Log.error('Twitch', logHeader + ' Disconnected.');
+				console.log(reason);
 			})
 
 			client.on('join', (channel: string, username: string) => {
 				if(username == this.settings.services.twitch.username.toLowerCase()) {
 					Log.info('Twitch', logHeader + ' Joined channel: ' + channel + '.');
+				}
+			})
+
+			client.on('message', (channel: string, userstate: any, message: string, self: boolean) => {
+				if(message.toLowerCase().indexOf('lukanya') > -1) {
+					Log.info('Twitch', logHeader + ' ' + cli.yellowBright(channel) + ' / ' + cli.greenBright(userstate.username) + ': ' + message);
 				}
 			})
 
@@ -116,12 +124,14 @@ export class TwitchService implements MikuiaService {
 
 	async parseChunk(chunk) {
 		return new Promise((resolve, reject) => {
+			console.log(cli.magenta(chunk.join(',')));
 			request({
 				url: 'https://api.twitch.tv/kraken/streams/?channel=' + chunk.join(',') + '&client_id=' + this.settings.services.twitch.clientId + '&api_version=5'
 			}, (err, res, body) => {
 				if(!err) {
 					resolve(JSON.parse(body));
 				} else {
+					console.log(err);
 					reject(err);
 				}
 			})
@@ -134,8 +144,12 @@ export class TwitchService implements MikuiaService {
 			var channels = await this.db.smembersAsync('service:twitch:channels:enabled');
 
 			for(let chunk of Tools.chunkArray(channels, 100)) {
-				var streams = await this.parseChunk(chunk);
-				console.log(streams);
+				var data: any = await this.parseChunk(chunk);
+
+				for(let stream of data.streams) {
+					var channel = this.getChannel(stream.channel.name);
+					this.join(channel);
+				}
 			}
 
 			// this.updatingChannels = false;
