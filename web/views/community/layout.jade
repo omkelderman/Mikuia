@@ -133,7 +133,15 @@ html
 		script(type='text/javascript', src='/js/bootstrap.min.js')
 		script(type='text/javascript', src='/socket.io/socket.io.js')
 		script(type='text/javascript', src='/js/mikuia.js')
-		script(async src='//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js')
+		script(type='text/javascript', src='https://cdn.smooch.io/smooch.min.js')
+		script(type='text/javascript').
+			Smooch.init({
+				appToken: 'edehxcrsaa2trnrcqm7jra0l8',
+				customText: {
+					introductionText: 'Having problems? Feel free to ask for help!',
+					introAppText: 'Message us below or using your favorite app! (English only)'
+				}
+			})
 		script(type='text/javascript').
 			$('[rel=tooltip]').tooltip({
 				container: 'body',
