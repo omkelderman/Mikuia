@@ -120,6 +120,7 @@ app.use (req, res, next) ->
 fs.mkdirs 'web/public/img/avatars'
 
 routeList =
+	api: 'web/routes/api'
 	community: 'web/routes/community'
 	dashboard: 'web/routes/dashboard'
 
@@ -148,6 +149,8 @@ app.post '/dashboard/commands/save/:name', checkAuth, routes.dashboard.commands.
 app.post '/dashboard/plugins/toggle', checkAuth, routes.dashboard.plugins.pluginToggle
 app.post '/dashboard/settings/save/:name', checkAuth, routes.dashboard.settings.save
 app.post '/dashboard/settings/toggle', checkAuth, routes.dashboard.settings.toggle
+
+app.get '/api/user', routes.api.user
 
 app.get '/', routes.community.index
 app.get '/about', routes.community.about

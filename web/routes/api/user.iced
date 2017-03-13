@@ -28,6 +28,10 @@ module.exports = (req, res) ->
 					rank: parseInt(user.rank) + 1
 	else
 		if req.user
+			Channel = new Mikuia.Models.Channel req.user.username
+
+			await Channel.getAll defer err, user
+
 			console.log req.user
 
 			res.json
@@ -35,7 +39,9 @@ module.exports = (req, res) ->
 				id: req.user.id
 				username: req.user.username
 				displayName: req.user.displayName
+				email: req.user._json.email
 				logo: req.user._json.logo
+				key: (if user?.key? then user.key else null)
 		else
 			res.json
 				auth: false
