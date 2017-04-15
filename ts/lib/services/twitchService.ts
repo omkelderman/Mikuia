@@ -15,6 +15,7 @@ import {Tools} from '../tools';
 import {TwitchGetLiveStreamsResponse} from '../responses/twitchGetLiveStreamsResponse';
 
 export class TwitchService implements MikuiaService {
+	private channelClients = {};
 	private channelsJoined: Array<string> = [];
 	private connectionChannels = {};
 	private connections = {};
@@ -40,6 +41,10 @@ export class TwitchService implements MikuiaService {
 
 	getChannel(name: string) {
 		return this.models.getChannel(name, 'twitch');
+	}
+
+	handleMessage(userstate: any, channel: string, message: string) {
+		
 	}
 
 	async join(channel: Channel) {
@@ -91,6 +96,72 @@ export class TwitchService implements MikuiaService {
 		});
 	}
 
+	async parseChunk(chunk): Promise<TwitchGetLiveStreamsResponse> {
+		return new Promise<TwitchGetLiveStreamsResponse>((resolve) => {
+			request({
+				url: 'https://api.twitch.tv/kraken/streams/?channel=' + chunk.join(',') + '&client_id=' + this.settings.services.twitch.clientId + '&api_version=5'
+			}, (err, res, body) => {
+				if(!err && res.statusCode == 200) {
+					resolve(JSON.parse(body));
+				} else {
+					Log.error('Twitch', 'Channel check request failed. Resolving with an empty array.');
+					console.log(err);
+					resolve({
+						_total: 0,
+						streams: []
+					});
+				}
+			})
+		})
+	}
+
+	async parseNextQueueMessage() {
+		return new Promise(async (resolve, reject) => {
+			var entry = await this.db.lpopAsync('service:twitch:queue:chat');
+			if(entry) {
+				var data = JSON.parse(entry);
+
+				// TODO: rate limiting
+				if(this.channelsJoined.indexOf(data.channel) > -1) {
+					this.connections[this.channelClients[data.channel]].say(data.channel, data.message);
+					setTimeout(resolve, 10);
+				} else {
+					setTimeout(resolve, 10);
+					// TODO: put it back? xd
+				}
+			} else {
+				setTimeout(resolve, 100);
+			}
+		});
+	}
+
+	say(channel: string, message: string) {
+		if(channel.indexOf('#') == -1) {
+			channel = '#' + channel;
+		}
+
+		if(message.indexOf('.') == 0 || message.indexOf('/') == 0) {
+			message = '!' + message.replace('.', '').replace('/', '');
+		}
+
+		this.sayUnfiltered(channel, message);
+	}
+
+	sayUnfiltered(channel: string, message: string) {
+		// TODO: rate limiters
+		var lines = message.split('\\n');
+		for(let line of lines) {
+			if(line.trim() != '') {
+				var entry = JSON.stringify({
+					channel: channel,
+					message: line
+				});
+				
+				this.db.rpushAsync('service:twitch:queue:chat', entry);
+			}
+		}
+	}
+
 	spawnConnection(id: number) {
 		var self = this;
 		return new Promise((resolve) => {
@@ -133,11 +204,16 @@ export class TwitchService implements MikuiaService {
 
 					this.channelsJoined.push(channel);
 					this.connectionChannels[client.id].push(channel);
+					this.channelClients[channel] = client.id;
 					this.nextJoinClient++;
 				}
 			})
 
 			client.on('message', (channel: string, userstate: any, message: string, self: boolean) => {
+				if(!self) {
+					this.handleMessage(userstate, channel, message);
+				}
+
 				if(message.toLowerCase().indexOf(this.settings.services.twitch.username.toLowerCase()) > -1) {
 					Log.info('Twitch', logHeader + ' ' + cli.yellowBright(channel) + ' ' + cli.yellow('(' + this.idMappings[channel] + ')') + ' / ' + cli.greenBright(userstate.username) + ': ' + message);
 				}
@@ -149,6 +225,7 @@ export class TwitchService implements MikuiaService {
 
 					this.channelsJoined.splice(this.channelsJoined.indexOf(channel), 1);
 					this.connectionChannels[client.id].splice(this.connectionChannels[client.id].indexOf(channel), 1);
+					delete this.channelClients[channel];					
 				}
 			})
 		})
@@ -156,28 +233,14 @@ export class TwitchService implements MikuiaService {
 
 	async start() {
 		this.updateChannels();
+
 		setInterval(() => {
 			this.updateChannels()
 		}, 2000);
-	}
 
-	async parseChunk(chunk): Promise<TwitchGetLiveStreamsResponse> {
-		return new Promise<TwitchGetLiveStreamsResponse>((resolve) => {
-			request({
-				url: 'https://api.twitch.tv/kraken/streams/?channel=' + chunk.join(',') + '&client_id=' + this.settings.services.twitch.clientId + '&api_version=5'
-			}, (err, res, body) => {
-				if(!err) {
-					resolve(JSON.parse(body));
-				} else {
-					Log.error('Twitch', 'Channel check request failed. Resolving with an empty array.');
-					console.log(err);
-					resolve({
-						_total: 0,
-						streams: []
-					});
-				}
-			})
-		})
+		while(true) {
+			await this.parseNextQueueMessage();
+		}
 	}
 
 	async updateChannels() {

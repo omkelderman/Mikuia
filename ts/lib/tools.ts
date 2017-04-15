@@ -7,4 +7,10 @@ export class Tools {
         }
         return R;
     }
+
+    static sleep(ms) {
+        return new Promise(resolve => {
+            setTimeout(resolve, ms);
+        })
+    }
 }
