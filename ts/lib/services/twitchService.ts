@@ -19,6 +19,7 @@ export class TwitchService implements MikuiaService {
 	private connectionChannels = {};
 	private connections = {};
 	private idMappings = {};
+	private nextJoinClient = 0;
 
 	private joinLimiter = limiter({
 		interval: 10 * 1000,
@@ -44,7 +45,7 @@ export class TwitchService implements MikuiaService {
 	async join(channel: Channel) {
 		return new Promise(async (resolve) => {
 			if(channel.type == 'twitch') {
-				if(this.channelsJoined.indexOf(channel.name) == -1) {
+				if(this.channelsJoined.indexOf('#' + channel.name) == -1) {
 					/*	Uhhh, I think this deserves an explanation.
 						I don't have one.
 						This has been working for like a year or so, it's probably fine. */
@@ -62,10 +63,15 @@ export class TwitchService implements MikuiaService {
 					if(remainingRequests > 0) {
 						this.joinLimiter('', (err, timeLeft) => {
 							if(!timeLeft) {
-								this.connections[0].join(channel.name).then(() => {
+
+								if(this.nextJoinClient >= this.settings.services.twitch.connections) {
+									this.nextJoinClient = 0;
+								}
+
+								this.connections[this.nextJoinClient].join(channel.name).then(() => {
 									resolve();
 								}).catch((err) => {
-									Log.error('Twitch', 'Failed to join channel: #' + channel.name + '.');
+									Log.error('Twitch', 'Failed to join channel: ' + cli.yellowBright('#' + channel.name) + '.');
 									console.log(err);
 									resolve(err);
 								})
@@ -127,6 +133,7 @@ export class TwitchService implements MikuiaService {
 
 					this.channelsJoined.push(channel);
 					this.connectionChannels[client.id].push(channel);
+					this.nextJoinClient++;
 				}
 			})
 
@@ -148,7 +155,7 @@ export class TwitchService implements MikuiaService {
 	}
 
 	async start() {
-		await this.updateChannels();
+		this.updateChannels();
 		setInterval(() => {
 			this.updateChannels()
 		}, 2000);
@@ -156,7 +163,6 @@ export class TwitchService implements MikuiaService {
 
 	async parseChunk(chunk): Promise<TwitchGetLiveStreamsResponse> {
 		return new Promise<TwitchGetLiveStreamsResponse>((resolve) => {
-			// console.log(cli.magenta(chunk.join(',')));
 			request({
 				url: 'https://api.twitch.tv/kraken/streams/?channel=' + chunk.join(',') + '&client_id=' + this.settings.services.twitch.clientId + '&api_version=5'
 			}, (err, res, body) => {
@@ -199,13 +205,6 @@ export class TwitchService implements MikuiaService {
 			Log.info('Twitch', 'Finished the channel check.');
 			this.updatingChannels = false;
 		}
-
-		// this.db.smembers('channels:enabled', (err, data) => {
-		// 	console.log(err);
-		// 	console.log(data);
-		// });
-
-		// this.twitchChat.join(this.models.getChannel('esl_csgo', 'twitch'));
 	}
 
 }
