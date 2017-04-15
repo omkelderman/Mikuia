@@ -12,6 +12,8 @@ import {Models} from '../models';
 import {Settings} from '../settings'
 import {Tools} from '../tools';
 
+import {TwitchGetLiveStreamsResponse} from '../responses/twitchGetLiveStreamsResponse';
+
 export class TwitchService implements MikuiaService {
 	private channelsJoined = [];
 	private connections = {};
@@ -122,17 +124,21 @@ export class TwitchService implements MikuiaService {
 		}, 2000);
 	}
 
-	async parseChunk(chunk) {
-		return new Promise((resolve, reject) => {
-			console.log(cli.magenta(chunk.join(',')));
+	async parseChunk(chunk): Promise<TwitchGetLiveStreamsResponse> {
+		return new Promise<TwitchGetLiveStreamsResponse>((resolve, reject) => {
+			// console.log(cli.magenta(chunk.join(',')));
 			request({
 				url: 'https://api.twitch.tv/kraken/streams/?channel=' + chunk.join(',') + '&client_id=' + this.settings.services.twitch.clientId + '&api_version=5'
 			}, (err, res, body) => {
 				if(!err) {
 					resolve(JSON.parse(body));
 				} else {
+					Log.error('Twitch', 'Channel check request failed. Resolving with an empty array.');
 					console.log(err);
-					reject(err);
+					resolve({
+						_total: 0,
+						streams: []
+					});
 				}
 			})
 		})
@@ -140,19 +146,25 @@ export class TwitchService implements MikuiaService {
 
 	async updateChannels() {
 		if(!this.updatingChannels) {
+			// This is so fucking ugly, I know.
+			Log.info('Twitch', 'Starting the channel check.');
 			this.updatingChannels = true;
+
 			var channels = await this.db.smembersAsync('service:twitch:channels:enabled');
 
-			for(let chunk of Tools.chunkArray(channels, 100)) {
-				var data: any = await this.parseChunk(chunk);
+			for(let [index, chunk] of Tools.chunkArray(channels, 100).entries()) {
+				// Fucking lmao
+				Log.info('Twitch', 'Checking channels ' + (index * 100 + 1) + ' to ' + (index * 100 + chunk.length) + '...')
 
+				var data: TwitchGetLiveStreamsResponse = await this.parseChunk(chunk);
 				for(let stream of data.streams) {
 					var channel = this.getChannel(stream.channel.name);
 					this.join(channel);
 				}
 			}
 
-			// this.updatingChannels = false;
+			Log.info('Twitch', 'Finished the channel check.');
+			this.updatingChannels = false;
 		}
 
 		// this.db.smembers('channels:enabled', (err, data) => {

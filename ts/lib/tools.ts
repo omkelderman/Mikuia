@@ -1,5 +1,5 @@
 export class Tools {
-    static chunkArray<T>(array: Array<T>, size: number): Array<T> {
+    static chunkArray<T>(array: Array<T>, size: number): Array<Array<T>> {
         var R: Array<any> = [];
         var a = array.slice(0);
         while(a.length > 0) {
