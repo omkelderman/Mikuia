@@ -44,7 +44,7 @@ export class TwitchService implements MikuiaService {
 	async join(channel: Channel) {
 		return new Promise(async (resolve) => {
 			if(channel.type == 'twitch') {
-				if(!(channel.id in this.channelsJoined)) {
+				if(this.channelsJoined.indexOf(channel.name) == -1) {
 					/*	Uhhh, I think this deserves an explanation.
 						I don't have one.
 						This has been working for like a year or so, it's probably fine. */
