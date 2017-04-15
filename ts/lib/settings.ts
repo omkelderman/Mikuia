@@ -14,5 +14,8 @@ export interface Settings {
 			connections: number,
 			clientId: string
 		}
+	},
+	zeromq: {
+		address: string
 	}
 }

@@ -4,12 +4,14 @@ import * as redis from 'redis';
 bluebird.promisifyAll(redis);
 
 import {Log} from './lib/log';	
+import {Messaging} from './lib/messaging';
 import {Models} from './lib/models';
 import {Settings} from './lib/settings';
 import {TwitchService} from './lib/services/twitchService'
 
 export class Mikuia {
 	private db: redis.RedisClient;
+	private msg: Messaging;
 	private models: Models;
 	private settings: Settings;
 	private twitchService: TwitchService;
@@ -48,6 +50,8 @@ export class Mikuia {
 		
 		await this.initDatabase();
 		this.initModels();
+
+		this.msg = new Messaging(this.settings);
 
 		this.twitchService = new TwitchService(this.settings, this.db, this.models);
 		await this.twitchService.connect();
