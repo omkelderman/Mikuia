@@ -58,7 +58,27 @@ export class TwitchService implements MikuiaService {
 		var Channel = this.getChannel(this.idMappings[channel]);
 		var command = await Channel.getCommand(trigger);
 
-		console.log(cli.greenBright(channel) + ' -> ' + cli.redBright(trigger) + ' -> ' + cli.cyanBright(command));
+		if(command) {
+			this.msg.broadcast('event:handler:' + command, {
+				service: {
+					userstate: userstate,
+					channel: channel,
+					message: message,
+					type: 'twitch'
+				},
+				message: message,
+				tokens: tokens
+			});
+		}
+		// console.log(cli.greenBright(channel) + ' -> ' + cli.redBright(trigger) + ' -> ' + cli.cyanBright(command));
+	}
+
+	handleResponse(event: any, data: any) {
+		var channel = event.service.channel;
+
+		if(this.channelsJoined.indexOf(channel) > -1) {
+			this.say(channel, data.message);
+		}
 	}
 
 	async join(channel: Channel) {
@@ -268,7 +288,7 @@ export class TwitchService implements MikuiaService {
 
 			for(let [index, chunk] of Tools.chunkArray(channels, 100).entries()) {
 				// Fucking lmao
-				Log.info('Twitch', 'Checking channels ' + (index * 100 + 1) + ' to ' + (index * 100 + chunk.length) + '...')
+				// Log.info('Twitch', 'Checking channels ' + (index * 100 + 1) + ' to ' + (index * 100 + chunk.length) + '...')
 
 				var data: TwitchGetLiveStreamsResponse = await this.parseChunk(chunk);
 				for(let stream of data.streams) {
