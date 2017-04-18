@@ -6,6 +6,7 @@ import * as tmi from 'tmi.js';
 
 import {Channel} from '../channel';
 import {Log} from '../log';
+import {Messaging} from '../messaging';
 import {MikuiaService} from './mikuiaService';
 import {Mikuia} from '../../mikuia';
 import {Models} from '../models';
@@ -19,7 +20,8 @@ export class TwitchService implements MikuiaService {
 	private channelsJoined: Array<string> = [];
 	private connectionChannels = {};
 	private connections = {};
-	private idMappings = {};
+	private idMappings = {}; // name -> id
+	private nameMappings = {}; // id -> name
 	private nextJoinClient = 0;
 
 	private joinLimiter = limiter({
@@ -31,7 +33,7 @@ export class TwitchService implements MikuiaService {
 
 	private updatingChannels = false;
 
-	constructor(private settings: Settings, private db: redis.RedisClient, private models: Models) {}
+	constructor(private settings: Settings, private db: redis.RedisClient, private models: Models, private msg: Messaging) {}
 
 	async connect() {
 		for(let id of [...Array(this.settings.services.twitch.connections).keys()]) {
@@ -39,18 +41,31 @@ export class TwitchService implements MikuiaService {
 		}
 	}
 
-	getChannel(name: string) {
-		return this.models.getChannel(name, 'twitch');
+	getChannel(id: number) {
+		return this.models.getChannel(id, 'twitch');
 	}
 
-	handleMessage(userstate: any, channel: string, message: string) {
-		
+	async handleMessage(userstate: any, channel: string, message: string) {
+		this.msg.broadcast('service:twitch:chat:message', {
+			user: userstate,
+			channel: channel,
+			message: message
+		});
+
+		var tokens = message.split(' ');
+		var trigger = tokens[0];
+
+		var Channel = this.getChannel(this.idMappings[channel]);
+		var command = await Channel.getCommand(trigger);
+
+		console.log(cli.greenBright(channel) + ' -> ' + cli.redBright(trigger) + ' -> ' + cli.cyanBright(command));
 	}
 
 	async join(channel: Channel) {
 		return new Promise(async (resolve) => {
 			if(channel.type == 'twitch') {
-				if(this.channelsJoined.indexOf('#' + channel.name) == -1) {
+				var name = this.nameMappings[channel.id];
+				if(this.channelsJoined.indexOf('#' + name) == -1) {
 					/*	Uhhh, I think this deserves an explanation.
 						I don't have one.
 						This has been working for like a year or so, it's probably fine. */
@@ -73,10 +88,10 @@ export class TwitchService implements MikuiaService {
 									this.nextJoinClient = 0;
 								}
 
-								this.connections[this.nextJoinClient].join(channel.name).then(() => {
+								this.connections[this.nextJoinClient].join(name).then(() => {
 									resolve();
 								}).catch((err) => {
-									Log.error('Twitch', 'Failed to join channel: ' + cli.yellowBright('#' + channel.name) + '.');
+									Log.error('Twitch', 'Failed to join channel: ' + cli.yellowBright('#' + name) + '.');
 									console.log(err);
 									resolve(err);
 								})
@@ -225,7 +240,7 @@ export class TwitchService implements MikuiaService {
 
 					this.channelsJoined.splice(this.channelsJoined.indexOf(channel), 1);
 					this.connectionChannels[client.id].splice(this.connectionChannels[client.id].indexOf(channel), 1);
-					delete this.channelClients[channel];					
+					delete this.channelClients[channel];
 				}
 			})
 		})
@@ -257,11 +272,13 @@ export class TwitchService implements MikuiaService {
 
 				var data: TwitchGetLiveStreamsResponse = await this.parseChunk(chunk);
 				for(let stream of data.streams) {
-					var channel = this.getChannel(stream.channel.name);
-					
-					await this.join(channel);
+					var channel = this.getChannel(stream.channel._id);
 					
 					this.idMappings['#' + stream.channel.name] = stream.channel._id;
+					this.idMappings[stream.channel.name] = stream.channel._id;
+					this.nameMappings[stream.channel._id] = stream.channel.name;
+
+					await this.join(channel);
 				}
 			}
 

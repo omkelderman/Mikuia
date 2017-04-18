@@ -16,6 +16,7 @@ export interface Settings {
 		}
 	},
 	zeromq: {
-		address: string
+		address: string,
+		ports: number[]
 	}
 }

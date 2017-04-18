@@ -60,6 +60,7 @@ class Migration {
 		await this.luka.hsetAsync('service:twitch:ids:usernames', user._id, user.name);
 		await this.luka.hsetAsync('service:twitch:usernames:ids', user.name, user._id);
 		await this.luka.hsetAsync('channel:twitch:' + user._id, 'display_name', user.display_name);
+		await this.luka.hsetAsync('channel:twitch:' + user._id, 'name', user.username);
 	}
 
 	start() {

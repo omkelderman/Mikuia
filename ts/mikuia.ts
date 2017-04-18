@@ -53,7 +53,7 @@ export class Mikuia {
 
 		this.msg = new Messaging(this.settings);
 
-		this.twitchService = new TwitchService(this.settings, this.db, this.models);
+		this.twitchService = new TwitchService(this.settings, this.db, this.models, this.msg);
 		await this.twitchService.connect();
 		this.twitchService.start();
 	}
