@@ -8,7 +8,7 @@ import {Tools} from './tools';
 
 export class Messaging {
     private handlers = {};
-    private plugins: string[] = [];
+    private plugins = {};
     private tokens = {};
 
     private pub: zmq.Socket;
@@ -28,10 +28,26 @@ export class Messaging {
 
         Log.info('0mq', 'REP listening on: ' + cli.redBright(this.settings.zeromq.address + ':' + this.settings.zeromq.ports[0]));
         Log.info('0mq', 'PUB listening on: ' + cli.redBright(this.settings.zeromq.address + ':' + this.settings.zeromq.ports[1]));
+
+        setInterval(() => {
+            this.checkHeartbeats();
+        }, 30 * 1000);
     }
 
     broadcast(topic: string, message: object) {
         this.pub.send([topic, JSON.stringify(message)]);
+    }
+
+    checkHeartbeats() {
+        Log.info('0mq', 'Checking heartbeats...');
+        Object.keys(this.plugins).map((name) => {
+            var plugin = this.plugins[name];
+
+            Log.info('0mq', 'Plugin: ' + cli.redBright(name) + ' - last heartbeat: ' + cli.greenBright(((new Date()).getTime() - plugin.heartbeat) / 1000) + ' seconds ago.');
+            if((new Date()).getTime() - plugin.heartbeat > 30 * 1000) {
+                this.removePlugin(name);
+            }
+        })
     }
 
     parseMessage(req) {
@@ -43,14 +59,31 @@ export class Messaging {
                     error: false
                 });
 
+            case "heartbeat":
+                if(this.tokens[req.token]) {
+                    this.plugins[this.tokens[req.token]].heartbeat = (new Date()).getTime();
+                
+                    return this.reply(req, {
+                        error: false
+                    });
+                }
+
+                return this.reply(req, {
+                    error: true
+                });
+                
             case "identify":
                 var name = req.args.name;
 
-                if(name && this.plugins.indexOf(name) == -1) {
-                    this.plugins.push(name);
-                    
+                if(name && Object.keys(this.plugins).indexOf(name) == -1) {                    
                     var token = Math.random().toString(36).slice(-32);
                     this.tokens[token] = name;
+
+                    this.plugins[name] = {
+                        handlers: [],
+                        heartbeat: (new Date()).getTime(),
+                        token: token
+                    };
 
                     return this.reply(req, {
                         type: 'string',
@@ -71,6 +104,8 @@ export class Messaging {
                         plugin: this.tokens[req.token],
                         info: req.args.info
                     }
+
+                    this.plugins[this.tokens[req.token]].handlers.push(name);
 
                     return this.reply(req, {
                         error: false
@@ -106,6 +141,19 @@ export class Messaging {
                     error: true
                 });
         }
+    }
+
+    removePlugin(name) {
+        Log.warning('0mq', 'Removing plugin: ' + cli.redBright(name) + '.');
+
+        var plugin = this.plugins[name];
+
+        for(let handler of plugin.handlers) {
+            delete this.handlers[handler];
+        }
+
+        delete this.tokens[plugin.token];
+        delete this.plugins[name];
     }
 
     reply(req, res) {
