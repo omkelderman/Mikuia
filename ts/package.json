@@ -21,7 +21,6 @@
 		"@types/bluebird": "^3.0.37",
 		"@types/cli-color": "^0.3.29",
 		"@types/node": "^7.0.5",
-		"@types/redis": "^0.12.36",
 		"@types/zmq": "^0.0.20",
 		"ts-node": "^3.0.2",
 		"typescript": "^2.2.1"

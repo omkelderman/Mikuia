@@ -50,6 +50,14 @@ export class Messaging {
         })
     }
 
+    getHandler(handler: string) {
+        return this.handlers[handler];
+    }
+
+    isHandler(handler: string) {
+        return Object.keys(this.handlers).indexOf(handler) > -1;
+    }
+
     parseMessage(req) {
         switch(req.method) {
             case "getExample":
@@ -99,10 +107,14 @@ export class Messaging {
             case "registerHandler":
                 var name = req.args.name;
 
-                if(!this.handlers[name] && this.tokens[req.token]) {
+                if(!this.isHandler(name) && this.tokens[req.token]) {
                     this.handlers[name] = {
                         plugin: this.tokens[req.token],
-                        info: req.args.info
+                        info: Tools.extend({
+                            description: '-',
+                            anonymous: true,
+                            settings: {}
+                        }, req.args.info)
                     }
 
                     this.plugins[this.tokens[req.token]].handlers.push(name);

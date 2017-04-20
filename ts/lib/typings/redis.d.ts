@@ -417,6 +417,7 @@ declare module 'redis' {
 		duplicate(options?: any[], callback?: ResCallbackT<any>): RedisClient;
 
 		hgetAsync(...args: any[]): Promise<string>;
+		hgetallAsync(...args: any[]): Promise<object>;
 		lpopAsync(...args: any[]): Promise<string>;
 		rpushAsync(...args: any[]): Promise<string>;
 		smembersAsync(...args: any[]): Promise<Array<string>>;

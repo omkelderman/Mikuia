@@ -56,10 +56,12 @@ export class TwitchService implements MikuiaService {
 		var trigger = tokens[0];
 
 		var Channel = this.getChannel(this.idMappings[channel]);
-		var command = await Channel.getCommand(trigger);
+		var handler = await Channel.getCommandHandler(trigger);
 
-		if(command) {
-			this.msg.broadcast('event:handler:' + command, {
+		if(handler && this.msg.isHandler(handler)) {
+			var settings = await Channel.getCommandSettings(trigger, this.msg.getHandler(handler).settings);
+
+			this.msg.broadcast('event:handler:' + handler, {
 				service: {
 					userstate: userstate,
 					channel: channel,

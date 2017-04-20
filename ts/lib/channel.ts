@@ -1,5 +1,7 @@
 import * as redis from 'redis';
 
+import {Tools} from './tools';
+
 export class Channel {
 	public id: number;
 	public type: string;
@@ -9,9 +11,16 @@ export class Channel {
 		this.type = type;
 	}
 
-	async getCommand(trigger: string): Promise<string | null> {
-		var handler = await this.db.hgetAsync('channel:' + this.type + ':' + this.id + ':commands', trigger);
-		return handler;
+	async getCommandHandler(trigger: string): Promise<string | null> {
+		return await this.db.hgetAsync('channel:' + this.type + ':' + this.id + ':commands', trigger);
+	}
+
+	async getCommandSettings(trigger: string, defaults: object | null): Promise<object | null> {
+		var settings = await this.db.hgetallAsync('channel:' + this.type + ':' + this.id + ':command:' + trigger);
+		if(defaults) {
+			return Tools.extend(defaults, settings);
+		}
+		return settings;
 	}
 
 	async getName(): Promise<string> {
