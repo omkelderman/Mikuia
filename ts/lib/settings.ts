@@ -12,7 +12,8 @@ export interface Settings {
 			username: string,
 			oauth: string,
 			connections: number,
-			clientId: string
+			clientId: string,
+			autojoin: object[]
 		}
 	},
 	zeromq: {
