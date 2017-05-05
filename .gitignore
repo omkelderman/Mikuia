@@ -12,3 +12,4 @@ settings.json
 sftp-config.json
 *.sublime-*
 .ftpconfig
+.vscode
