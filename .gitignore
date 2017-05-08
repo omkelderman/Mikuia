@@ -2,8 +2,10 @@ logs/
 node_modules/
 plugins/custom
 plugins/gamewisp
+plugins/patreon
 plugins/paypal
 plugins/slack
+plugins_old/
 web/public/img/avatars
 web/public/img/flags
 npm-debug.log
@@ -12,3 +14,5 @@ settings.json
 sftp-config.json
 *.sublime-*
 .ftpconfig
+.remote-sync.json
+.vscode
