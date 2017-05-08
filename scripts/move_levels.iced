@@ -38,11 +38,11 @@ module.exports =
 
 				console.log 'Adding ' + xpAmount + ' of ' + Target.getName() + ' XP to ' + username + '...'
 				
-				await Viewer.addExperience Target.getName(), xpAmount, 100, defer whatever
+				await Viewer.addExperience Target.getName(), xpAmount, 100, 'move_' + Source.getName(), defer whatever
 
 				console.log 'Resetting ' + username + '\'s ' + Source.getName() + ' XP to 0...'
 
-				await Viewer.addExperience Source.getName(), xpAmount * -1, 100, defer whatever
+				await Viewer.addExperience Source.getName(), xpAmount * -1, 100, 'move_' + Target.getName(), defer whatever
 
 			console.log 'Handling user levels...'
 
@@ -53,10 +53,10 @@ module.exports =
 
 				console.log 'Adding ' + xpAmount + ' of ' + username + ' XP to ' + Target.getName() + '...'
 
-				await Target.addExperience username, xpAmount, 100, defer whatever
+				await Target.addExperience username, xpAmount, 100,  'moved_' + Source.getName(), defer whatever
 
 				console.log 'Resetting ' + xpAmount + ' of ' + username + ' XP to 0 for ' + Source.getName() + '...'
 
-				await Source.addExperience username, xpAmount * -1, 100, defer whatever
+				await Source.addExperience username, xpAmount * -1, 100, 'moved_' + Target.getName(), defer whatever
 
 		process.exit 1
