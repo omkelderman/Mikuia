@@ -1,4 +1,5 @@
 import classNames from 'classnames'
+import $ from 'jquery'
 import React from 'react'
 import { translate } from 'react-i18next'
 
@@ -9,6 +10,30 @@ import {Authenticated, NotAuthenticated} from '../Auth'
 import LinkDropdownToggle from './LinkDropdownToggle'
 
 var Header = React.createClass({
+	componentDidMount: function() {
+		var self = this
+
+		$('.mikuia-navbar-lines-left > .mikuia-navbar-links > a').hover(function onNavbarLinkHover() {
+			if($('.mikuia-navbar-title-links > span[name="' + $(this).attr('name') + '"]').length > 0) {
+				self.hideNavbarLinks()
+				clearTimeout(self.state.navbarHideTimeout)
+				$(this).addClass('selected')
+				$('.mikuia-navbar-lines-left > .mikuia-navbar-title > span').hide()
+				$('.mikuia-navbar-title-links > span[name="' + $(this).attr('name') + '"]').show()
+			} else {
+				self.hideNavbarLinks()
+			}
+		})
+
+		$('.mikuia-navbar').hover(null, function() {
+			self.setState({
+				navbarHideTimeout: setTimeout(function() {
+					self.hideNavbarLinks()
+				}, 3000)
+			})
+		})
+	},
+
 	contextTypes: {
 		auth: React.PropTypes.bool,
 		user: React.PropTypes.object
@@ -18,10 +43,22 @@ var Header = React.createClass({
 		return this.props.pathName.split('/')[1]
 	},
 
+	getInitialState: function() {
+		return {
+			navbarHideTimeout: null
+		}
+	},
+
 	getLanguageFlagPath: function() {
 		var lng = localStorage.getItem('lang').split('-')[0] || 'en'
 
 		return '/img/flags/' + lng + '.png'
+	},
+
+	hideNavbarLinks: function() {
+		$('.mikuia-navbar-lines-left > .mikuia-navbar-links > a').removeClass('selected')
+		$('.mikuia-navbar-title-links > span').hide()
+		$('.mikuia-navbar-lines-left > .mikuia-navbar-title > span').show()
 	},
 
 	render: function() {
@@ -50,18 +87,18 @@ var Header = React.createClass({
 						<div className="mikuia-navbar-lines-left">
 							<div className="mikuia-navbar-links">
 								<LinkContainer to="/home">
-									<a className={classNames({active: this.getBasePath() == 'home'})}>{t('header:link.home')}</a>
+									<a name="home" className={classNames({active: this.getBasePath() == 'home'})}>{t('header:link.home')}</a>
 								</LinkContainer>
 								<LinkContainer to="/streams">
-									<a className={classNames({active: this.getBasePath() == 'streams'})}>{t('header:link.channels')}</a>
+									<a name="streams" className={classNames({active: this.getBasePath() == 'streams'})}>{t('header:link.channels')}</a>
 								</LinkContainer>
 								<LinkContainer to="/levels">
-									<a className={classNames({active: this.getBasePath() == 'levels'})}>{t('header:link.levels')}</a>
+									<a name="levels" className={classNames({active: this.getBasePath() == 'levels'})}>{t('header:link.levels')}</a>
 								</LinkContainer>
 								<LinkContainer to="/guide">
-									<a className={classNames({active: this.getBasePath() == 'guide'})}>{t('header:link.guide')}</a>
+									<a name="guide" className={classNames({active: this.getBasePath() == 'guide'})}>{t('header:link.guide')}</a>
 								</LinkContainer>
-								<a href="https://p.datadoghq.com/sb/AF-ona-ccd2288b29">{t('header:link.status')}</a>
+								<a name="status" href="https://p.datadoghq.com/sb/AF-ona-ccd2288b29">{t('header:link.status')}</a>
 								<Dropdown className="mikuia-navbar-dropdown" id="dropdown-language">
 									<LinkDropdownToggle bsRole="toggle">
 										<img src={this.getLanguageFlagPath()} />  <span className="caret"></span>
@@ -84,6 +121,44 @@ var Header = React.createClass({
 											</span>
 										)
 									})}</span>
+								</span>
+							</div>
+							<div className="mikuia-navbar-title-links">
+								<span name="home">
+									<LinkContainer to="/">
+										<a>Homepage</a>
+									</LinkContainer>
+								</span>
+								<span name="streams">
+									<LinkContainer to="/streams">
+										<a>Browse Channels</a>
+									</LinkContainer>
+								</span>
+								<span name="levels">
+									<NotAuthenticated>
+										<LinkContainer to="/levels">
+											<a>Browse Levels</a>
+										</LinkContainer>
+									</NotAuthenticated>
+									<Authenticated>
+										<LinkContainer to="/levels">
+											<a>Browse Levels</a>
+										</LinkContainer>
+										<LinkContainer to={"/user/" + this.context.user.username + "/levels"}>
+											<a>My Levels</a>
+										</LinkContainer>
+										<LinkContainer to={"/levels/" + this.context.user.username}>
+											<a>{this.context.user.displayName} Levels</a>
+										</LinkContainer>
+									</Authenticated>
+								</span>
+								<span name="guide">
+									<LinkContainer to="/guide">
+										<a>The Guide</a>
+									</LinkContainer>
+								</span>
+								<span name="status">
+									<a href="https://p.datadoghq.com/sb/AF-ona-ccd2288b29">Check Status</a>
 								</span>
 							</div>
 						</div>
