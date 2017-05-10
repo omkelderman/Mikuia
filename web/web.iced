@@ -21,6 +21,13 @@ checkAuth = (req, res, next) ->
 		req.session.redirectTo = req.path
 		res.redirect '/login'
 
+sendCorsHeaders = (req, res, next) ->
+	res.header 'Access-Control-Allow-Origin', '*'
+	res.header 'Access-Control-Allow-Credentials', true
+	res.header 'Access-Control-Allow-Methods', 'POST, GET, OPTIONS'
+	res.header 'Access-Control-Allow-Headers', 'Content-Type'
+	next()
+
 store = new RedisStore
 	host: Mikuia.settings.redis.host
 	port: Mikuia.settings.redis.port
@@ -150,11 +157,11 @@ app.post '/dashboard/plugins/toggle', checkAuth, routes.dashboard.plugins.plugin
 app.post '/dashboard/settings/save/:name', checkAuth, routes.dashboard.settings.save
 app.post '/dashboard/settings/toggle', checkAuth, routes.dashboard.settings.toggle
 
-app.get '/api/levels', routes.api.levels.global
-app.get '/api/levels/:username', routes.api.levels.channel
+app.get '/api/levels', sendCorsHeaders, routes.api.levels.global
+app.get '/api/levels/:username', sendCorsHeaders, routes.api.levels.channel
 
-app.get '/api/user/:username/levels', routes.api.userLevels
-app.get '/api/user/:username/levels/:channel', routes.api.userLevels
+app.get '/api/user/:username/levels', sendCorsHeaders, routes.api.userLevels
+app.get '/api/user/:username/levels/:channel', sendCorsHeaders, routes.api.userLevels
 
 app.get '/api/user', routes.api.user
 
