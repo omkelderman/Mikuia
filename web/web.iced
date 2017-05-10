@@ -150,6 +150,12 @@ app.post '/dashboard/plugins/toggle', checkAuth, routes.dashboard.plugins.plugin
 app.post '/dashboard/settings/save/:name', checkAuth, routes.dashboard.settings.save
 app.post '/dashboard/settings/toggle', checkAuth, routes.dashboard.settings.toggle
 
+app.get '/api/levels', routes.api.levels.global
+app.get '/api/levels/:username', routes.api.levels.channel
+
+app.get '/api/user/:username/levels', routes.api.userLevels
+app.get '/api/user/:username/levels/:channel', routes.api.userLevels
+
 app.get '/api/user', routes.api.user
 
 app.get '/', routes.community.index
