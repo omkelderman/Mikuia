@@ -42,6 +42,7 @@ html
 							a(href='/leagues', class=(path.indexOf('/leagues') == 0 ? 'active' : undefined), name='leagues') Leagues
 							a(href='https://p.datadoghq.com/sb/AF-ona-ccd2288b29', name='status') Status
 							a(href='https://patreon.com/hatsu', name='patreon') Patreon
+							a(href='https://discord.gg/rG3s6Vz', name='discord') Discord
 							a.mikuia-search(href='#') Search
 						.mikuia-navbar-title
 							span
@@ -77,6 +78,8 @@ html
 							//- 	a(href='/contribute') Contribute
 							span(name='patreon')
 								a(href='https://patreon.com/hatsu') Patreon
+							span(name='discord')
+								a(href='https://discord.gg/rG3s6Vz') Discord
 						.mikuia-navbar-search
 							form#search-bar(role='search', style='display: none;')
 								.form-group
@@ -102,9 +105,9 @@ html
 									i.fa.fa-twitch
 			.mikuia-navbar-alert
 				.container
-					a(href='https://discord.gg/rG3s6Vz')
+					a(href='https://patreon.com/hatsu')
 						strong Alert: 
-						span Thanks for the support, things are better now. You can still click here to join the Discord server though.
+						span Did you know that you can support me on Patreon? Every dollar helps! ♥
 		br
 		block content
 		
