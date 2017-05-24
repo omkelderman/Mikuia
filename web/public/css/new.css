@@ -522,6 +522,25 @@ h1, h2, h3, h4, h5, h6 {
 	transition: all 100ms ease;
 }
 
+.mikuia-page-card-extras {
+	background-color: black;
+	background-image: linear-gradient(rgba(73, 58, 126, 0.9), rgba(73, 58, 126, 0.7)), url('https://h.hatsu.tv/f6Pjd3.png');
+	background-position: center;
+	background-size: cover;
+	color: white;
+}
+
+.mikuia-page-card-extras:hover {
+	background-color: black !important;
+	color: white;
+}
+
+.mikuia-page-card-extras > a {
+	color: white;
+	text-decoration: none;
+}
+
+
 .mikuia-page-card-special {
 	background-color: #333;
 	background-image: url('/img/card.png');
