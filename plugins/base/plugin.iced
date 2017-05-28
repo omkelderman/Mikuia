@@ -142,7 +142,7 @@ Mikuia.Events.on 'mikuia.message', (from, to, message, target, details) =>
 			channelCooldown[Channel.getName()] = (new Date()).getTime()
 
 			if message.trim() == globalCommand
-				Mikuia.Chat.handleResponse username, to, 'Hey, I\'m Mikuia, and I\'m a bot made by Hatsuney! Learn more about me at http://mikuia.tv', target, details
+				Mikuia.Chat.handleResponse username, to, 'Hey, I\'m Mikuia, and I\'m a bot made by lauriys! Learn more about me at http://mikuia.tv', target, details
 			else
 				tokens = message.trim().split ' '
 				trigger = tokens[1]

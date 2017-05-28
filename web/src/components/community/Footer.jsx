@@ -13,7 +13,7 @@ var Footer = React.createClass({
 				<Grid>
 					<Col md={3}>
 						<small className="text-muted">
-							<Interpolate i18nKey='footer:author' author={<a href="http://twitch.tv/Hatsuney">Hatsuney</a>} />
+							<Interpolate i18nKey='footer:author' author={<a href="http://twitch.tv/lauriys">lauriys</a>} />
 						</small>
 					</Col>
 					<Col md={3}></Col>

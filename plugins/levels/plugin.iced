@@ -70,7 +70,7 @@ updateLevels = () ->
 			# 		'kaceytron',
 			# 		'kittyplaysgames'
 			# 	],
-			# 	hatsuney: [
+			# 	lauriys: [
 			# 		'jeffdee'
 			# 	]
 			# }

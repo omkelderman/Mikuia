@@ -201,7 +201,7 @@ var LevelsChannel = React.createClass({
 									</NotAuthenticated>
 
 									<div className="mikuia-page-card mikuia-page-card-special mikuia-page-card-margin">
-										<a href="https://patreon.com/hatsuney">
+										<a href="https://patreon.com/lauriys">
 											<h3 className="mikuia-page-category-heading">{t('levels:sidebar.tips.patreon.title')}</h3>
 											<p><Interpolate i18nKey='levels:sidebar.tips.patreon.description' useDangerouslySetInnerHTML={true} /></p>
 										</a>

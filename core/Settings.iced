@@ -5,7 +5,7 @@ fs = require 'fs'
 defaultSettings =
 	bot:
 		admins: [
-			'hatsuney'
+			'lauriys'
 		]
 		connections: 2
 		debug: false
